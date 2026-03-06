@@ -62,7 +62,9 @@
                             target="_blank" class="btn btn-primary shadow-sm">
                             <i class="bi bi-envelope me-2"></i>Send Email
                         </a>
-                        <button class="btn btn-outline-dark"><i class="bi bi-pencil me-2"></i>Edit Account</button>
+                        <a href="{{ route('hr.edit', $hr->id) }}" class="btn btn-outline-dark">
+                            <i class="bi bi-pencil me-2"></i>Edit Account
+                        </a>
                     </div>
 
                     <hr class="my-4 opacity-25">
@@ -70,8 +72,8 @@
                     <div class="text-start">
                         <h6 class="text-uppercase small fw-bold text-muted mb-3">Quick Actions</h6>
                         <div class="list-group list-group-flush rounded-3 border">
-                            <a href="#" class="list-group-item list-group-item-action small"><i
-                                    class="bi bi-shield-lock me-2"></i> Reset Password</a>
+                            {{-- <a href="#" class="list-group-item list-group-item-action small"><i
+                                    class="bi bi-shield-lock me-2"></i> Reset Password</a> --}}
 
                             <a href="#" class="list-group-item list-group-item-action small text-danger"><i
                                     class="bi bi-slash-circle me-2"></i> Deactivate</a>

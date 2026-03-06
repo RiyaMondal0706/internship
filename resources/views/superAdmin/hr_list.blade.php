@@ -102,7 +102,7 @@
                                                     <i class="bi bi-eye me-2"></i> View Profile
                                                 </a>
                                             </li>
-                                            <li><a class="dropdown-item" href="#"><i
+                                            <li><a class="dropdown-item" href="{{ route('hr.edit', $hr->id) }}"><i
                                                         class="bi bi-pencil me-2"></i>
                                                     Edit</a></li>
                                             <li>
@@ -115,8 +115,6 @@
                                 </td>
                             </tr>
                         @endforeach
-
-
 
                     </tbody>
                 </table>

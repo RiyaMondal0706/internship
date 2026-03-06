@@ -97,11 +97,64 @@ public function hr_list(){
     ->get();
     return view("superadmin.hr_list", compact('hrs'));
 }
-public function viewProfile($id)
+public function hr_viewProfile($id)
 {
     $hr = DB::table('hr_data')
     ->where('id', $id)
     ->first();
     return view('superadmin.hr_profile', compact('hr'));
+}
+public function hr_edit($id){
+   $user =  DB::table('hr_data')
+    ->where('id', $id)
+    ->first();
+      $state = DB::table('states')
+    ->get();
+     $districs = DB::table('districts')
+    ->get();
+     return view('superadmin.hr_profile_edit', compact('user', 'state', 'districs'));
+}
+
+
+
+public function hr_update(Request $request, $id)
+{
+
+// dd("ok");
+    // 2. Fetch existing HR record
+    $user = DB::table('hr_data')->where('id', $id)->first();
+
+    if (!$user) {
+        return redirect()->back()->with('error', 'HR not found.');
+    }
+
+    // 3. Prepare data
+    $data = [
+        'name' => $request->name,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'designation' => $request->designation,
+        'joining' => $request->joning_date,
+        'address' => $request->address,
+        'state' => $request->state,
+        'district' => $request->district,
+        'city' => $request->city,
+        'updated_at' => now(),
+        // Keep old image by default
+        'image' => $user->image,
+    ];
+
+    // 4. Handle new image upload
+    if ($request->hasFile('image')) {
+        $imageName = time() . '_' . $request->image->getClientOriginalName();
+        $request->image->move(public_path('images/hr'), $imageName);
+        $data['image'] = $imageName;
+    }
+
+    // 5. Update HR record
+    DB::table('hr_data')->where('id', $id)->update($data);
+
+    // 6. Redirect with success
+    return redirect()->route('hr.list')->with('success', 'HR updated successfully.');
 }
 }
