@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\HrCredentialsMail;
+use Illuminate\Support\Facades\Hash;
 class SuperAdminController extends Controller
 {
     public function dashboard(){
@@ -38,6 +40,7 @@ public function hr_store(Request $request){
         'city' => 'nullable|max:100'
     ]);
     
+      $plainPassword = random_int(100000, 999999);
     if ($request->hasFile('image')) {
 
         $image = $request->file('image');
@@ -51,7 +54,7 @@ public function hr_store(Request $request){
         $imageName = null;
 
     }
-    DB::table('hr_data')->insert([
+    $hr_id = DB::table('hr_data')->insertGetId([
         'name' => $request->name,
         'email' => $request->email,
         'phone' => $request->phone,
@@ -66,7 +69,39 @@ public function hr_store(Request $request){
          'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
     ]);
 
+     DB::table('users')->insert([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($plainPassword),
+            'role' => 'hr',
+            'employee_id' => 'hr-'.$hr_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Mail::to($request->email)->send(
+            new HrCredentialsMail(
+                $request->name,
+                $request->email,
+                $plainPassword,
+               
+            )
+        );
+
     return back()->with('success','HR Added Successfully');
 
+}
+public function hr_list(){
+    $hrs = DB::table('hr_data')
+    ->where('status', 1)
+    ->get();
+    return view("superadmin.hr_list", compact('hrs'));
+}
+public function viewProfile($id)
+{
+    $hr = DB::table('hr_data')
+    ->where('id', $id)
+    ->first();
+    return view('superadmin.hr_profile', compact('hr'));
 }
 }

@@ -156,7 +156,7 @@
                         </a>
                         <ul class="collapse list-unstyled" id="hrMenu">
                             <li><a href="{{ route('hr.create') }}" class="nav-link">Create</a></li>
-                            <li><a href="#" class="nav-link">List</a></li>
+                            <li><a href="{{ route('hr.list') }}" class="nav-link">List</a></li>
                         </ul>
                     </li>
 
