@@ -17,5 +17,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('user.login');
 Route::get('/logout',[LoginController::class,'logout'])->name('logout');
 
 Route::middleware(['role.session:superadmin'])->group(function() {
-    Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard']);
-});
+    Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
+        Route::get('/superadmin/hr/create', [SuperAdminController::class, 'hr_create'])->name('hr.create');
+        Route::get('/get-districts/{state_id}', [SuperAdminController::class, 'getDistricts']);
+Route::post('/superadmin/hr/store', [SuperAdminController::class, 'hr_store'])->name('hr.store');});
