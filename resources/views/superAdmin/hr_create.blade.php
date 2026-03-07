@@ -49,6 +49,20 @@
             }
 
         }
+
+        #pageLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
     </style>
 
 </head>
@@ -241,7 +255,9 @@
         </div>
 
     </div>
-
+    <div id="pageLoader">
+        <div class="spinner-border text-light" role="status"></div>
+    </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -422,6 +438,8 @@
                 toast('Please select district');
                 return;
             }
+            // SHOW LOADER
+            document.getElementById("pageLoader").style.display = "flex";
 
             // If all valid submit form
             this.submit();
