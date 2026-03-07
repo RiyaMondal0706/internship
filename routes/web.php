@@ -25,8 +25,12 @@ Route::post('/superadmin/hr/store', [SuperAdminController::class, 'hr_store'])->
         Route::get('/hr/profile/{id}', [SuperAdminController::class, 'hr_viewProfile'])->name('hr.view.profile');
         Route::get('/hr/{id}/edit', [SuperAdminController::class, 'hr_edit'])->name('hr.edit');
 Route::put('/hr/{id}/update', [SuperAdminController::class, 'hr_update'])->name('hr.update');
-
 Route::get('/hr-status/{id}', [SuperAdminController::class,'hr_status'])->name('hr.status');
+
+Route::delete('/hr-delete/{id}', [SuperAdminController::class,'hr_delete'])->name('hr.delete');
+        Route::get('/superadmin/project-manager/create', [SuperAdminController::class, 'project_manager_create'])->name('project_manager.create');
+Route::post('/superadmin/project-manager/store', [SuperAdminController::class, 'project_manager_store'])->name('project_manager.store');
+
 
 
 

@@ -120,8 +120,18 @@
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
-                                            <li><a class="dropdown-item text-danger" href="#"><i
-                                                        class="bi bi-trash me-2"></i> Delete</a></li>
+                                            <li>
+                                                <form action="{{ route('hr.delete', $hr->id) }}" method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to delete this HR?')">
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <button class="dropdown-item text-danger">
+                                                        <i class="bi bi-trash me-2"></i> Delete
+                                                    </button>
+
+                                                </form>
+                                            </li>
                                         </ul>
                                     </div>
                                 </td>
