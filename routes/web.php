@@ -26,4 +26,8 @@ Route::post('/superadmin/hr/store', [SuperAdminController::class, 'hr_store'])->
         Route::get('/hr/{id}/edit', [SuperAdminController::class, 'hr_edit'])->name('hr.edit');
 Route::put('/hr/{id}/update', [SuperAdminController::class, 'hr_update'])->name('hr.update');
 
+Route::get('/hr-status/{id}', [SuperAdminController::class,'hr_status'])->name('hr.status');
+
+
+
 });

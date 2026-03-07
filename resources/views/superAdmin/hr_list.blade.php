@@ -88,8 +88,20 @@
                                 <td class="small text-secondary">
                                     {{ \Carbon\Carbon::parse($hr->joining)->format('d F Y') }}</td>
                                 <td class="small"> {{ strtoupper($hr->address) }}</td>
-                                <td><span
-                                        class="badge bg-success-subtle text-success border border-success-subtle px-3">Active</span>
+                                <td>
+                                    <a href="{{ route('hr.status', $hr->id) }}">
+                                        @if ($hr->status == 1)
+                                            <span
+                                                class="badge bg-success-subtle text-success border border-success-subtle px-3">
+                                                Active
+                                            </span>
+                                        @else
+                                            <span
+                                                class="badge bg-danger-subtle text-danger border border-danger-subtle px-3">
+                                                Inactive
+                                            </span>
+                                        @endif
+                                    </a>
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="dropdown">
