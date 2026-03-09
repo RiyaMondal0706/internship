@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\HrCredentialsMail;
+use App\Mail\mentorCredentialsMail;
 use App\Mail\PrCredentialsMail;
 use Illuminate\Support\Facades\Hash;
 
@@ -358,9 +359,85 @@ public function pm_delete($id)
 
     return redirect()->back()->with('success','HR deleted successfully');
 }
+    public function mentor_create(){
+           $state = DB::table('states')
+            ->get();
+            $department = DB::table('departments')
+            ->get();
+        return view('superAdmin.mentor_create', compact('state', 'department'));
+    }
 
+public function mentor_store(Request $request) {
+// dd($request->designation_id);
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png',
+            'name' => 'required|',
+            'email' => 'required|email',
+            'phone' => 'required|',
+            'designation_id' => 'required',
+            'department' => 'required',
+            'joning_date' => 'required|date',
+            'address' => 'required|max:255',
+            'state' => 'required',
+            'distric' => 'required',
+            'city' => 'nullable|max:100'
+        ]);
 
+        $plainPassword = random_int(100000, 999999);
+        if ($request->hasFile('image')) {
 
+            $image = $request->file('image');
+
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            $image->move(public_path('images/mentor'), $imageName);
+        } else {
+
+            $imageName = null;
+        }
+        $mentor_id = DB::table('mentor_data')->insertGetId([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+             'department' => $request->department,
+            'designation' => $request->designation_id,
+            'joining' => $request->joning_date,
+            'address' => $request->address,
+            'state' => $request->state,
+            'district' => $request->distric,
+            'city' => $request->city,
+            'image' => $imageName,
+            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
+            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($plainPassword),
+            'role' => 'mentor',
+            'employee_id' => 'mentor-' . $mentor_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Mail::to($request->email)->send(
+            new mentorCredentialsMail(
+                $request->name,
+                $request->email,
+                $plainPassword,
+            )
+        );
+
+        return back()->with('success', 'HR Added Successfully');
+    }
+
+public function getDesignation($id)
+{
+    $designation = DB::table('designations')->where('department_id',$id)->get();
+
+    return response()->json($designation);
+}
 
 
 }

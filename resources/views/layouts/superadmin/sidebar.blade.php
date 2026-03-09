@@ -175,7 +175,7 @@
                             Mentor <i class="bi bi-chevron-down"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="mentorMenu">
-                            <li><a href="#" class="nav-link">Create</a></li>
+                            <li><a href="{{ route('mentor.create') }}" class="nav-link">Create</a></li>
                             <li><a href="#" class="nav-link">List</a></li>
                         </ul>
                     </li>
