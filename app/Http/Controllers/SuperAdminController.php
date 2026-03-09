@@ -243,8 +243,8 @@ public function project_manager_store(Request $request) {
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($plainPassword),
-            'role' => 'hr',
-            'employee_id' => 'pr-' . $pr_id,
+            'role' => 'projectmanager',
+            'employee_id' => 'pm-' . $pr_id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -254,12 +254,112 @@ public function project_manager_store(Request $request) {
                 $request->name,
                 $request->email,
                 $plainPassword,
-
             )
         );
 
         return back()->with('success', 'HR Added Successfully');
     }
+public function project_manager_list(){
+     $pms = DB::table('pr_data')
+            ->get();
+        return view("superadmin.project_manager_list", compact('pms'));
+}
+
+
+    public function pm_status($id)
+    {
+        $pm = DB::table('pr_data')->where('id', $id)->first();
+
+        if ($pm->status == 1) {
+
+            DB::table('pr_data')
+                ->where('id', $id)
+                ->update(['status' => 0]);
+        } else {
+
+            DB::table('pr_data')
+                ->where('id', $id)
+                ->update(['status' => 1]);
+        }
+
+        return redirect()->back()->with('success', 'Status Updated Successfully');
+    }
+
+  public function pm_viewProfile($id)
+    {
+        $hr = DB::table('pr_data')
+            ->where('id', $id)
+            ->first();
+        return view('superadmin.pm_profile', compact('hr'));
+    }
+
+
+
+  public function pm_edit($id)
+    {
+        $user =  DB::table('pr_data')
+            ->where('id', $id)
+            ->first();
+        $state = DB::table('states')
+            ->get();
+        $districs = DB::table('districts')
+            ->get();
+        return view('superadmin.pm_profile_edit', compact('user', 'state', 'districs'));
+    }
+
+
+    public function pm_update(Request $request, $id)
+    {
+
+        // dd("ok");
+        // 2. Fetch existing HR record
+        $user = DB::table('pr_data')->where('id', $id)->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'HR not found.');
+        }
+
+        // 3. Prepare data
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'designation' => $request->designation,
+            'joining' => $request->joning_date,
+            'address' => $request->address,
+            'state' => $request->state,
+            'district' => $request->district,
+            'city' => $request->city,
+            'updated_at' => now(),
+            // Keep old image by default
+            'image' => $user->image,
+        ];
+
+        // 4. Handle new image upload
+        if ($request->hasFile('image')) {
+            $imageName = time() . '_' . $request->image->getClientOriginalName();
+            $request->image->move(public_path('images/hr'), $imageName);
+            $data['image'] = $imageName;
+        }
+
+        // 5. Update HR record
+        DB::table('pr_data')->where('id', $id)->update($data);
+
+        // 6. Redirect with success
+        return redirect()->route('project_manager.list')->with('success', 'HR updated successfully.');
+    }
+
+public function pm_delete($id)
+{
+     DB::table('pr_data')->where('id', $id)->delete();
+
+         $employeeId = 'pm-' . $id;
+     DB::table('users')->where('employee_id', $employeeId)->delete();
+
+    return redirect()->back()->with('success','HR deleted successfully');
+}
+
+
 
 
 

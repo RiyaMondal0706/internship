@@ -166,7 +166,7 @@
                         </a>
                         <ul class="collapse list-unstyled" id="pmMenu">
                             <li><a href="{{ route('project_manager.create') }}" class="nav-link">Create</a></li>
-                            <li><a href="#" class="nav-link">List</a></li>
+                            <li><a href="{{ route('project_manager.list') }}" class="nav-link">List</a></li>
                         </ul>
                     </li>
 

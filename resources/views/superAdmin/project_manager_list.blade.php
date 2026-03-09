@@ -17,7 +17,7 @@
         #main-content {
             margin-left: var(--sidebar-width);
             width: calc(100% - var(--sidebar-width));
-            min-height: 100vh;
+            S min-height: 100vh;
             transition: 0.3s;
         }
     </style>
@@ -47,7 +47,7 @@
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
                 <h6 class="mb-0 fw-bold text-dark">HR Management List</h6>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('hr.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
+                    <a href="{{ route('project_manager.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
                     </a>
                 </div>
@@ -66,31 +66,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($hrs as $hr)
+                        @foreach ($pms as $pm)
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/hr/' . $hr->image) }}" class="rounded-circle me-3"
-                                            width="38">
+                                        <img src="{{ asset('images/Projectmanager/' . $pm->image) }}"
+                                            class="rounded-circle me-3" width="38">
                                         <div>
-                                            <div class="fw-bold mb-0">{{ $hr->name }}</div>
-                                            <small class="text-muted">ID: #HR-9921</small>
+                                            <div class="fw-bold mb-0">{{ $pm->name }}</div>
+                                            <small class="text-muted">ID: #PM-9921</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="small fw-semibold">{{ $hr->email }}</div>
-                                    <div class="small text-muted">+91 {{ $hr->phone }}</div>
+                                    <div class="small fw-semibold">{{ $pm->email }}</div>
+                                    <div class="small text-muted">+91 {{ $pm->phone }}</div>
                                 </td>
                                 <td><span
-                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($hr->designation) }}</span>
+                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($pm->designation) }}</span>
                                 </td>
                                 <td class="small text-secondary">
-                                    {{ \Carbon\Carbon::parse($hr->joining)->format('d F Y') }}</td>
-                                <td class="small"> {{ strtoupper($hr->address) }}</td>
+                                    {{ \Carbon\Carbon::parse($pm->joining)->format('d F Y') }}</td>
+                                <td class="small"> {{ strtoupper($pm->address) }}</td>
                                 <td>
-                                    <a href="{{ route('hr.status', $hr->id) }}">
-                                        @if ($hr->status == 1)
+                                    <a href="{{ route('pm.status', $pm->id) }}">
+                                        @if ($pm->status == 1)
                                             <span
                                                 class="badge bg-success-subtle text-success border border-success-subtle px-3">
                                                 Active
@@ -110,18 +110,18 @@
                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                             <li>
                                                 <a class="dropdown-item"
-                                                    href="{{ route('hr.view.profile', ['id' => $hr->id]) }}">
+                                                    href="{{ route('pm.view.profile', ['id' => $pm->id]) }}">
                                                     <i class="bi bi-eye me-2"></i> View Profile
                                                 </a>
                                             </li>
-                                            <li><a class="dropdown-item" href="{{ route('hr.edit', $hr->id) }}"><i
+                                            <li><a class="dropdown-item" href="{{ route('pm.edit', $pm->id) }}"><i
                                                         class="bi bi-pencil me-2"></i>
                                                     Edit</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
                                             <li>
-                                                <form action="{{ route('hr.delete', $hr->id) }}" method="POST"
+                                                <form action="{{ route('pm.delete', $pm->id) }}" method="POST"
                                                     class="delete-form">
                                                     @csrf
                                                     @method('DELETE')
@@ -161,7 +161,7 @@
 
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You want to delete this HR!",
+                    text: "You want to delete this Project Manager!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -179,8 +179,6 @@
 
         });
     </script>
-
-
 </body>
 
 </html>

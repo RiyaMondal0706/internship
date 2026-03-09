@@ -21,6 +21,8 @@
             transition: 0.3s;
         }
 
+
+
         /* CARDS */
 
         .stat-card {
@@ -46,20 +48,6 @@
                 width: 100%;
             }
 
-        }
-
-        #pageLoader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            display: none;
         }
     </style>
 
@@ -88,33 +76,33 @@
 
             <div class="card stat-card border-0 shadow-sm">
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
-                    <i class="bi bi-person-plus-fill text-primary fs-4 me-2"></i>
-                    <h6 class="mb-0 fw-bold">Register New Project Manager</h6>
+                    <i class="bi bi-pencil-square text-warning fs-4 me-2"></i>
+                    <h6 class="mb-0 fw-bold">Edit Project Manager</h6>
                 </div>
 
                 <div class="card-body p-4">
-                    <form id="prForm" action="{{ route('project_manager.store') }}" method="POST"
-                        enctype="multipart/form-data" novalidate> @csrf
+                    <form action="{{ route('pm.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
                         <div class="row">
 
                             <!-- Profile Image -->
                             <div class="col-md-3 text-center">
-
                                 <label class="form-label fw-bold text-muted">
                                     Profile Image <span class="text-danger">*</span>
                                 </label>
 
                                 <div class="mb-3">
-                                    <img id="imagePreview" src="\upload_images\download.png"
+                                    <img id="imagePreview"
+                                        src="{{ $user->image ? asset('images/Projectmanager/' . $user->image) : asset('upload_images/download.png') }}"
                                         class="rounded-circle border shadow" width="120" height="120"
                                         style="object-fit:cover;">
                                 </div>
 
+                                <!-- Note: value="" does NOT work for file inputs, remove it -->
                                 <input type="file" name="image" id="imageUpload" class="form-control"
                                     accept="image/*">
-
                             </div>
-
 
                             <!-- Form Fields -->
                             <div class="col-md-9">
@@ -127,7 +115,8 @@
                                         </label>
                                         <input type="text" class="form-control bg-light border-0"
                                             placeholder="e.g. Robert Fox" name="name" pattern="[A-Za-z\s]+"
-                                            oninput="this.value = this.value.replace(/[^A-Za-z\s]/g,'')" required>
+                                            oninput="this.value = this.value.replace(/[^A-Za-z\s]/g,'')"
+                                            value="{{ $user->name }}">
                                     </div>
 
                                     <div class="col-md-6">
@@ -135,7 +124,7 @@
                                             Email <span class="text-danger">*</span>
                                         </label>
                                         <input type="email" class="form-control bg-light border-0"
-                                            placeholder="robert@company.com" name="email" required>
+                                            placeholder="robert@company.com" name="email" value="{{ $user->email }}">
                                     </div>
 
                                     <div class="col-md-6">
@@ -145,7 +134,7 @@
 
                                         <input type="tel" class="form-control bg-light border-0"
                                             placeholder="Enter 10 digit phone" name="phone" maxlength="10"
-                                            pattern="[6-9][0-9]{9}"
+                                            pattern="[6-9][0-9]{9}" value="{{ $user->phone }}"
                                             oninput="this.value=this.value.replace(/[^0-9]/g,'').replace(/^([0-5])/, '').slice(0,10)">
                                     </div>
 
@@ -153,15 +142,38 @@
                                         <label class="form-label small fw-bold text-muted">
                                             Designation <span class="text-danger">*</span>
                                         </label>
-
                                         <select class="form-select bg-light border-0" name="designation" required>
-                                            <option value="">Select Designation </option>
-                                            <option value="project manager">Project Manager</option>
-                                            <option value="assistant project manager">Assistant Project Manager</option>
-                                            <option value="technical project manager">Technical Project Manager</option>
-                                            <option value="program manager">Program Manager</option>
-                                            <option value="digital manager">Digital Manager</option>
-                                            <option value="graphics manager">Graphics Manager</option>
+                                            <option value="">Select Designation</option>
+
+                                            <option value="project manager"
+                                                {{ $user->designation == 'project manager' ? 'selected' : '' }}>
+                                                Project Manager
+                                            </option>
+
+                                            <option value="assistant project manager"
+                                                {{ $user->designation == 'assistant project manager' ? 'selected' : '' }}>
+                                                Assistant Project Manager
+                                            </option>
+
+                                            <option value="technical project manager"
+                                                {{ $user->designation == 'technical project manager' ? 'selected' : '' }}>
+                                                Technical Project Manager
+                                            </option>
+
+                                            <option value="program manager"
+                                                {{ $user->designation == 'program manager' ? 'selected' : '' }}>
+                                                Program Manager
+                                            </option>
+
+                                            <option value="digital manager"
+                                                {{ $user->designation == 'digital manager' ? 'selected' : '' }}>
+                                                Digital Manager
+                                            </option>
+
+                                            <option value="graphics manager"
+                                                {{ $user->designation == 'graphics manager' ? 'selected' : '' }}>
+                                                Graphics Manager
+                                            </option>
 
                                         </select>
                                     </div>
@@ -172,7 +184,7 @@
                                         </label>
 
                                         <input type="date" class="form-control bg-light border-0"
-                                            name = "joning_date">
+                                            name = "joning_date" value = "{{ $user->joining }}">
                                     </div>
 
                                 </div>
@@ -197,21 +209,21 @@
                                     Address <span class="text-danger">*</span>
                                 </label>
 
-                                <textarea class="form-control bg-light border-0"name="address" rows="2" placeholder="Street, Apartment, Landmark"></textarea>
+                                <textarea class="form-control bg-light border-0"name="address" rows="2" placeholder="Street, Apartment, Landmark">{{ $user->address }}</textarea>
                             </div>
 
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-muted">
                                     State <span class="text-danger">*</span>
                                 </label>
-
                                 <select class="form-select bg-light border-0" id="state_id" name="state" required>
-                                    <option selected disabled>Select State</option>
-
+                                    <option disabled>Select State</option>
                                     @foreach ($state as $s)
-                                        <option value="{{ $s->id }}">{{ $s->name }}</option>
+                                        <option value="{{ $s->id }}"
+                                            {{ $user->state == $s->id ? 'selected' : '' }}>
+                                            {{ $s->name }}
+                                        </option>
                                     @endforeach
-
                                 </select>
                             </div>
 
@@ -220,19 +232,27 @@
                                     District <span class="text-danger">*</span>
                                 </label>
 
-                                <select class="form-select bg-light border-0" id="district_id" name="distric"
+                                <select class="form-select bg-light border-0" id="district_id" name="district"
                                     required>
-                                    <option selected disabled>Select District</option>
+                                    <option disabled>Select District</option>
+                                    @if ($user->state)
+                                        @foreach ($districs as $d)
+                                            <!-- $districts is the list of districts for $hr->state -->
+                                            <option value="{{ $d->id }}"
+                                                {{ $user->district == $d->id ? 'selected' : '' }}>
+                                                {{ $d->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
-
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-muted">
                                     City
                                 </label>
 
                                 <input type="text" class="form-control bg-light border-0"
-                                    placeholder="City"name="city">
+                                    placeholder="City"name="city" value = "{{ $user->city }}">
                             </div>
 
                         </div>
@@ -258,9 +278,7 @@
         </div>
 
     </div>
-    <div id="pageLoader">
-        <div class="spinner-border text-light" role="status"></div>
-    </div>
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -369,100 +387,7 @@
 
         });
     </script>
-    <script>
-        document.getElementById('prForm').addEventListener('submit', function(e) {
 
-            e.preventDefault(); // stop form first
-
-            const name = document.querySelector('[name="name"]').value.trim();
-            const email = document.querySelector('[name="email"]').value.trim();
-            const phone = document.querySelector('[name="phone"]').value.trim();
-            const designation = document.querySelector('[name="designation"]').value;
-            const joining = document.querySelector('[name="joning_date"]').value;
-            const address = document.querySelector('[name="address"]').value.trim();
-            const state = document.querySelector('[name="state"]').value;
-            const district = document.querySelector('[name="distric"]').value;
-            const image = document.getElementById('imageUpload').files.length;
-
-            const phoneRegex = /^[6-9][0-9]{9}$/;
-            const nameRegex = /^[A-Za-z\s]+$/;
-
-            if (image === 0) {
-                toast('Profile image is required');
-                return;
-            }
-
-            if (name === '') {
-                toast('Full name is required');
-                return;
-            }
-
-            if (!nameRegex.test(name)) {
-                toast('Name must contain only letters');
-                return;
-            }
-
-            if (email === '') {
-                toast('Email is required');
-                return;
-            }
-
-            if (!email.includes('@')) {
-                toast('Email must contain @');
-                return;
-            }
-
-            if (!phoneRegex.test(phone)) {
-                toast('Phone must start 6-9 and be 10 digits');
-                return;
-            }
-
-            if (designation === '') {
-                toast('Please select designation');
-                return;
-            }
-
-            if (joining === '') {
-                toast('Joining date is required');
-                return;
-            }
-
-            if (address === '') {
-                toast('Address is required');
-                return;
-            }
-
-            if (!state) {
-                toast('Please select state');
-                return;
-            }
-
-            if (!district) {
-                toast('Please select district');
-                return;
-            }
-            // SHOW LOADER
-            document.getElementById("pageLoader").style.display = "flex";
-
-            // If all valid submit form
-            this.submit();
-
-        });
-
-
-        function toast(message) {
-
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'warning',
-                title: message,
-                showConfirmButton: false,
-                timer: 3000
-            });
-
-        }
-    </script>
 </body>
 
 </html>
