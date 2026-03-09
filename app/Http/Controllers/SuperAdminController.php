@@ -758,9 +758,6 @@ public function mentor_delete($id)
         return redirect()->back()->with('success', 'Team Leader deleted successfully');
     }
 
-
-
-
   public function intern_create()
     {
         $state = DB::table('states')
@@ -821,8 +818,8 @@ public function mentor_delete($id)
             'password' => Hash::make($plainPassword),
             'role' => 'intern',
             'employee_id' => 'intern-' . $mentor_id,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
+            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
         ]);
 
         Mail::to($request->email)->send(
@@ -842,9 +839,6 @@ public function intern_list()
             ->get();
         return view("superadmin.intern_list", compact('interns'));
     }
-
-
-
    public function intern_status($id)
     {
         $intern = DB::table('intern_data')->where('id', $id)->first();
@@ -909,7 +903,7 @@ public function intern_list()
         'state' => $request->state,
         'district' => $request->distric,
         'city' => $request->city,
-        'updated_at' => now(),
+        'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
         'image' => $user->image,
     ];
 
@@ -927,7 +921,6 @@ public function intern_list()
     DB::table('intern_data')->where('id', $id)->update($data);
 
 
-    // 🔵 Update email in users table
     DB::table('users')
         ->where('email', $user->email)
         ->update([
@@ -949,6 +942,69 @@ public function intern_delete($id)
         
 }
 
+
+public function project_create(){
+      $department = DB::table('departments')
+            ->get();
+    return view('superAdmin.project_create', compact('department'));
+}
+
+
+public function project_store(Request $request)
+{
+
+    //   dd($request->intern_required);
+    // Validation
+    $request->validate([
+        'project_title' => 'required|string',
+        'company_name' => 'required|string',
+        'domain' => 'required',
+        'technology' => 'nullable|string',
+        'start_date' => 'required|date',
+        'end_date' => 'nullable|date|after_or_equal:start_date',
+        'employee_required' => 'required|integer|min:1',
+   
+        'description' => 'required|string',
+    ]);
+  
+    $documentName = null;
+
+    // Upload document
+    if ($request->hasFile('project_document')) {
+        $documentName = time().'_'.$request->project_document->getClientOriginalName();
+        $request->project_document->move(public_path('project_documents'), $documentName);
+    }
+
+    // Insert project
+    DB::table('project')->insert([
+        'project_title' => $request->project_title,
+        'company_name' => $request->company_name,
+        'project_department' => $request->domain,
+        'technology' => $request->technology,
+        'start_date' => $request->start_date,
+        'end_date' => $request->end_date,
+        'noe' => $request->employee_required,
+        'project_document' => $documentName,
+        'description' => $request->description,
+        'created_at' =>Carbon::now('Asia/Kolkata')->toDateString(),
+    ]);
+
+    return redirect()->back()->with('success','Project Created Successfully');
+}
+
+public function project_pending(){
+  $project = DB::table('project')
+            ->get();
+    return view('superAdmin.pending_project', compact('project'));
+}
+
+
+public function details($id)
+{   
+    $project = DB::table('project')->where('id',$id)->first();
+
+    return view('superAdmin.project_details_ajax',compact('project'));
+}
 
 
 }

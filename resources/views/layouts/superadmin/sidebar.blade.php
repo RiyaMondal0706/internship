@@ -26,7 +26,8 @@
         /* Sidebar Container */
         #sidebar {
             width: var(--sidebar-width);
-            min-height: 100vh;
+            height: 100vh;
+            /* important */
             background-color: var(--bg-dark);
             color: var(--text-light);
             transition: all 0.3s ease;
@@ -34,6 +35,9 @@
             left: 0;
             top: 0;
             overflow-y: auto;
+            /* enable vertical scroll */
+            overflow-x: hidden;
+            /* hide horizontal scroll */
         }
 
         /* Brand Section */
@@ -112,7 +116,7 @@
 
         /* Scrollbar Styling */
         #sidebar::-webkit-scrollbar {
-            width: 5px;
+            width: 6px;
         }
 
         #sidebar::-webkit-scrollbar-thumb {
@@ -202,7 +206,42 @@
                 </ul>
             </div>
 
-            <a href="#" class="nav-link"><i class="bi bi-calendar-event me-3"></i>Attendance</a>
+            <li class="nav-item">
+
+                <a class="nav-link" data-bs-toggle="collapse" href="#projectMenu">
+                    <i class="bi bi-diagram-3 me-3"></i> Project
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+
+                <ul class="collapse list-unstyled ps-4" id="projectMenu">
+
+                    <li>
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-play-circle me-2"></i> Ongoing Projects
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('project.pending') }}" class="nav-link">
+                            <i class="bi bi-hourglass-split me-2"></i> Pending Projects
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="nav-link">
+                            <i class="bi bi-check-circle me-2"></i> Completed Projects
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('project.create') }}" class="nav-link">
+                            <i class="bi bi-plus-circle me-2"></i> Create Project
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
             <a href="#" class="nav-link"><i class="bi bi-file-earmark-text me-3"></i>Reports</a>
             <a href="#" class="nav-link"><i class="bi bi-gear me-3"></i>Settings</a>
         </div>

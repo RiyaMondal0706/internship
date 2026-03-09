@@ -53,12 +53,6 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::delete('/Team-Leader-delete/{id}', [SuperAdminController::class, 'tm_delete'])->name('tm.delete');
         Route::get('/Team Leader/{id}/edit', [SuperAdminController::class, 'tm_edit'])->name('tm.edit');
         Route::put('/Team Leader/{id}/update', [SuperAdminController::class, 'tm_update'])->name('tm.update');
-
-        
-
-
-
-
         Route::get('/superadmin/Intern/create', [SuperAdminController::class, 'intern_create'])->name('intern.create');
         Route::post('/superadmin/Intern/store', [SuperAdminController::class, 'intern_store'])->name('intern.store');
         Route::get('/superadmin/Intern/list', [SuperAdminController::class, 'intern_list'])->name('intern.list');
@@ -70,6 +64,13 @@ Route::middleware(['role.session:superadmin'])->group(function () {
 
 
 
+
+        Route::get('/superadmin/Project/create', [SuperAdminController::class, 'project_create'])->name('project.create');
+        Route::post('/superadmin/Project/store', [SuperAdminController::class, 'project_store'])->name('project.store');
+
+
+        Route::get('/superadmin/Project/pending', [SuperAdminController::class, 'project_pending'])->name('project.pending');
+Route::get('/project/details/{id}', [SuperAdminController::class,'details']);
 
 
 
