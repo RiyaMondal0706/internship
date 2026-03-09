@@ -45,9 +45,9 @@
 
         <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                <h6 class="mb-0 fw-bold text-dark">HR Management List</h6>
+                <h6 class="mb-0 fw-bold text-dark">Intern List</h6>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('project_manager.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
+                    <a href="{{ route('intern.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
                     </a>
                 </div>
@@ -56,9 +56,10 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <th class="ps-4">Project Manager Name</th>
+                            <th class="ps-4">Candidate Name</th>
                             <th>Contact Info</th>
                             <th>Designation</th>
+                            <th>Department</th>
                             <th>Joining Date</th>
                             <th>Location</th>
                             <th>Status</th>
@@ -66,31 +67,47 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pms as $pm)
+                        @foreach ($interns as $intern)
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/Projectmanager/' . $pm->image) }}"
+                                        <img src="{{ asset('images/intern/' . $intern->image) }}"
                                             class="rounded-circle me-3" width="38">
                                         <div>
-                                            <div class="fw-bold mb-0">{{ $pm->name }}</div>
-                                            <small class="text-muted">ID: #PM-9921</small>
+                                            <div class="fw-bold mb-0">{{ $intern->name }}</div>
+                                            <small class="text-muted">ID:#intern-9921</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="small fw-semibold">{{ $pm->email }}</div>
-                                    <div class="small text-muted">+91 {{ $pm->phone }}</div>
+                                    <div class="small fw-semibold">
+                                        {{ \Illuminate\Support\Str::limit($intern->email, 10) }}
+                                    </div>
+                                    <div class="small text-muted">+91 {{ $intern->phone }}</div>
                                 </td>
+                                @php
+                                    $designation = DB::table('designations')
+                                        ->where('id', $intern->designation)
+                                        ->first();
+
+                                @endphp
                                 <td><span
-                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($pm->designation) }}</span>
+                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($designation->designation_name) }}</span>
+                                </td>
+
+                                @php
+                                    $department = DB::table('departments')->where('id', $intern->department)->first();
+
+                                @endphp
+                                <td><span
+                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($department->department_name) }}</span>
                                 </td>
                                 <td class="small text-secondary">
-                                    {{ \Carbon\Carbon::parse($pm->joining)->format('d F Y') }}</td>
-                                <td class="small"> {{ strtoupper($pm->address) }}</td>
+                                    {{ \Carbon\Carbon::parse($intern->joining)->format('d F Y') }}</td>
+                                <td class="small"> {{ strtoupper($intern->address) }}</td>
                                 <td>
-                                    <a href="{{ route('pm.status', $pm->id) }}">
-                                        @if ($pm->status == 1)
+                                    <a href="{{ route('intern.status', $intern->id) }}">
+                                        @if ($intern->status == 1)
                                             <span
                                                 class="badge bg-success-subtle text-success border border-success-subtle px-3">
                                                 Active
@@ -110,18 +127,19 @@
                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                             <li>
                                                 <a class="dropdown-item"
-                                                    href="{{ route('pm.view.profile', ['id' => $pm->id]) }}">
+                                                    href="{{ route('intern.view.profile', ['id' => $intern->id]) }}">
                                                     <i class="bi bi-eye me-2"></i> View Profile
                                                 </a>
                                             </li>
-                                            <li><a class="dropdown-item" href="{{ route('pm.edit', $pm->id) }}"><i
+                                            <li><a class="dropdown-item"
+                                                    href="{{ route('intern.edit', $intern->id) }}"><i
                                                         class="bi bi-pencil me-2"></i>
                                                     Edit</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
                                             <li>
-                                                <form action="{{ route('pm.delete', $pm->id) }}" method="POST"
+                                                <form action="{{ route('intern.delete', $intern->id) }}" method="POST"
                                                     class="delete-form">
                                                     @csrf
                                                     @method('DELETE')
@@ -161,7 +179,7 @@
 
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You want to delete this Project Manager!",
+                    text: "You want to delete this intern!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',

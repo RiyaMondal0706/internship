@@ -61,6 +61,12 @@ Route::middleware(['role.session:superadmin'])->group(function () {
 
         Route::get('/superadmin/Intern/create', [SuperAdminController::class, 'intern_create'])->name('intern.create');
         Route::post('/superadmin/Intern/store', [SuperAdminController::class, 'intern_store'])->name('intern.store');
+        Route::get('/superadmin/Intern/list', [SuperAdminController::class, 'intern_list'])->name('intern.list');
+        Route::get('/intern-status/{id}', [SuperAdminController::class, 'intern_status'])->name('intern.status');
+        Route::get('/Intern/profile/{id}', [SuperAdminController::class, 'intern_Profile'])->name('intern.view.profile');
+        Route::get('/Intern/{id}/edit', [SuperAdminController::class, 'intern_edit'])->name('intern.edit');
+        Route::put('/Intern/{id}/update', [SuperAdminController::class, 'intern_update'])->name('intern.update');
+        Route::delete('/Intern-delete/{id}', [SuperAdminController::class, 'intern_delete'])->name('intern.delete');
 
 
 

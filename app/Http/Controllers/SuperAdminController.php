@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\HrCredentialsMail;
 use App\Mail\mentorCredentialsMail;
+use App\Mail\internCredentialsMail;
 use App\Mail\PrCredentialsMail;
 use App\Mail\teamleaderCredentialsMail;
 use Illuminate\Support\Facades\Hash;
@@ -793,12 +794,12 @@ public function mentor_delete($id)
 
             $imageName = time() . '.' . $image->getClientOriginalExtension();
 
-            $image->move(public_path('images/mentor'), $imageName);
+            $image->move(public_path('images/intern'), $imageName);
         } else {
 
             $imageName = null;
         }
-        $mentor_id = DB::table('mentor_data')->insertGetId([
+        $mentor_id = DB::table('intern_data')->insertGetId([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -818,14 +819,14 @@ public function mentor_delete($id)
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($plainPassword),
-            'role' => 'mentor',
-            'employee_id' => 'mentor-' . $mentor_id,
+            'role' => 'intern',
+            'employee_id' => 'intern-' . $mentor_id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         Mail::to($request->email)->send(
-            new mentorCredentialsMail(
+            new internCredentialsMail(
                 $request->name,
                 $request->email,
                 $plainPassword,
@@ -834,6 +835,119 @@ public function mentor_delete($id)
 
         return back()->with('success', 'HR Added Successfully');
     }
+
+public function intern_list()
+    {
+        $interns = DB::table('intern_data')
+            ->get();
+        return view("superadmin.intern_list", compact('interns'));
+    }
+
+
+
+   public function intern_status($id)
+    {
+        $intern = DB::table('intern_data')->where('id', $id)->first();
+
+        if ($intern->status == 1) {
+
+            DB::table('intern_data')
+                ->where('id', $id)
+                ->update(['status' => 0]);
+        } else {
+
+            DB::table('intern_data')
+                ->where('id', $id)
+                ->update(['status' => 1]);
+        }
+
+        return redirect()->back()->with('success', 'Status Updated Successfully');
+    }
+
+   public function intern_Profile($id)
+    {
+        $intern = DB::table('intern_data')
+            ->where('id', $id)
+            ->first();
+        return view('superadmin.intern_profile', compact('intern'));
+    }
+
+     public function intern_edit($id)
+    {
+        $user =  DB::table('intern_data')
+            ->where('id', $id)
+            ->first();
+        $state = DB::table('states')
+            ->get();
+        $districs = DB::table('districts')
+            ->get();
+                $department = DB::table('departments')
+            ->get();
+                 $designation = DB::table('designations')
+            ->get();
+        return view('superadmin.intern_profile_edit', compact('user', 'state', 'districs', 'department', 'designation'));
+    }
+
+   public function intern_update(Request $request, $id)
+{
+
+    $user = DB::table('intern_data')->where('id', $id)->first();
+
+    if (!$user) {
+        return redirect()->back()->with('error', 'Mentor not found.');
+    }
+
+    // Prepare data
+    $data = [
+        'name' => $request->name,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'department' => $request->department,
+        'designation' => $request->designation_id,
+        'joining' => $request->joning_date,
+        'address' => $request->address,
+        'state' => $request->state,
+        'district' => $request->distric,
+        'city' => $request->city,
+        'updated_at' => now(),
+        'image' => $user->image,
+    ];
+
+    // Handle image upload
+    if ($request->hasFile('image')) {
+
+        $imageName = time().'_'.$request->image->getClientOriginalName();
+
+        $request->image->move(public_path('images/intern'), $imageName);
+
+        $data['image'] = $imageName;
+    }
+
+    // Update mentor_data
+    DB::table('intern_data')->where('id', $id)->update($data);
+
+
+    // 🔵 Update email in users table
+    DB::table('users')
+        ->where('email', $user->email)
+        ->update([
+            'email' => $request->email,
+        
+        ]);
+
+
+    return redirect()->route('intern.list')->with('success', 'Mentor updated successfully.');
+}
+public function intern_delete($id)
+    {
+        DB::table('intern_data')->where('id', $id)->delete();
+
+        $employeeId = 'intern-' . $id;
+        DB::table('users')->where('employee_id', $employeeId)->delete();
+
+        return redirect()->back()->with('success', 'HR deleted successfully');
+        
+}
 
 
 

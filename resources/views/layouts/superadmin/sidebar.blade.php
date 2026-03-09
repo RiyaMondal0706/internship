@@ -196,7 +196,7 @@
                         </a>
                         <ul class="collapse list-unstyled" id="internMenu">
                             <li><a href="{{ route('intern.create') }}" class="nav-link">Create</a></li>
-                            <li><a href="#" class="nav-link">List</a></li>
+                            <li><a href="{{ route('intern.list') }}" class="nav-link">List</a></li>
                         </ul>
                     </li>
                 </ul>

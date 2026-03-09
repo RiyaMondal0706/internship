@@ -56,7 +56,7 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <th class="ps-4">HR Name</th>
+                            <th class="ps-4">Mentor Name</th>
                             <th>Contact Info</th>
                             <th>Designation</th>
                             <th>Department</th>

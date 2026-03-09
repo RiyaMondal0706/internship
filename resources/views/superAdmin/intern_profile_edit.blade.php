@@ -88,26 +88,32 @@
 
             <div class="card stat-card border-0 shadow-sm">
                 <div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
-                    <i class="bi bi-person-plus-fill text-primary fs-4 me-2"></i>
-                    <h6 class="mb-0 fw-bold">Register New Intern </h6>
+                    <i class="bi bi-pencil-square text-warning fs-4 me-2"></i>
+                    <h6 class="mb-0 fw-bold">Edit Mentor </h6>
                 </div>
 
                 <div class="card-body p-4">
-                    <form id="prForm" action="{{ route('intern.store') }}" method="POST"
-                        enctype="multipart/form-data" novalidate> @csrf
+                    <form id="prForm" action="{{ route('intern.update', $user->id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+
                         <div class="row">
 
                             <!-- Profile Image -->
                             <div class="col-md-3 text-center">
 
                                 <label class="form-label fw-bold text-muted">
-                                    Profile Image <span class="text-danger">*</span>
+                                    Profile Image
                                 </label>
 
                                 <div class="mb-3">
-                                    <img id="imagePreview" src="\upload_images\download.png"
+
+                                    <img id="imagePreview"
+                                        src="{{ $user->image ? asset('images/intern/' . $user->image) : asset('upload_images/download.png') }}"
                                         class="rounded-circle border shadow" width="120" height="120"
                                         style="object-fit:cover;">
+
                                 </div>
 
                                 <input type="file" name="image" id="imageUpload" class="form-control"
@@ -121,65 +127,103 @@
 
                                 <div class="row g-3">
 
+                                    <!-- Name -->
                                     <div class="col-md-6">
                                         <label class="form-label small fw-bold text-muted">
-                                            Full Name <span class="text-danger">*</span>
+                                            Full Name
                                         </label>
-                                        <input type="text" class="form-control bg-light border-0"
-                                            placeholder="e.g. Robert Fox" name="name" pattern="[A-Za-z\s]+"
-                                            oninput="this.value = this.value.replace(/[^A-Za-z\s]/g,'')" required>
+
+                                        <input type="text" class="form-control bg-light border-0" name="name"
+                                            value="{{ $user->name }}" required>
+
                                     </div>
 
+
+                                    <!-- Email -->
                                     <div class="col-md-6">
                                         <label class="form-label small fw-bold text-muted">
-                                            Email <span class="text-danger">*</span>
+                                            Email
                                         </label>
-                                        <input type="email" class="form-control bg-light border-0"
-                                            placeholder="robert@company.com" name="email" required>
+
+                                        <input type="email" class="form-control bg-light border-0" name="email"
+                                            value="{{ $user->email }}" required>
+
                                     </div>
 
+
+                                    <!-- Phone -->
                                     <div class="col-md-6">
                                         <label class="form-label small fw-bold text-muted">
-                                            Phone <span class="text-danger">*</span>
+                                            Phone
                                         </label>
 
-                                        <input type="tel" class="form-control bg-light border-0"
-                                            placeholder="Enter 10 digit phone" name="phone" maxlength="10"
-                                            pattern="[6-9][0-9]{9}"
-                                            oninput="this.value=this.value.replace(/[^0-9]/g,'').replace(/^([0-5])/, '').slice(0,10)">
+                                        <input type="tel" class="form-control bg-light border-0" name="phone"
+                                            value="{{ $user->phone }}" maxlength="10">
+
                                     </div>
 
+
+                                    <!-- Department -->
                                     <div class="col-md-6">
+
                                         <label class="form-label small fw-bold text-muted">
-                                            Department <span class="text-danger">*</span>
+                                            Department
                                         </label>
 
-                                        <select class="form-select bg-light border-0" name="department"
-                                            id = "department"required>
-                                            <option value="">Select Department </option>
-                                            @foreach ($department as $department)
-                                                <option value="{{ $department->id }}">{{ $department->department_name }}
+                                        <select class="form-select bg-light border-0" name="department" id="department">
+
+                                            <option value="">Select Department</option>
+
+                                            @foreach ($department as $dep)
+                                                <option value="{{ $dep->id }}"
+                                                    {{ $user->department == $dep->id ? 'selected' : '' }}>
+
+                                                    {{ $dep->department_name }}
+
                                                 </option>
                                             @endforeach
+
                                         </select>
+
                                     </div>
+
+
+                                    <!-- Designation -->
                                     <div class="col-md-6">
+
                                         <label class="form-label small fw-bold text-muted">
-                                            Designation <span class="text-danger">*</span>
+                                            Designation
                                         </label>
 
                                         <select class="form-select bg-light border-0" id="designation"
                                             name="designation_id">
+
                                             <option value="">Select Designation</option>
+
+                                            @foreach ($designation as $des)
+                                                <option value="{{ $des->id }}"
+                                                    {{ $user->designation == $des->id ? 'selected' : '' }}>
+
+                                                    {{ $des->designation_name }}
+
+                                                </option>
+                                            @endforeach
+
                                         </select>
+
                                     </div>
 
+
+                                    <!-- Joining Date -->
                                     <div class="col-md-6">
+
                                         <label class="form-label small fw-bold text-muted">
-                                            Joining Date <span class="text-danger">*</span>
+                                            Joining Date
                                         </label>
 
-                                        <input type="date" class="form-control bg-light border-0" name="joning_date">
+                                        <input type="date" class="form-control bg-light border-0" name="joning_date"
+                                            value="{{ $user->joining }}">
+
                                     </div>
 
                                 </div>
@@ -188,59 +232,88 @@
 
                         </div>
 
-
                         <hr class="my-4">
 
 
-                        <!-- Address Section -->
                         <h6 class="mb-3 fw-bold text-primary small text-uppercase">
                             Address Information
                         </h6>
 
+
                         <div class="row g-3">
 
+                            <!-- Address -->
                             <div class="col-12">
+
                                 <label class="form-label small fw-bold text-muted">
-                                    Address <span class="text-danger">*</span>
+                                    Address
                                 </label>
 
-                                <textarea class="form-control bg-light border-0" name="address" rows="2"
-                                    placeholder="Street, Apartment, Landmark"></textarea>
+                                <textarea class="form-control bg-light border-0" name="address" rows="2">{{ $user->address }}</textarea>
+
                             </div>
 
+
+                            <!-- State -->
                             <div class="col-md-4">
+
                                 <label class="form-label small fw-bold text-muted">
-                                    State <span class="text-danger">*</span>
+                                    State
                                 </label>
 
-                                <select class="form-select bg-light border-0" id="state_id" name="state" required>
-                                    <option selected disabled>Select State</option>
+                                <select class="form-select bg-light border-0" id="state_id" name="state">
+
+                                    <option>Select State</option>
 
                                     @foreach ($state as $s)
-                                        <option value="{{ $s->id }}">{{ $s->name }}</option>
+                                        <option value="{{ $s->id }}"
+                                            {{ $user->state == $s->id ? 'selected' : '' }}>
+
+                                            {{ $s->name }}
+
+                                        </option>
                                     @endforeach
 
                                 </select>
+
                             </div>
 
+
+                            <!-- District -->
                             <div class="col-md-4">
+
                                 <label class="form-label small fw-bold text-muted">
-                                    District <span class="text-danger">*</span>
+                                    District
                                 </label>
 
-                                <select class="form-select bg-light border-0" id="district_id" name="distric"
-                                    required>
-                                    <option selected disabled>Select District</option>
+                                <select class="form-select bg-light border-0" id="district_id" name="distric">
+
+                                    <option value="">Select District</option>
+
+                                    @foreach ($districs as $district)
+                                        <option value="{{ $district->id }}"
+                                            {{ $user->district == $district->id ? 'selected' : '' }}>
+
+                                            {{ $district->name }}
+
+                                        </option>
+                                    @endforeach
+
                                 </select>
+
                             </div>
 
+
+                            <!-- City -->
                             <div class="col-md-4">
+
                                 <label class="form-label small fw-bold text-muted">
                                     City
                                 </label>
 
-                                <input type="text" class="form-control bg-light border-0" placeholder="City"
-                                    name="city">
+                                <input type="text" class="form-control bg-light border-0" name="city"
+                                    value="{{ $user->city }}">
+
                             </div>
 
                         </div>
@@ -254,7 +327,7 @@
 
                             <button type="submit" class="btn btn-primary px-4">
                                 <i class="bi bi-check-circle me-2"></i>
-                                Save Intern
+                                Update Intern
                             </button>
 
                         </div>
@@ -385,7 +458,7 @@
             const name = document.querySelector('[name="name"]').value.trim();
             const email = document.querySelector('[name="email"]').value.trim();
             const phone = document.querySelector('[name="phone"]').value.trim();
-            const designation = document.querySelector('[name="department"]').value;
+            const department = document.querySelector('[name="department"]').value;
             const joining = document.querySelector('[name="joning_date"]').value;
             const address = document.querySelector('[name="address"]').value.trim();
             const state = document.querySelector('[name="state"]').value;
@@ -395,7 +468,7 @@
             const phoneRegex = /^[6-9][0-9]{9}$/;
             const nameRegex = /^[A-Za-z\s]+$/;
 
-            if (image === 0) {
+            if (image === 0 && "{{ $user->image }}" === "") {
                 toast('Profile image is required');
                 return;
             }
@@ -425,8 +498,8 @@
                 return;
             }
 
-            if (designation === '') {
-                toast('Please select designation');
+            if (department === '') {
+                toast('Please select department');
                 return;
             }
 
