@@ -37,20 +37,19 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::put('/Project-manager/{id}/update', [SuperAdminController::class, 'pm_update'])->name('pm.update');
         Route::delete('/project-manager-delete/{id}', [SuperAdminController::class, 'pm_delete'])->name('pm.delete');
                 Route::get('/superadmin/mentor/create', [SuperAdminController::class, 'mentor_create'])->name('mentor.create');
-
-
-
-
-
-
                         Route::post('/superadmin/mentor/store', [SuperAdminController::class, 'mentor_store'])->name('mentor.store');
-
 Route::get('/get-designation/{id}', [SuperAdminController::class,'getDesignation']);
+        Route::get('/superadmin/mentor/list', [SuperAdminController::class, 'mentor_list'])->name('mentor.list');
+
+
+        Route::get('/mentor/profile/{id}', [SuperAdminController::class, 'mentor_Profile'])->name('mentor.view.profile');
+
+
+                Route::get('/mentor-status/{id}', [SuperAdminController::class, 'mentor_status'])->name('mentor.status');
 
 
 
-
-
+        
 
 
         });

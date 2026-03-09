@@ -182,23 +182,25 @@ class SuperAdminController extends Controller
         return redirect()->back()->with('success', 'Status Updated Successfully');
     }
 
-public function hr_delete($id)
-{
-     DB::table('hr_data')->where('id', $id)->delete();
+    public function hr_delete($id)
+    {
+        DB::table('hr_data')->where('id', $id)->delete();
 
-         $employeeId = 'hr-' . $id;
-     DB::table('users')->where('employee_id', $employeeId)->delete();
+        $employeeId = 'hr-' . $id;
+        DB::table('users')->where('employee_id', $employeeId)->delete();
 
-    return redirect()->back()->with('success','HR deleted successfully');
-}
+        return redirect()->back()->with('success', 'HR deleted successfully');
+    }
 
-public function project_manager_create(){
-       $state = DB::table('states')
+    public function project_manager_create()
+    {
+        $state = DB::table('states')
             ->get();
         return view('superAdmin.projectmanager_create', compact('state'));
-}
+    }
 
-public function project_manager_store(Request $request) {
+    public function project_manager_store(Request $request)
+    {
 
         $request->validate([
             'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -260,13 +262,12 @@ public function project_manager_store(Request $request) {
 
         return back()->with('success', 'HR Added Successfully');
     }
-public function project_manager_list(){
-     $pms = DB::table('pr_data')
+    public function project_manager_list()
+    {
+        $pms = DB::table('pr_data')
             ->get();
         return view("superadmin.project_manager_list", compact('pms'));
-}
-
-
+    }
     public function pm_status($id)
     {
         $pm = DB::table('pr_data')->where('id', $id)->first();
@@ -286,7 +287,7 @@ public function project_manager_list(){
         return redirect()->back()->with('success', 'Status Updated Successfully');
     }
 
-  public function pm_viewProfile($id)
+    public function pm_viewProfile($id)
     {
         $hr = DB::table('pr_data')
             ->where('id', $id)
@@ -296,7 +297,7 @@ public function project_manager_list(){
 
 
 
-  public function pm_edit($id)
+    public function pm_edit($id)
     {
         $user =  DB::table('pr_data')
             ->where('id', $id)
@@ -350,25 +351,27 @@ public function project_manager_list(){
         return redirect()->route('project_manager.list')->with('success', 'HR updated successfully.');
     }
 
-public function pm_delete($id)
-{
-     DB::table('pr_data')->where('id', $id)->delete();
+    public function pm_delete($id)
+    {
+        DB::table('pr_data')->where('id', $id)->delete();
 
-         $employeeId = 'pm-' . $id;
-     DB::table('users')->where('employee_id', $employeeId)->delete();
+        $employeeId = 'pm-' . $id;
+        DB::table('users')->where('employee_id', $employeeId)->delete();
 
-    return redirect()->back()->with('success','HR deleted successfully');
-}
-    public function mentor_create(){
-           $state = DB::table('states')
+        return redirect()->back()->with('success', 'HR deleted successfully');
+    }
+    public function mentor_create()
+    {
+        $state = DB::table('states')
             ->get();
-            $department = DB::table('departments')
+        $department = DB::table('departments')
             ->get();
         return view('superAdmin.mentor_create', compact('state', 'department'));
     }
 
-public function mentor_store(Request $request) {
-// dd($request->designation_id);
+    public function mentor_store(Request $request)
+    {
+        // dd($request->designation_id);
         $request->validate([
             'image' => 'required|image|mimes:jpg,jpeg,png',
             'name' => 'required|',
@@ -399,7 +402,7 @@ public function mentor_store(Request $request) {
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-             'department' => $request->department,
+            'department' => $request->department,
             'designation' => $request->designation_id,
             'joining' => $request->joning_date,
             'address' => $request->address,
@@ -432,12 +435,43 @@ public function mentor_store(Request $request) {
         return back()->with('success', 'HR Added Successfully');
     }
 
-public function getDesignation($id)
-{
-    $designation = DB::table('designations')->where('department_id',$id)->get();
+    public function getDesignation($id)
+    {
+        $designation = DB::table('designations')->where('department_id', $id)->get();
 
-    return response()->json($designation);
-}
+        return response()->json($designation);
+    }
+    public function mentor_list()
+    {
+        $mentors = DB::table('mentor_data')
+            ->get();
+        return view("superadmin.mentor_list", compact('mentors'));
+    }
+    public function mentor_status($id)
+    {
+        $mentor = DB::table('mentor_data')->where('id', $id)->first();
+
+        if ($mentor->status == 1) {
+
+            DB::table('mentor_data')
+                ->where('id', $id)
+                ->update(['status' => 0]);
+        } else {
+
+            DB::table('mentor_data')
+                ->where('id', $id)
+                ->update(['status' => 1]);
+        }
+
+        return redirect()->back()->with('success', 'Status Updated Successfully');
+    }
 
 
+      public function mentor_Profile($id)
+    {
+        $mentor = DB::table('mentor_data')
+            ->where('id', $id)
+            ->first();
+        return view('superadmin.mentor_profile', compact('mentor'));
+    }
 }
