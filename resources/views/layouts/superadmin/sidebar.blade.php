@@ -185,8 +185,8 @@
                             Team Leader <i class="bi bi-chevron-down"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="tlMenu">
-                            <li><a href="#" class="nav-link">Create</a></li>
-                            <li><a href="#" class="nav-link">List</a></li>
+                            <li><a href="{{ route('tm.create') }}" class="nav-link">Create</a></li>
+                            <li><a href="{{ route('tm.list') }}" class="nav-link">List</a></li>
                         </ul>
                     </li>
 
@@ -195,7 +195,7 @@
                             Intern <i class="bi bi-chevron-down"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="internMenu">
-                            <li><a href="#" class="nav-link">Create</a></li>
+                            <li><a href="{{ route('intern.create') }}" class="nav-link">Create</a></li>
                             <li><a href="#" class="nav-link">List</a></li>
                         </ul>
                     </li>

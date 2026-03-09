@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\HrCredentialsMail;
 use App\Mail\mentorCredentialsMail;
 use App\Mail\PrCredentialsMail;
+use App\Mail\teamleaderCredentialsMail;
 use Illuminate\Support\Facades\Hash;
 
 class SuperAdminController extends Controller
@@ -158,6 +159,13 @@ class SuperAdminController extends Controller
 
         // 5. Update HR record
         DB::table('hr_data')->where('id', $id)->update($data);
+
+          DB::table('users')
+        ->where('email', $user->email)
+        ->update([
+            'email' => $request->email,
+        
+        ]);
 
         // 6. Redirect with success
         return redirect()->route('hr.list')->with('success', 'HR updated successfully.');
@@ -347,6 +355,13 @@ class SuperAdminController extends Controller
         // 5. Update HR record
         DB::table('pr_data')->where('id', $id)->update($data);
 
+          DB::table('users')
+        ->where('email', $user->email)
+        ->update([
+            'email' => $request->email,
+        
+        ]);
+
         // 6. Redirect with success
         return redirect()->route('project_manager.list')->with('success', 'HR updated successfully.');
     }
@@ -474,4 +489,352 @@ class SuperAdminController extends Controller
             ->first();
         return view('superadmin.mentor_profile', compact('mentor'));
     }
+
+
+
+        public function mentor_edit($id)
+    {
+        $user =  DB::table('mentor_data')
+            ->where('id', $id)
+            ->first();
+        $state = DB::table('states')
+            ->get();
+        $districs = DB::table('districts')
+            ->get();
+                $department = DB::table('departments')
+            ->get();
+                 $designation = DB::table('designations')
+            ->get();
+        return view('superadmin.mentor_profile_edit', compact('user', 'state', 'districs', 'department', 'designation'));
+    }
+
+   public function mentor_update(Request $request, $id)
+{
+
+    $user = DB::table('mentor_data')->where('id', $id)->first();
+
+    if (!$user) {
+        return redirect()->back()->with('error', 'Mentor not found.');
+    }
+
+    // Prepare data
+    $data = [
+        'name' => $request->name,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'department' => $request->department,
+        'designation' => $request->designation_id,
+        'joining' => $request->joning_date,
+        'address' => $request->address,
+        'state' => $request->state,
+        'district' => $request->distric,
+        'city' => $request->city,
+        'updated_at' => now(),
+        'image' => $user->image,
+    ];
+
+    // Handle image upload
+    if ($request->hasFile('image')) {
+
+        $imageName = time().'_'.$request->image->getClientOriginalName();
+
+        $request->image->move(public_path('images/mentor'), $imageName);
+
+        $data['image'] = $imageName;
+    }
+
+    // Update mentor_data
+    DB::table('mentor_data')->where('id', $id)->update($data);
+
+
+    // 🔵 Update email in users table
+    DB::table('users')
+        ->where('email', $user->email)
+        ->update([
+            'email' => $request->email,
+        
+        ]);
+
+
+    return redirect()->route('mentor.list')->with('success', 'Mentor updated successfully.');
+}
+
+public function mentor_delete($id)
+    {
+        DB::table('mentor_data')->where('id', $id)->delete();
+
+        $employeeId = 'mentor-' . $id;
+        DB::table('users')->where('employee_id', $employeeId)->delete();
+
+        return redirect()->back()->with('success', 'HR deleted successfully');
+        
+}
+
+
+    public function tm_create()
+    {
+        $state = DB::table('states')
+            ->get();
+        $department = DB::table('departments')
+            ->get();
+        return view('superAdmin.tm_create', compact('state', 'department'));
+    }
+
+
+
+    public function tm_store(Request $request)
+    {
+        // dd($request->designation_id);
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png',
+            'name' => 'required|',
+            'email' => 'required|email',
+            'phone' => 'required|',
+         
+            'department' => 'required',
+            'joning_date' => 'required|date',
+            'address' => 'required|max:255',
+            'state' => 'required',
+            'distric' => 'required',
+            'city' => 'nullable|max:100'
+        ]);
+
+        $plainPassword = random_int(100000, 999999);
+        if ($request->hasFile('image')) {
+
+            $image = $request->file('image');
+
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            $image->move(public_path('images/teamleader'), $imageName);
+        } else {
+
+            $imageName = null;
+        }
+        $mentor_id = DB::table('teamleader_data')->insertGetId([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'department' => $request->department,
+        
+            'joining' => $request->joning_date,
+            'address' => $request->address,
+            'state' => $request->state,
+            'district' => $request->distric,
+            'city' => $request->city,
+            'image' => $imageName,
+            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
+            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($plainPassword),
+            'role' => 'teamleader',
+            'employee_id' => 'teamleader-' . $mentor_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Mail::to($request->email)->send(
+            new teamleaderCredentialsMail(
+                $request->name,
+                $request->email,
+                $plainPassword,
+            )
+        );
+
+        return back()->with('success', 'Team Leader Added Successfully');
+    }
+
+   public function tm_list()
+    {
+        $tm = DB::table('teamleader_data')
+            ->get();
+        return view("superadmin.tm_list", compact('tm'));
+    }
+
+
+    public function tm_status($id)
+    {
+        $tm = DB::table('teamleader_data')->where('id', $id)->first();
+
+        if ($tm->status == 1) {
+
+            DB::table('teamleader_data')
+                ->where('id', $id)
+                ->update(['status' => 0]);
+        } else {
+
+            DB::table('teamleader_data')
+                ->where('id', $id)
+                ->update(['status' => 1]);
+        }
+
+        return redirect()->back()->with('success', 'Status Updated Successfully');
+    }
+
+    public function tm_Profile($id)
+    {
+        $tm = DB::table('teamleader_data')
+            ->where('id', $id)
+            ->first();
+        return view('superadmin.tm_profile', compact('tm'));
+    }
+
+    public function tm_edit($id)
+    {
+        $user =  DB::table('teamleader_data')
+            ->where('id', $id)
+            ->first();
+        $state = DB::table('states')
+            ->get();
+        $districs = DB::table('districts')
+            ->get();
+                  $department = DB::table('departments')
+            ->get();
+
+        return view('superadmin.tm_profile_edit', compact('user', 'state', 'districs', 'department'));
+    }
+
+
+    public function tm_update(Request $request, $id)
+    {
+
+        // dd("ok");
+        // 2. Fetch existing HR record
+        $user = DB::table('teamleader_data')->where('id', $id)->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'HR not found.');
+        }
+
+        // 3. Prepare data
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'department' => $request->department,
+            'joining' => $request->joning_date,
+            'address' => $request->address,
+            'state' => $request->state,
+            'district' => $request->distric,
+            'city' => $request->city,
+            'updated_at' => now(),
+            // Keep old image by default
+            'image' => $user->image,
+        ];
+
+        // 4. Handle new image upload
+        if ($request->hasFile('image')) {
+            $imageName = time() . '_' . $request->image->getClientOriginalName();
+            $request->image->move(public_path('images/teamleader'), $imageName);
+            $data['image'] = $imageName;
+        }
+
+        // 5. Update HR record
+        DB::table('teamleader_data')->where('id', $id)->update($data);
+
+          DB::table('users')
+        ->where('email', $user->email)
+        ->update([
+            'email' => $request->email,
+        
+        ]);
+
+        // 6. Redirect with success
+        return redirect()->route('tm.list')->with('success', 'HR updated successfully.');
+    }
+
+   public function tm_delete($id)
+    {
+        DB::table('teamleader_data')->where('id', $id)->delete();
+
+        $employeeId = 'teamleader-' . $id;
+        DB::table('users')->where('employee_id', $employeeId)->delete();
+
+        return redirect()->back()->with('success', 'Team Leader deleted successfully');
+    }
+
+
+
+
+  public function intern_create()
+    {
+        $state = DB::table('states')
+            ->get();
+        $department = DB::table('departments')
+            ->get();
+        return view('superAdmin.intern_create', compact('state', 'department'));
+    }
+
+   public function intern_store(Request $request)
+    {
+        // dd($request->designation_id);
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png',
+            'name' => 'required|',
+            'email' => 'required|email',
+            'phone' => 'required|',
+            'designation_id' => 'required',
+            'department' => 'required',
+            'joning_date' => 'required|date',
+            'address' => 'required|max:255',
+            'state' => 'required',
+            'distric' => 'required',
+            'city' => 'nullable|max:100'
+        ]);
+
+        $plainPassword = random_int(100000, 999999);
+        if ($request->hasFile('image')) {
+
+            $image = $request->file('image');
+
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            $image->move(public_path('images/mentor'), $imageName);
+        } else {
+
+            $imageName = null;
+        }
+        $mentor_id = DB::table('mentor_data')->insertGetId([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'department' => $request->department,
+            'designation' => $request->designation_id,
+            'joining' => $request->joning_date,
+            'address' => $request->address,
+            'state' => $request->state,
+            'district' => $request->distric,
+            'city' => $request->city,
+            'image' => $imageName,
+            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
+            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($plainPassword),
+            'role' => 'mentor',
+            'employee_id' => 'mentor-' . $mentor_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Mail::to($request->email)->send(
+            new mentorCredentialsMail(
+                $request->name,
+                $request->email,
+                $plainPassword,
+            )
+        );
+
+        return back()->with('success', 'HR Added Successfully');
+    }
+
+
+
 }

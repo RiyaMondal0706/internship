@@ -45,9 +45,9 @@
 
         <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                <h6 class="mb-0 fw-bold text-dark">Mentor List</h6>
+                <h6 class="mb-0 fw-bold text-dark">Team Leader List</h6>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('mentor.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
+                    <a href="{{ route('tm.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
                     </a>
                 </div>
@@ -58,7 +58,7 @@
                         <tr style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
                             <th class="ps-4">HR Name</th>
                             <th>Contact Info</th>
-                            <th>Designation</th>
+
                             <th>Department</th>
                             <th>Joining Date</th>
                             <th>Location</th>
@@ -67,47 +67,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($mentors as $mentor)
+                        @foreach ($tm as $tm)
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/mentor/' . $mentor->image) }}"
+                                        <img src="{{ asset('images/teamleader/' . $tm->image) }}"
                                             class="rounded-circle me-3" width="38">
                                         <div>
-                                            <div class="fw-bold mb-0">{{ $mentor->name }}</div>
+                                            <div class="fw-bold mb-0">{{ $tm->name }}</div>
                                             <small class="text-muted">ID:#Mentor-9921</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="small fw-semibold">
-                                        {{ \Illuminate\Support\Str::limit($mentor->email, 10) }}
+                                        {{ \Illuminate\Support\Str::limit($tm->email, 10) }}
                                     </div>
-                                    <div class="small text-muted">+91 {{ $mentor->phone }}</div>
-                                </td>
-                                @php
-                                    $designation = DB::table('designations')
-                                        ->where('id', $mentor->designation)
-                                        ->first();
-
-                                @endphp
-                                <td><span
-                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($designation->designation_name) }}</span>
+                                    <div class="small text-muted">+91 {{ $tm->phone }}</div>
                                 </td>
 
+
                                 @php
-                                    $department = DB::table('departments')->where('id', $mentor->department)->first();
+                                    $department = DB::table('departments')->where('id', $tm->department)->first();
 
                                 @endphp
                                 <td><span
                                         class="badge bg-light text-dark border fw-medium">{{ strtoupper($department->department_name) }}</span>
                                 </td>
                                 <td class="small text-secondary">
-                                    {{ \Carbon\Carbon::parse($mentor->joining)->format('d F Y') }}</td>
-                                <td class="small"> {{ strtoupper($mentor->address) }}</td>
+                                    {{ \Carbon\Carbon::parse($tm->joining)->format('d F Y') }}</td>
+                                <td class="small"> {{ strtoupper($tm->address) }}</td>
                                 <td>
-                                    <a href="{{ route('mentor.status', $mentor->id) }}">
-                                        @if ($mentor->status == 1)
+                                    <a href="{{ route('tm.status', $tm->id) }}">
+                                        @if ($tm->status == 1)
                                             <span
                                                 class="badge bg-success-subtle text-success border border-success-subtle px-3">
                                                 Active
@@ -127,19 +119,18 @@
                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                             <li>
                                                 <a class="dropdown-item"
-                                                    href="{{ route('mentor.view.profile', ['id' => $mentor->id]) }}">
+                                                    href="{{ route('tm.view.profile', ['id' => $tm->id]) }}">
                                                     <i class="bi bi-eye me-2"></i> View Profile
                                                 </a>
                                             </li>
-                                            <li><a class="dropdown-item"
-                                                    href="{{ route('mentor.edit', $mentor->id) }}"><i
+                                            <li><a class="dropdown-item" href="{{ route('tm.edit', $tm->id) }}"><i
                                                         class="bi bi-pencil me-2"></i>
                                                     Edit</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
                                             <li>
-                                                <form action="{{ route('mentor.delete', $mentor->id) }}" method="POST"
+                                                <form action="{{ route('tm.delete', $tm->id) }}" method="POST"
                                                     class="delete-form">
                                                     @csrf
                                                     @method('DELETE')
@@ -179,7 +170,7 @@
 
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You want to delete this Mentor!",
+                    text: "You want to delete this Team Leader!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',

@@ -36,20 +36,35 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('/Project-manager/{id}/edit', [SuperAdminController::class, 'pm_edit'])->name('pm.edit');
         Route::put('/Project-manager/{id}/update', [SuperAdminController::class, 'pm_update'])->name('pm.update');
         Route::delete('/project-manager-delete/{id}', [SuperAdminController::class, 'pm_delete'])->name('pm.delete');
-                Route::get('/superadmin/mentor/create', [SuperAdminController::class, 'mentor_create'])->name('mentor.create');
-                        Route::post('/superadmin/mentor/store', [SuperAdminController::class, 'mentor_store'])->name('mentor.store');
-Route::get('/get-designation/{id}', [SuperAdminController::class,'getDesignation']);
+        Route::get('/superadmin/mentor/create', [SuperAdminController::class, 'mentor_create'])->name('mentor.create');
+        Route::post('/superadmin/mentor/store', [SuperAdminController::class, 'mentor_store'])->name('mentor.store');
+        Route::get('/get-designation/{id}', [SuperAdminController::class, 'getDesignation']);
         Route::get('/superadmin/mentor/list', [SuperAdminController::class, 'mentor_list'])->name('mentor.list');
-
-
         Route::get('/mentor/profile/{id}', [SuperAdminController::class, 'mentor_Profile'])->name('mentor.view.profile');
-
-
-                Route::get('/mentor-status/{id}', [SuperAdminController::class, 'mentor_status'])->name('mentor.status');
-
-
+        Route::get('/mentor-status/{id}', [SuperAdminController::class, 'mentor_status'])->name('mentor.status');
+        Route::get('/mentor/{id}/edit', [SuperAdminController::class, 'mentor_edit'])->name('mentor.edit');
+        Route::put('/mentor/{id}/update', [SuperAdminController::class, 'mentor_update'])->name('mentor.update');
+        Route::delete('/mentor-delete/{id}', [SuperAdminController::class, 'mentor_delete'])->name('mentor.delete');
+        Route::get('/superadmin/Team-leader/list', [SuperAdminController::class, 'tm_list'])->name('tm.list');
+        Route::get('/superadmin/Team-Leader/create', [SuperAdminController::class, 'tm_create'])->name('tm.create');
+        Route::post('/superadmin/Team-Leader/store', [SuperAdminController::class, 'tm_store'])->name('tm.store');
+        Route::get('/Team-Leader-status/{id}', [SuperAdminController::class, 'tm_status'])->name('tm.status');
+        Route::get('/Team-Leader/profile/{id}', [SuperAdminController::class, 'tm_Profile'])->name('tm.view.profile');
+        Route::delete('/Team-Leader-delete/{id}', [SuperAdminController::class, 'tm_delete'])->name('tm.delete');
+        Route::get('/Team Leader/{id}/edit', [SuperAdminController::class, 'tm_edit'])->name('tm.edit');
+        Route::put('/Team Leader/{id}/update', [SuperAdminController::class, 'tm_update'])->name('tm.update');
 
         
+
+
+
+
+        Route::get('/superadmin/Intern/create', [SuperAdminController::class, 'intern_create'])->name('intern.create');
+        Route::post('/superadmin/Intern/store', [SuperAdminController::class, 'intern_store'])->name('intern.store');
+
+
+
+
 
 
         });

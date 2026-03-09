@@ -71,7 +71,7 @@
                             target="_blank" class="btn btn-primary shadow-sm">
                             <i class="bi bi-envelope me-2"></i>Send Email
                         </a>
-                        <a href="{{ route('hr.edit', $mentor->id) }}" class="btn btn-outline-dark">
+                        <a href="{{ route('mentor.edit', $mentor->id) }}" class="btn btn-outline-dark">
                             <i class="bi bi-pencil me-2"></i>Edit Account
                         </a>
                     </div>
