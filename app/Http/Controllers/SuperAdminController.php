@@ -1007,4 +1007,23 @@ public function details($id)
 }
 
 
+public function project_edit($id){
+   
+      $department = DB::table('departments')
+            ->get();
+
+             $project = DB::table('project')
+             ->where('id', $id)
+            ->first();
+
+    return view('superAdmin.project_edit', compact('department', 'project'));
+
+
+}
+
+public function project_update($id, Request $request) {
+    dd("update");
+}
+
+
 }

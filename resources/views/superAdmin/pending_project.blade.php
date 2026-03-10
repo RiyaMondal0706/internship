@@ -106,22 +106,27 @@
                                             $daysLeft = $today->diffInDays($endDate, false);
                                         @endphp
 
+                                        <!-- Normal Date -->
+                                        <span>{{ $endDate->format('d M Y') }}</span>
+
+                                        <br>
+
+                                        <!-- Days Left with Color -->
                                         @if ($daysLeft <= 3)
-                                            <span class="badge bg-danger">
-                                                {{ $endDate->format('d M Y') }}
+                                            <span class="text-danger fw-bold">
+                                                {{ $daysLeft }} Days Left
                                             </span>
                                         @elseif($daysLeft <= 10)
-                                            <span class="badge bg-warning text-dark">
-                                                {{ $endDate->format('d M Y') }}
+                                            <span class="text-warning fw-bold">
+                                                {{ $daysLeft }} Days Left
                                             </span>
                                         @else
-                                            <span class="badge bg-success">
-                                                {{ $endDate->format('d M Y') }}
+                                            <span class="text-success fw-bold">
+                                                {{ $daysLeft }} Days Left
                                             </span>
                                         @endif
 
                                     </td>
-
 
                                     <td>
 
@@ -138,28 +143,28 @@
 
                                     <td class="text-end pe-4">
 
+                                        @if ($item->status == 1)
+                                            <!-- View Button -->
+                                            <a href="" class="btn btn-sm btn-light border">
+                                                <i class="bi bi-eye text-success"></i>
+                                            </a>
+                                        @else
+                                            <!-- Edit Button -->
+                                            <a href="{{ route('project.edit', $item->id) }}"
+                                                class="btn btn-sm btn-light border">
+                                                <i class="bi bi-pencil-fill text-primary"></i>
+                                            </a>
 
-                                        <a href="{{ route('mentor.edit', $item->id) }}"
-                                            class="btn btn-sm btn-light border">
+                                            <!-- Delete Button -->
+                                            <form action="" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
 
-                                            <i class="bi bi-pencil-fill text-primary"></i>
-
-                                        </a>
-
-
-                                        <form action="{{ route('mentor.delete', $item->id) }}" method="POST"
-                                            style="display:inline;">
-
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button type="button" class="btn btn-sm btn-light border delete-btn">
-
-                                                <i class="bi bi-trash text-danger"></i>
-
-                                            </button>
-
-                                        </form>
+                                                <button type="button" class="btn btn-sm btn-light border delete-btn">
+                                                    <i class="bi bi-trash text-danger"></i>
+                                                </button>
+                                            </form>
+                                        @endif
 
                                     </td>
 
