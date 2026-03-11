@@ -6,11 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\HrCredentialsMail;
-use App\Mail\mentorCredentialsMail;
-use App\Mail\internCredentialsMail;
-use App\Mail\PrCredentialsMail;
-use App\Mail\teamleaderCredentialsMail;
+use App\Mail\CredentialsMail;
+
 use Illuminate\Support\Facades\Hash;
 
 class SuperAdminController extends Controller
@@ -158,6 +155,21 @@ class SuperAdminController extends Controller
     ->update([
         'employee_code'       =>$request->company.$id ,
     ]);
+
+        $plainPassword = random_int(100000, 999999);
+
+  Mail::to($request->email)->send(
+            new CredentialsMail(
+                $request->name,
+                $request->email,
+                $plainPassword,
+$request->department,
+ $request->subdepartment,
+ $request->designation,
+
+            )
+        );
+    
 
     return redirect()->back()->with('success','Employee Created Successfully');
 

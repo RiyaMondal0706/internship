@@ -73,31 +73,62 @@
 
         <div class="content">
             <p style="font-size: 18px; margin-top: 0;">Hello <strong>{{ $name }}</strong>,</p>
-            <p>We are pleased to inform you that your <strong>HR Account</strong> has been successfully created. You can
-                now access the CorpPanel portal to manage your responsibilities.</p>
 
-            <p>Below are your official login credentials. Please keep this information secure.</p>
+            <p>
+                We are pleased to inform you that your <strong>{{ $department }}</strong> has been successfully
+                created.
+                You can now access the CorpPanel portal to manage your responsibilities.
+            </p>
+
+            <p>
+                Below are your official login credentials. Please keep this information secure.
+            </p>
 
             <div class="credentials-box">
-                <p style="margin: 5px 0;"><strong>User ID:</strong> <span
-                        style="color: #4e73df;">{{ $email }}</span></p>
-                <p style="margin: 5px 0;"><strong>Password:</strong> <span
-                        style="color: #4e73df;">{{ $password }}</span></p>
+                <p style="margin: 5px 0;">
+                    <strong>User ID:</strong>
+                    <span style="color:#4e73df;">{{ $email }}</span>
+                </p>
+
+                <p style="margin: 5px 0;">
+                    <strong>Password:</strong>
+                    <span style="color:#4e73df;">{{ $password }}</span>
+                </p>
             </div>
 
-            <center>
-                <a href="{{ url('/login') }}" class="btn">Login to Dashboard</a>
-            </center>
+            <!-- Employee Details -->
 
-            <p style="margin-top: 30px; font-size: 14px; color: #666;">
-                <em>Note: For security reasons, we recommend changing your password after your first login.</em>
+
+            <p style="margin:5px 0;">
+                <strong>Subdepartment:</strong>
+                <span style="color:#4e73df;">{{ $subdepartment }}</span>
+            </p>
+
+            <p style="margin:5px 0;">
+                <strong>Designation:</strong>
+                <span style="color:#4e73df;">{{ $designation }}</span>
             </p>
         </div>
 
-        <div class="footer">
-            <p style="margin: 0;">&copy; 2026 CorpPanel HR Management System</p>
-            <p style="margin: 5px 0;">If you did not expect this email, please contact our IT support immediately.</p>
-        </div>
+        <center>
+            <a href="{{ url('/login') }}" class="btn">
+                Login to Dashboard
+            </a>
+        </center>
+
+        <p style="margin-top:30px; font-size:14px; color:#666;">
+            <em>
+                Note: For security reasons, we recommend changing your password after your first login.
+            </em>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p style="margin:0;">&copy; 2026 CorpPanel HR Management System</p>
+        <p style="margin:5px 0;">
+            If you did not expect this email, please contact our IT support immediately.
+        </p>
+    </div>
     </div>
 </body>
 
