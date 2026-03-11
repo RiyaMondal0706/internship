@@ -75,7 +75,7 @@
             <p style="font-size: 18px; margin-top: 0;">Hello <strong>{{ $name }}</strong>,</p>
 
             <p>
-                We are pleased to inform you that your <strong>{{ $department }}</strong> has been successfully
+                We are pleased to inform you that your <strong>account</strong> has been successfully
                 created.
                 You can now access the CorpPanel portal to manage your responsibilities.
             </p>
@@ -96,18 +96,6 @@
                 </p>
             </div>
 
-            <!-- Employee Details -->
-
-
-            <p style="margin:5px 0;">
-                <strong>Subdepartment:</strong>
-                <span style="color:#4e73df;">{{ $subdepartment }}</span>
-            </p>
-
-            <p style="margin:5px 0;">
-                <strong>Designation:</strong>
-                <span style="color:#4e73df;">{{ $designation }}</span>
-            </p>
         </div>
 
         <center>

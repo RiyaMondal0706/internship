@@ -47,7 +47,7 @@
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
                 <h6 class="mb-0 fw-bold text-dark">Intern List</h6>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('intern.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
+                    <a href="{{ route('employee.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
                     </a>
                 </div>
@@ -71,11 +71,11 @@
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/intern/' . $intern->image) }}"
+                                        <img src="{{ asset('upload_images/' . $intern->image) }}"
                                             class="rounded-circle me-3" width="38">
                                         <div>
                                             <div class="fw-bold mb-0">{{ $intern->name }}</div>
-                                            <small class="text-muted">ID:#intern-9921</small>
+                                            <small class="text-muted">ID:#{{ $intern->employee_code }}</small>
                                         </div>
                                     </div>
                                 </td>
@@ -85,14 +85,9 @@
                                     </div>
                                     <div class="small text-muted">+91 {{ $intern->phone }}</div>
                                 </td>
-                                @php
-                                    $designation = DB::table('designations')
-                                        ->where('id', $intern->designation)
-                                        ->first();
 
-                                @endphp
                                 <td><span
-                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($designation->designation_name) }}</span>
+                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($intern->designation) }}</span>
                                 </td>
 
                                 @php
@@ -103,7 +98,7 @@
                                         class="badge bg-light text-dark border fw-medium">{{ strtoupper($department->department_name) }}</span>
                                 </td>
                                 <td class="small text-secondary">
-                                    {{ \Carbon\Carbon::parse($intern->joining)->format('d F Y') }}</td>
+                                    {{ \Carbon\Carbon::parse($intern->joining_date)->format('d F Y') }}</td>
                                 <td class="small"> {{ strtoupper($intern->address) }}</td>
                                 <td>
                                     <a href="{{ route('intern.status', $intern->id) }}">
@@ -122,34 +117,30 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="dropdown">
-                                        <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"><i
-                                                class="bi bi-three-dots"></i></button>
+                                        <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+
                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+
+                                            <!-- View -->
                                             <li>
                                                 <a class="dropdown-item"
                                                     href="{{ route('intern.view.profile', ['id' => $intern->id]) }}">
                                                     <i class="bi bi-eye me-2"></i> View Profile
                                                 </a>
                                             </li>
-                                            <li><a class="dropdown-item"
-                                                    href="{{ route('intern.edit', $intern->id) }}"><i
-                                                        class="bi bi-pencil me-2"></i>
-                                                    Edit</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <form action="{{ route('intern.delete', $intern->id) }}" method="POST"
-                                                    class="delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
 
-                                                    <button type="button" class="dropdown-item text-danger delete-btn">
-                                                        <i class="bi bi-trash me-2"></i> Delete
-                                                    </button>
-
-                                                </form>
+                                            <!-- Edit -->
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('intern.edit', $intern->id) }}">
+                                                    <i class="bi bi-pencil me-2"></i> Edit
+                                                </a>
                                             </li>
+
+
+
                                         </ul>
                                     </div>
                                 </td>

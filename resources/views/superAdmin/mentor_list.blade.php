@@ -47,7 +47,7 @@
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
                 <h6 class="mb-0 fw-bold text-dark">Mentor List</h6>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('mentor.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
+                    <a href="{{ route('employee.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
                     </a>
                 </div>
@@ -71,11 +71,11 @@
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/mentor/' . $mentor->image) }}"
+                                        <img src="{{ asset('upload_images/' . $mentor->image) }}"
                                             class="rounded-circle me-3" width="38">
                                         <div>
                                             <div class="fw-bold mb-0">{{ $mentor->name }}</div>
-                                            <small class="text-muted">ID:#Mentor-9921</small>
+                                            <small class="text-muted">ID:#{{ $mentor->employee_code }}</small>
                                         </div>
                                     </div>
                                 </td>
@@ -85,14 +85,9 @@
                                     </div>
                                     <div class="small text-muted">+91 {{ $mentor->phone }}</div>
                                 </td>
-                                @php
-                                    $designation = DB::table('designations')
-                                        ->where('id', $mentor->designation)
-                                        ->first();
 
-                                @endphp
                                 <td><span
-                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($designation->designation_name) }}</span>
+                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($mentor->designation) }}</span>
                                 </td>
 
                                 @php
@@ -103,7 +98,7 @@
                                         class="badge bg-light text-dark border fw-medium">{{ strtoupper($department->department_name) }}</span>
                                 </td>
                                 <td class="small text-secondary">
-                                    {{ \Carbon\Carbon::parse($mentor->joining)->format('d F Y') }}</td>
+                                    {{ \Carbon\Carbon::parse($mentor->joining_date)->format('d F Y') }}</td>
                                 <td class="small"> {{ strtoupper($mentor->address) }}</td>
                                 <td>
                                     <a href="{{ route('mentor.status', $mentor->id) }}">
@@ -135,21 +130,7 @@
                                                     href="{{ route('mentor.edit', $mentor->id) }}"><i
                                                         class="bi bi-pencil me-2"></i>
                                                     Edit</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <form action="{{ route('mentor.delete', $mentor->id) }}" method="POST"
-                                                    class="delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
 
-                                                    <button type="button" class="dropdown-item text-danger delete-btn">
-                                                        <i class="bi bi-trash me-2"></i> Delete
-                                                    </button>
-
-                                                </form>
-                                            </li>
                                         </ul>
                                     </div>
                                 </td>

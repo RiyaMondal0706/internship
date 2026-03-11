@@ -171,7 +171,7 @@
                             <li><a href="{{ route('hr.list') }}" class="nav-link">HR</a></li>
                             <li><a href="{{ route('project_manager.list') }}" class="nav-link">Project Manager</a></li>
                             <li><a href="{{ route('tm.list') }}" class="nav-link">Team Leader</a></li>
-                            <li><a href="{{ route('mentor.list') }}" class="nav-link">Mentor</a></li>
+                            <li><a href="{{ route('mentor.list') }}" class="nav-link">Employee</a></li>
                             <li><a href="{{ route('intern.list') }}" class="nav-link">Intern</a></li>
                         </ul>
                     </li>

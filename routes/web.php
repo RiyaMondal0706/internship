@@ -44,7 +44,6 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('/Team-Leader/profile/{id}', [SuperAdminController::class, 'tm_Profile'])->name('tm.view.profile');
         Route::delete('/Team-Leader-delete/{id}', [SuperAdminController::class, 'tm_delete'])->name('tm.delete');
         Route::get('/Team Leader/{id}/edit', [SuperAdminController::class, 'tm_edit'])->name('tm.edit');
-        Route::put('/Team Leader/{id}/update', [SuperAdminController::class, 'tm_update'])->name('tm.update');
         Route::get('/superadmin/Intern/list', [SuperAdminController::class, 'intern_list'])->name('intern.list');
         Route::get('/intern-status/{id}', [SuperAdminController::class, 'intern_status'])->name('intern.status');
         Route::get('/Intern/profile/{id}', [SuperAdminController::class, 'intern_Profile'])->name('intern.view.profile');
@@ -57,7 +56,8 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('/project/details/{id}', [SuperAdminController::class, 'details']);
 
 
-        
+        Route::put('/employee/{id}/update', [SuperAdminController::class, 'update'])->name('employee.update');
+
         Route::get('/superadmin/employee/create', [SuperAdminController::class, 'create'])->name('employee.create');
         Route::post('/superadmin/employee/store', [SuperAdminController::class, 'store'])->name('employee.store');
 

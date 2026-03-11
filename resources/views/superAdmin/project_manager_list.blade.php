@@ -47,7 +47,7 @@
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
                 <h6 class="mb-0 fw-bold text-dark">HR Management List</h6>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('project_manager.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
+                    <a href="{{ route('employee.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
                     </a>
                 </div>
@@ -70,11 +70,11 @@
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/Projectmanager/' . $pm->image) }}"
+                                        <img src="{{ asset('upload_images/' . $pm->image) }}"
                                             class="rounded-circle me-3" width="38">
                                         <div>
                                             <div class="fw-bold mb-0">{{ $pm->name }}</div>
-                                            <small class="text-muted">ID: #PM-9921</small>
+                                            <small class="text-muted">ID: #{{ $pm->employee_code }}</small>
                                         </div>
                                     </div>
                                 </td>
@@ -86,7 +86,7 @@
                                         class="badge bg-light text-dark border fw-medium">{{ strtoupper($pm->designation) }}</span>
                                 </td>
                                 <td class="small text-secondary">
-                                    {{ \Carbon\Carbon::parse($pm->joining)->format('d F Y') }}</td>
+                                    {{ \Carbon\Carbon::parse($pm->joining_date)->format('d F Y') }}</td>
                                 <td class="small"> {{ strtoupper($pm->address) }}</td>
                                 <td>
                                     <a href="{{ route('pm.status', $pm->id) }}">
@@ -117,21 +117,7 @@
                                             <li><a class="dropdown-item" href="{{ route('pm.edit', $pm->id) }}"><i
                                                         class="bi bi-pencil me-2"></i>
                                                     Edit</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <form action="{{ route('pm.delete', $pm->id) }}" method="POST"
-                                                    class="delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
 
-                                                    <button type="button" class="dropdown-item text-danger delete-btn">
-                                                        <i class="bi bi-trash me-2"></i> Delete
-                                                    </button>
-
-                                                </form>
-                                            </li>
                                         </ul>
                                     </div>
                                 </td>

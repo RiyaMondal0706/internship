@@ -19,6 +19,7 @@ class LoginController extends Controller
 
         $user = DB::table('users')
             ->where('email', $request->email)
+            ->when('status','1')
             ->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
