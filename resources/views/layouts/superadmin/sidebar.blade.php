@@ -145,64 +145,37 @@
             <a href="{{ route('superadmin.dashboard') }}" class="nav-link active">
                 <i class="bi bi-speedometer2 me-3"></i>Dashboard
             </a>
-
             <div class="nav-item">
-                <a href="#employeesMenu" class="nav-link" data-bs-toggle="collapse" role="button"
-                    aria-expanded="false">
+                <a href="#employeesMenu" class="nav-link" data-bs-toggle="collapse" role="button">
                     <i class="bi bi-people me-3"></i> Employees
                     <i class="bi bi-chevron-down"></i>
                 </a>
 
                 <ul class="collapse list-unstyled mb-0" id="employeesMenu">
+
+                    <!-- CREATE -->
                     <li class="nav-item">
-                        <a href="#hrMenu" class="nav-link" data-bs-toggle="collapse" role="button">
-                            HR <i class="bi bi-chevron-down"></i>
+                        <a href="{{ route('employee.create') }}" class="nav-link">
+                            <i class="bi bi-plus-circle me-2"></i> Create
                         </a>
-                        <ul class="collapse list-unstyled" id="hrMenu">
-                            <li><a href="{{ route('hr.create') }}" class="nav-link">Create</a></li>
-                            <li><a href="{{ route('hr.list') }}" class="nav-link">List</a></li>
+                    </li>
+
+                    <!-- LIST -->
+                    <li class="nav-item">
+                        <a href="#employeeListMenu" class="nav-link" data-bs-toggle="collapse">
+                            <i class="bi bi-list-ul me-2"></i> List
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+
+                        <ul class="collapse list-unstyled" id="employeeListMenu">
+                            <li><a href="{{ route('hr.list') }}" class="nav-link">HR</a></li>
+                            <li><a href="{{ route('project_manager.list') }}" class="nav-link">Project Manager</a></li>
+                            <li><a href="{{ route('tm.list') }}" class="nav-link">Team Leader</a></li>
+                            <li><a href="{{ route('mentor.list') }}" class="nav-link">Mentor</a></li>
+                            <li><a href="{{ route('intern.list') }}" class="nav-link">Intern</a></li>
                         </ul>
                     </li>
 
-                    <li class="nav-item">
-                        <a href="#pmMenu" class="nav-link" data-bs-toggle="collapse" role="button">
-                            Project Manager <i class="bi bi-chevron-down"></i>
-                        </a>
-                        <ul class="collapse list-unstyled" id="pmMenu">
-                            <li><a href="{{ route('project_manager.create') }}" class="nav-link">Create</a></li>
-                            <li><a href="{{ route('project_manager.list') }}" class="nav-link">List</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#mentorMenu" class="nav-link" data-bs-toggle="collapse" role="button">
-                            Mentor <i class="bi bi-chevron-down"></i>
-                        </a>
-                        <ul class="collapse list-unstyled" id="mentorMenu">
-                            <li><a href="{{ route('mentor.create') }}" class="nav-link">Create</a></li>
-                            <li><a href="{{ route('mentor.list') }}" class="nav-link">List</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#tlMenu" class="nav-link" data-bs-toggle="collapse" role="button">
-                            Team Leader <i class="bi bi-chevron-down"></i>
-                        </a>
-                        <ul class="collapse list-unstyled" id="tlMenu">
-                            <li><a href="{{ route('tm.create') }}" class="nav-link">Create</a></li>
-                            <li><a href="{{ route('tm.list') }}" class="nav-link">List</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#internMenu" class="nav-link" data-bs-toggle="collapse" role="button">
-                            Intern <i class="bi bi-chevron-down"></i>
-                        </a>
-                        <ul class="collapse list-unstyled" id="internMenu">
-                            <li><a href="{{ route('intern.create') }}" class="nav-link">Create</a></li>
-                            <li><a href="{{ route('intern.list') }}" class="nav-link">List</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </div>
 

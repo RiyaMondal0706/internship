@@ -20,11 +20,15 @@ class SuperAdminController extends Controller
         return view('superAdmin.dashboard');
     }
 
-    public function hr_create()
+    public function create()
     {
         $state = DB::table('states')
             ->get();
-        return view('superAdmin.hr_create', compact('state'));
+             $compay = DB::table('companis')
+            ->get();
+              $department = DB::table('departments')
+            ->get();
+        return view('superAdmin.create', compact('state', 'compay', 'department'));
     }
     public function getDistricts($state_id)
     {
@@ -32,70 +36,132 @@ class SuperAdminController extends Controller
 
         return response()->json($districts);
     }
-    public function hr_store(Request $request)
-    {
+ public function store(Request $request)
+{
 
-        $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'name' => 'required|regex:/^[A-Za-z\s]+$/|max:100',
-            'email' => 'required|email',
-            'phone' => 'required|digits:10|regex:/^[6-9][0-9]{9}$/',
-            'designation' => 'required',
-            'joning_date' => 'required|date',
-            'address' => 'required|max:255',
-            'state' => 'required',
-            'distric' => 'required',
-            'city' => 'nullable|max:100'
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:employees,email',
+        'phone' => 'required|digits:10',
+        'gender' => 'required',
+        'date_of_birth' => 'required|date',
 
-        $plainPassword = random_int(100000, 999999);
-        if ($request->hasFile('image')) {
+        'company' => 'required',
+        'department' => 'required',
 
-            $image = $request->file('image');
+        'state' => 'required',
+        'distric' => 'required',
+        'pincode' => 'required|digits:6',
 
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'id_proof_file' => 'nullable|mimes:jpg,jpeg,png,pdf|max:2048',
+        'address_proof_file' => 'nullable|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
 
-            $image->move(public_path('images/hr'), $imageName);
-        } else {
 
-            $imageName = null;
-        }
-        $hr_id = DB::table('hr_data')->insertGetId([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'designation' => $request->designation,
-            'joining' => $request->joning_date,
-            'address' => $request->address,
-            'state' => $request->state,
-            'district' => $request->distric,
-            'city' => $request->city,
-            'image' => $imageName,
-            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-        ]);
+    // Upload Profile Image
+    if ($request->hasFile('image')) {
 
-        DB::table('users')->insert([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($plainPassword),
-            'role' => 'hr',
-            'employee_id' => 'hr-' . $hr_id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $image = $request->file('image');
+        $imageName = time().'_'.$image->getClientOriginalName();
+        $image->move(public_path('upload_images'), $imageName);
 
-        Mail::to($request->email)->send(
-            new HrCredentialsMail(
-                $request->name,
-                $request->email,
-                $plainPassword,
-
-            )
-        );
-
-        return back()->with('success', 'HR Added Successfully');
+    } else {
+        $imageName = null;
     }
+
+
+    // Upload ID Proof
+    if ($request->hasFile('id_proof_file')) {
+
+        $file = $request->file('id_proof_file');
+        $idProof = time().'_'.$file->getClientOriginalName();
+        $file->move(public_path('upload_documents'), $idProof);
+
+    } else {
+        $idProof = null;
+    }
+
+
+    // Upload Address Proof
+    if ($request->hasFile('address_proof_file')) {
+
+        $file = $request->file('address_proof_file');
+        $addressProof = time().'_'.$file->getClientOriginalName();
+        $file->move(public_path('upload_documents'), $addressProof);
+
+    } else {
+        $addressProof = null;
+    }
+
+
+    // Upload Marksheet (Intern only)
+    if ($request->hasFile('marksheet')) {
+
+        $file = $request->file('marksheet');
+        $marksheet = time().'_'.$file->getClientOriginalName();
+        $file->move(public_path('upload_documents'), $marksheet);
+
+    } else {
+        $marksheet = null;
+    }
+
+
+
+    // Save Employee
+   $id =  DB::table('employees')->insertGetId([
+        'name' => $request->name,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'gender' => $request->gender,
+        'dob' => $request->date_of_birth,
+
+        'image' => $imageName,
+
+        'department' => $request->department,
+        'subdepartment' => $request->subdepartment,
+        'designation' => $request->designation,
+
+        'joining_date' => $request->joning_date,
+        'employee_type' => $request->employment_type,
+
+        'salary' => $request->salary,
+        'work_location' => $request->work_location,
+        'experience' => $request->experience,
+
+        'company_name' => $request->company,
+        'course' => $request->course,
+        'course_document' => $marksheet,
+        'internship_duration' => $request->internship_duration,
+
+        'id_proof_type' => $request->id_proof_type,
+        'id_proof_number' => $request->id_proof_number,
+        'id_proof_doccument' => $idProof,
+
+        'address_proof' => $request->address_proof_type,
+        'address_proof_document' => $addressProof,
+
+        'address' => $request->address,
+        'state' => $request->state,
+        'distric' => $request->distric,
+        'city' => $request->city,
+        'pincode' => $request->pincode,
+        'collage_name' => $request->college_name,
+        'course' => $request ->course,
+   
+        'internship_duration' => $request ->internship_duration
+        
+    ]);
+
+    DB::table('employees')
+    ->where('id', $id)
+    ->update([
+        'employee_code'       =>$request->company.$id ,
+    ]);
+
+    return redirect()->back()->with('success','Employee Created Successfully');
+
+}
     public function hr_list()
     {
         $hrs = DB::table('hr_data')
@@ -201,76 +267,7 @@ class SuperAdminController extends Controller
         return redirect()->back()->with('success', 'HR deleted successfully');
     }
 
-    public function project_manager_create()
-    {
-        $state = DB::table('states')
-            ->get();
-        return view('superAdmin.projectmanager_create', compact('state'));
-    }
-
-    public function project_manager_store(Request $request)
-    {
-
-        $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'name' => 'required|regex:/^[A-Za-z\s]+$/|max:100',
-            'email' => 'required|email',
-            'phone' => 'required|digits:10|regex:/^[6-9][0-9]{9}$/',
-            'designation' => 'required',
-            'joning_date' => 'required|date',
-            'address' => 'required|max:255',
-            'state' => 'required',
-            'distric' => 'required',
-            'city' => 'nullable|max:100'
-        ]);
-
-        $plainPassword = random_int(100000, 999999);
-        if ($request->hasFile('image')) {
-
-            $image = $request->file('image');
-
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-            $image->move(public_path('images/Projectmanager'), $imageName);
-        } else {
-
-            $imageName = null;
-        }
-        $pr_id = DB::table('pr_data')->insertGetId([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'designation' => $request->designation,
-            'joining' => $request->joning_date,
-            'address' => $request->address,
-            'state' => $request->state,
-            'district' => $request->distric,
-            'city' => $request->city,
-            'image' => $imageName,
-            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-        ]);
-
-        DB::table('users')->insert([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($plainPassword),
-            'role' => 'projectmanager',
-            'employee_id' => 'pm-' . $pr_id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        Mail::to($request->email)->send(
-            new PrCredentialsMail(
-                $request->name,
-                $request->email,
-                $plainPassword,
-            )
-        );
-
-        return back()->with('success', 'HR Added Successfully');
-    }
+ 
     public function project_manager_list()
     {
         $pms = DB::table('pr_data')
@@ -376,81 +373,7 @@ class SuperAdminController extends Controller
 
         return redirect()->back()->with('success', 'HR deleted successfully');
     }
-    public function mentor_create()
-    {
-        $state = DB::table('states')
-            ->get();
-        $department = DB::table('departments')
-            ->get();
-        return view('superAdmin.mentor_create', compact('state', 'department'));
-    }
-
-    public function mentor_store(Request $request)
-    {
-        // dd($request->designation_id);
-        $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png',
-            'name' => 'required|',
-            'email' => 'required|email',
-            'phone' => 'required|',
-            'designation_id' => 'required',
-            'department' => 'required',
-            'joning_date' => 'required|date',
-            'address' => 'required|max:255',
-            'state' => 'required',
-            'distric' => 'required',
-            'city' => 'nullable|max:100'
-        ]);
-
-        $plainPassword = random_int(100000, 999999);
-        if ($request->hasFile('image')) {
-
-            $image = $request->file('image');
-
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-            $image->move(public_path('images/mentor'), $imageName);
-        } else {
-
-            $imageName = null;
-        }
-        $mentor_id = DB::table('mentor_data')->insertGetId([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'department' => $request->department,
-            'designation' => $request->designation_id,
-            'joining' => $request->joning_date,
-            'address' => $request->address,
-            'state' => $request->state,
-            'district' => $request->distric,
-            'city' => $request->city,
-            'image' => $imageName,
-            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-        ]);
-
-        DB::table('users')->insert([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($plainPassword),
-            'role' => 'mentor',
-            'employee_id' => 'mentor-' . $mentor_id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        Mail::to($request->email)->send(
-            new mentorCredentialsMail(
-                $request->name,
-                $request->email,
-                $plainPassword,
-            )
-        );
-
-        return back()->with('success', 'HR Added Successfully');
-    }
-
+  
     public function getDesignation($id)
     {
         $designation = DB::table('designations')->where('department_id', $id)->get();
@@ -572,82 +495,6 @@ public function mentor_delete($id)
 }
 
 
-    public function tm_create()
-    {
-        $state = DB::table('states')
-            ->get();
-        $department = DB::table('departments')
-            ->get();
-        return view('superAdmin.tm_create', compact('state', 'department'));
-    }
-
-
-
-    public function tm_store(Request $request)
-    {
-        // dd($request->designation_id);
-        $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png',
-            'name' => 'required|',
-            'email' => 'required|email',
-            'phone' => 'required|',
-         
-            'department' => 'required',
-            'joning_date' => 'required|date',
-            'address' => 'required|max:255',
-            'state' => 'required',
-            'distric' => 'required',
-            'city' => 'nullable|max:100'
-        ]);
-
-        $plainPassword = random_int(100000, 999999);
-        if ($request->hasFile('image')) {
-
-            $image = $request->file('image');
-
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-            $image->move(public_path('images/teamleader'), $imageName);
-        } else {
-
-            $imageName = null;
-        }
-        $mentor_id = DB::table('teamleader_data')->insertGetId([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'department' => $request->department,
-        
-            'joining' => $request->joning_date,
-            'address' => $request->address,
-            'state' => $request->state,
-            'district' => $request->distric,
-            'city' => $request->city,
-            'image' => $imageName,
-            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-        ]);
-
-        DB::table('users')->insert([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($plainPassword),
-            'role' => 'teamleader',
-            'employee_id' => 'teamleader-' . $mentor_id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        Mail::to($request->email)->send(
-            new teamleaderCredentialsMail(
-                $request->name,
-                $request->email,
-                $plainPassword,
-            )
-        );
-
-        return back()->with('success', 'Team Leader Added Successfully');
-    }
 
    public function tm_list()
     {
@@ -758,80 +605,7 @@ public function mentor_delete($id)
         return redirect()->back()->with('success', 'Team Leader deleted successfully');
     }
 
-  public function intern_create()
-    {
-        $state = DB::table('states')
-            ->get();
-        $department = DB::table('departments')
-            ->get();
-        return view('superAdmin.intern_create', compact('state', 'department'));
-    }
 
-   public function intern_store(Request $request)
-    {
-        // dd($request->designation_id);
-        $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png',
-            'name' => 'required|',
-            'email' => 'required|email',
-            'phone' => 'required|',
-            'designation_id' => 'required',
-            'department' => 'required',
-            'joning_date' => 'required|date',
-            'address' => 'required|max:255',
-            'state' => 'required',
-            'distric' => 'required',
-            'city' => 'nullable|max:100'
-        ]);
-
-        $plainPassword = random_int(100000, 999999);
-        if ($request->hasFile('image')) {
-
-            $image = $request->file('image');
-
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-            $image->move(public_path('images/intern'), $imageName);
-        } else {
-
-            $imageName = null;
-        }
-        $mentor_id = DB::table('intern_data')->insertGetId([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'department' => $request->department,
-            'designation' => $request->designation_id,
-            'joining' => $request->joning_date,
-            'address' => $request->address,
-            'state' => $request->state,
-            'district' => $request->distric,
-            'city' => $request->city,
-            'image' => $imageName,
-            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-        ]);
-
-        DB::table('users')->insert([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($plainPassword),
-            'role' => 'intern',
-            'employee_id' => 'intern-' . $mentor_id,
-            'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-            'updated_at' => Carbon::now('Asia/Kolkata')->toDateString(),
-        ]);
-
-        Mail::to($request->email)->send(
-            new internCredentialsMail(
-                $request->name,
-                $request->email,
-                $plainPassword,
-            )
-        );
-
-        return back()->with('success', 'HR Added Successfully');
-    }
 
 public function intern_list()
     {
@@ -1020,6 +794,17 @@ public function project_edit($id){
 
 
 }
+
+public function getSubdepartments($departmentId){
+    $subdepartments =  DB::table('subdepartment')->where('department_id', $departmentId)->get();
+    return response()->json($subdepartments);
+}
+
+public function getDesignations($subdepartmentId){
+    $designations =  DB::table('designation')->get();
+    return response()->json($designations);
+}
+
 
 public function project_update($id, Request $request) {
     dd("update");
