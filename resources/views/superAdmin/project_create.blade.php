@@ -136,14 +136,16 @@
                                             Project Domain
                                         </label>
 
-                                        <select name="domain" class="form-select bg-light border-0" id = "domain">
-
+                                        <select name="domain" class="form-select bg-light border-0" id="domain">
                                             <option value="">Select Domain</option>
-                                            @foreach ($department as $department)
-                                                <option value="{{ $department->id }}">
-                                                    {{ $department->department_name }}</option>
-                                            @endforeach
 
+                                            @foreach ($department as $department)
+                                                @if ($department->id != 6 && $department->id != 8)
+                                                    <option value="{{ $department->id }}">
+                                                        {{ $department->department_name }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
                                         </select>
                                     </div>
 

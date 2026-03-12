@@ -885,6 +885,7 @@ return view("superadmin.project_manager_list", compact('pms'));
     public function project_pending()
     {
         $project = DB::table('project')
+        ->where('status', 0)
             ->get();
         return view('superAdmin.pending_project', compact('project'));
     }
@@ -923,6 +924,53 @@ return view("superadmin.project_manager_list", compact('pms'));
         return response()->json($designations);
     }
 
+  public function project_list()
+    {
+        $project = DB::table('project')
+            ->get();
+        return view('superAdmin.project_list', compact('project'));
+    }
+   public function project_ongoing()
+    {
+        $project = DB::table('project')
+        ->where('status', 1)
+            ->get();
+        return view('superAdmin.ongoing_project', compact('project'));
+    }
+
+   public function project_completed()
+    {
+        $project = DB::table('project')
+        ->where('status', 2)
+            ->get();
+        return view('superAdmin.completed_project', compact('project'));
+    }
+ public function project_hold_list()
+    {
+        $project = DB::table('project')
+        ->where('status', 3)
+            ->get();
+        return view('superAdmin.hold_project', compact('project'));
+    }
+
+public function project_delete($id) {
+        DB::table('project')->where('id', $id)->delete();
+        return redirect()->route('project.list')->with('success', ' Project deleted  successfully.');
+
+}
+   
+public function project_hold($id) {
+    //   dd(session('user_id'));
+    DB::table('project')
+        ->where('id', $id)
+        ->update([
+            'status' => 3,
+        ]);
+
+        return redirect()->route('project.list')->with('success', ' Project Hold  successfully.');
+
+}
+   
 
     public function project_update($id, Request $request)
     {

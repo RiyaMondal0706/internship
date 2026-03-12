@@ -189,26 +189,36 @@
                 <ul class="collapse list-unstyled ps-4" id="projectMenu">
 
                     <li>
-                        <a href="#" class="nav-link">
-                            <i class="bi bi-play-circle me-2"></i> Ongoing Projects
+                        <a href="{{ route('project.list') }}" class="nav-link">
+                            <i class="bi bi-list me-2"></i> List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('project.ongoing') }}" class="nav-link">
+                            <i class="bi bi-play-circle me-2"></i> Ongoing
                         </a>
                     </li>
 
                     <li>
                         <a href="{{ route('project.pending') }}" class="nav-link">
-                            <i class="bi bi-hourglass-split me-2"></i> Pending Projects
+                            <i class="bi bi-hourglass-split me-2"></i> Pending
                         </a>
                     </li>
 
                     <li>
-                        <a href="#" class="nav-link">
-                            <i class="bi bi-check-circle me-2"></i> Completed Projects
+                        <a href="{{ route('project.hold.list') }}" class="nav-link">
+                            <i class="bi bi-pause-circle me-2"></i> Hold
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('project.completed') }}"class="nav-link">
+                            <i class="bi bi-check-circle me-2"></i> Completed
                         </a>
                     </li>
 
                     <li>
                         <a href="{{ route('project.create') }}" class="nav-link">
-                            <i class="bi bi-plus-circle me-2"></i> Create Project
+                            <i class="bi bi-plus-circle me-2"></i> Create
                         </a>
                     </li>
 

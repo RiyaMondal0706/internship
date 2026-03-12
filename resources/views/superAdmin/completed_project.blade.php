@@ -129,96 +129,25 @@
                                     </td>
 
                                     <td>
-                                        @if ($item->status == 0)
-                                            <span class="badge bg-warning text-dark">Pending</span>
-                                        @elseif($item->status == 1)
-                                            <span class="badge bg-primary">Ongoing</span>
-                                        @elseif($item->status == 2)
-                                            <span class="badge bg-success">Completed</span>
-                                        @elseif($item->status == 3)
-                                            <span class="badge bg-danger">Hold</span>
-                                        @endif
+
+                                        <span class="badge bg-success">Completed</span>
+
                                     </td>
 
                                     <td class="text-end pe-4">
+                                        <a href="{{ route('project.view', $item->id) }}"
+                                            class="btn btn-sm btn-light border">
+                                            <i class="bi bi-eye text-success" title="View"></i>
+                                        </a>
 
-                                        {{-- Status = 0 (Pending) --}}
-                                        @if ($item->status == 0)
-                                            <!-- Edit -->
-                                            <a href="{{ route('project.edit', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pencil-fill text-primary" title="Edit "></i>
-                                            </a>
-
-                                            <!-- Delete -->
-                                            <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                                class="delete-form" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="button" class="btn btn-sm btn-light border delete-btn">
-                                                    <i class="bi bi-trash text-danger" title="Delete Project"></i>
-                                                </button>
-                                            </form>
-
-                                            <!-- Pending -->
-                                            <a href="{{ route('project.hold', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pause-circle text-danger" title="Hold"></i>
-                                            </a>
-
-
-                                            {{-- Status = 1 (Ongoing) --}}
-                                        @elseif ($item->status == 1)
-                                            <!-- Edit -->
-                                            <a href="{{ route('project.edit', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pencil-fill text-primary"title="Edit"></i>
-                                            </a>
-
-
-                                            {{-- Status = 2 (Completed) --}}
-                                        @elseif ($item->status == 2)
-                                            <!-- View -->
-                                            <a href="{{ route('project.view', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-eye text-success" title="View"></i>
-                                            </a>
-
-                                            <!-- Reassign -->
-                                            <a href="{{ route('project.reassign', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-arrow-repeat text-info" title="Reassign"></i>
-                                            </a>
-
-
-                                            {{-- Status = 3 (Hold) --}}
-                                        @elseif ($item->status == 3)
-                                            <!-- Edit -->
-                                            <a href="{{ route('project.edit', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pencil-fill text-primary" title="Edit"></i>
-                                            </a>
-
-                                            <!-- Reassign -->
-                                            <a href="{{ route('project.reassign', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-arrow-repeat text-info" title="Reassign"></i>
-                                            </a>
-
-                                            <!-- Delete -->
-                                            <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                                class="delete-form" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="button" class="btn btn-sm btn-light border delete-btn">
-                                                    <i class="bi bi-trash text-danger" title="Delete Project"></i>
-                                                </button>
-                                            </form>
-                                        @endif
+                                        <!-- Reassign -->
+                                        <a href="{{ route('project.reassign', $item->id) }}"
+                                            class="btn btn-sm btn-light border">
+                                            <i class="bi bi-arrow-repeat text-info" title="Reassign"></i>
+                                        </a>
 
                                     </td>
+
                                 </tr>
                             @endforeach
 
@@ -270,34 +199,37 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
     <!-- DELETE ALERT -->
 
     <script>
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
+        $(document).on("click", ".delete-btn", function() {
 
-                let form = this.closest('form');
+            let form = $(this).closest("form");
 
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "You want to delete this project!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, Delete it!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
+            Swal.fire({
+
+                title: 'Are you sure?',
+                text: 'You want to delete this project!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes delete it'
+
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    form.submit();
+
+                }
 
             });
+
         });
     </script>
 

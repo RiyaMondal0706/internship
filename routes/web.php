@@ -23,52 +23,57 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('/superadmin/hr/list', [SuperAdminController::class, 'hr_list'])->name('hr.list');
         Route::get('/hr/profile/{id}', [SuperAdminController::class, 'hr_viewProfile'])->name('hr.view.profile');
         Route::get('/hr/{id}/edit', [SuperAdminController::class, 'hr_edit'])->name('hr.edit');
-        Route::put('/hr/{id}/update', [SuperAdminController::class, 'hr_update'])->name('hr.update');
         Route::get('/hr-status/{id}', [SuperAdminController::class, 'hr_status'])->name('hr.status');
-        Route::delete('/hr-delete/{id}', [SuperAdminController::class, 'hr_delete'])->name('hr.delete');
         Route::get('/superadmin/project-manager/list', [SuperAdminController::class, 'project_manager_list'])->name('project_manager.list');
         Route::get('/Project-manager-status/{id}', [SuperAdminController::class, 'pm_status'])->name('pm.status');
         Route::get('/project-manager/profile/{id}', [SuperAdminController::class, 'pm_viewProfile'])->name('pm.view.profile');
         Route::get('/Project-manager/{id}/edit', [SuperAdminController::class, 'pm_edit'])->name('pm.edit');
-        Route::put('/Project-manager/{id}/update', [SuperAdminController::class, 'pm_update'])->name('pm.update');
-        Route::delete('/project-manager-delete/{id}', [SuperAdminController::class, 'pm_delete'])->name('pm.delete');
         Route::get('/get-designation/{id}', [SuperAdminController::class, 'getDesignation']);
         Route::get('/superadmin/mentor/list', [SuperAdminController::class, 'mentor_list'])->name('mentor.list');
         Route::get('/mentor/profile/{id}', [SuperAdminController::class, 'mentor_Profile'])->name('mentor.view.profile');
         Route::get('/mentor-status/{id}', [SuperAdminController::class, 'mentor_status'])->name('mentor.status');
         Route::get('/mentor/{id}/edit', [SuperAdminController::class, 'mentor_edit'])->name('mentor.edit');
-        Route::put('/mentor/{id}/update', [SuperAdminController::class, 'mentor_update'])->name('mentor.update');
-        Route::delete('/mentor-delete/{id}', [SuperAdminController::class, 'mentor_delete'])->name('mentor.delete');
         Route::get('/superadmin/Team-leader/list', [SuperAdminController::class, 'tm_list'])->name('tm.list');
         Route::get('/Team-Leader-status/{id}', [SuperAdminController::class, 'tm_status'])->name('tm.status');
         Route::get('/Team-Leader/profile/{id}', [SuperAdminController::class, 'tm_Profile'])->name('tm.view.profile');
-        Route::delete('/Team-Leader-delete/{id}', [SuperAdminController::class, 'tm_delete'])->name('tm.delete');
         Route::get('/Team Leader/{id}/edit', [SuperAdminController::class, 'tm_edit'])->name('tm.edit');
         Route::get('/superadmin/Intern/list', [SuperAdminController::class, 'intern_list'])->name('intern.list');
         Route::get('/intern-status/{id}', [SuperAdminController::class, 'intern_status'])->name('intern.status');
         Route::get('/Intern/profile/{id}', [SuperAdminController::class, 'intern_Profile'])->name('intern.view.profile');
         Route::get('/Intern/{id}/edit', [SuperAdminController::class, 'intern_edit'])->name('intern.edit');
-        Route::put('/Intern/{id}/update', [SuperAdminController::class, 'intern_update'])->name('intern.update');
-        Route::delete('/Intern-delete/{id}', [SuperAdminController::class, 'intern_delete'])->name('intern.delete');
-        Route::get('/superadmin/Project/create', [SuperAdminController::class, 'project_create'])->name('project.create');
+        Route::put('/employee/{id}/update', [SuperAdminController::class, 'update'])->name('employee.update');
+        Route::get('/superadmin/employee/create', [SuperAdminController::class, 'create'])->name('employee.create');
+        Route::post('/superadmin/employee/store', [SuperAdminController::class, 'store'])->name('employee.store');
+Route::get('/get-subdepartments/{departmentId}', [SuperAdminController::class, 'getSubdepartments']);
+Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 'getDesignations']);
+   Route::get('/superadmin/Project/create', [SuperAdminController::class, 'project_create'])->name('project.create');
         Route::post('/superadmin/Project/store', [SuperAdminController::class, 'project_store'])->name('project.store');
         Route::get('/superadmin/Project/pending', [SuperAdminController::class, 'project_pending'])->name('project.pending');
         Route::get('/project/details/{id}', [SuperAdminController::class, 'details']);
 
+        Route::get('/superadmin/Project/list', [SuperAdminController::class, 'project_list'])->name('project.list');
+        Route::get('/superadmin/Project/ongoing', [SuperAdminController::class, 'project_ongoing'])->name('project.ongoing');
+        Route::get('/superadmin/Project/completed', [SuperAdminController::class, 'project_completed'])->name('project.completed');
 
-        Route::put('/employee/{id}/update', [SuperAdminController::class, 'update'])->name('employee.update');
-
-        Route::get('/superadmin/employee/create', [SuperAdminController::class, 'create'])->name('employee.create');
-        Route::post('/superadmin/employee/store', [SuperAdminController::class, 'store'])->name('employee.store');
-
-Route::get('/get-subdepartments/{departmentId}', [SuperAdminController::class, 'getSubdepartments']);
-Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 'getDesignations']);
+        Route::get('/superadmin/Project/hold', [SuperAdminController::class, 'project_hold_list'])->name('project.hold.list');
 
 
-        Route::get('/Project/{id}/edit', [SuperAdminController::class, 'project_edit'])->name('project.edit');
-        Route::put('/Project/{id}/update', [SuperAdminController::class, 'project_update'])->name('project.update');
 
 
+
+
+
+
+Route::get('/project/edit/{id}', [SuperAdminController::class, 'project_edit'])->name('project.edit');
+
+Route::delete('/project/delete/{id}', [SuperAdminController::class, 'project_delete'])->name('project.delete');
+
+Route::get('/project/view/{id}', [SuperAdminController::class, 'peoject_view'])->name('project.view');
+
+Route::get('/project/reassign/{id}', [SuperAdminController::class, 'project_reassign'])->name('project.reassign');
+Route::get('/project/hold/{id}', [SuperAdminController::class, 'project_hold'])->name('project.hold');
+
+        
 
 
 
