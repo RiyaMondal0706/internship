@@ -192,7 +192,7 @@ class SuperAdminController extends Controller
     public function hr_list()
     {
         $hrs = DB::table('employees')
-          ->whereIn('subdepartment', [20, 21])
+            ->whereIn('subdepartment', [20, 21])
             ->get();
         return view("superadmin.hr_list", compact('hrs'));
     }
@@ -204,32 +204,31 @@ class SuperAdminController extends Controller
         return view('superadmin.hr_profile', compact('tm'));
     }
     public function hr_edit($id)
-    {  {
-          $user = DB::table('employees')
-            ->where('id', $id)
-            ->first();
+    { {
+            $user = DB::table('employees')
+                ->where('id', $id)
+                ->first();
 
-        $state = DB::table('states')->get();
+            $state = DB::table('states')->get();
 
-        $districs = DB::table('districts')->get();
+            $districs = DB::table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
-            ->where('id', $user->subdepartment)
-            ->first();
+            $department = DB::table('departments')->get();
+            $subdepartment = DB::table('subdepartment')
+                ->where('id', $user->subdepartment)
+                ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+            $company = DB::table('companis')->get(); // fixed variable name
 
-        return view('superadmin.hr_profile_edit', compact(
-            'user',
-            'state',
-            'districs',
-            'department',
-            'company',
-            'subdepartment'
-        ));
-    }
-
+            return view('superadmin.hr_profile_edit', compact(
+                'user',
+                'state',
+                'districs',
+                'department',
+                'company',
+                'subdepartment'
+            ));
+        }
     }
 
 
@@ -244,7 +243,7 @@ class SuperAdminController extends Controller
             DB::table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-                  DB::table('users')
+            DB::table('users')
                 ->where('employee_id', $hr->employee_code)
                 ->update(['status' => 0]);
         } else {
@@ -252,7 +251,7 @@ class SuperAdminController extends Controller
             DB::table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-                   DB::table('users')
+            DB::table('users')
                 ->where('employee_id', $hr->employee_code)
                 ->update(['status' => 1]);
         }
@@ -263,10 +262,10 @@ class SuperAdminController extends Controller
     public function project_manager_list()
     {
         $pms = DB::table('employees')
-    ->whereIn('subdepartment', [26, 27])
-    ->get();
+            ->whereIn('subdepartment', [26, 27])
+            ->get();
 
-return view("superadmin.project_manager_list", compact('pms'));
+        return view("superadmin.project_manager_list", compact('pms'));
         return view("superadmin.project_manager_list", compact('pms'));
     }
     public function pm_status($id)
@@ -278,7 +277,7 @@ return view("superadmin.project_manager_list", compact('pms'));
             DB::table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-                DB::table('users')
+            DB::table('users')
                 ->where('employee_id', $pm->employee_code)
                 ->update(['status' => 0]);
         } else {
@@ -286,7 +285,7 @@ return view("superadmin.project_manager_list", compact('pms'));
             DB::table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-                      DB::table('users')
+            DB::table('users')
                 ->where('employee_id', $pm->employee_code)
                 ->update(['status' => 1]);
         }
@@ -306,7 +305,7 @@ return view("superadmin.project_manager_list", compact('pms'));
 
     public function pm_edit($id)
     {
-          $user = DB::table('employees')
+        $user = DB::table('employees')
             ->where('id', $id)
             ->first();
 
@@ -407,7 +406,7 @@ return view("superadmin.project_manager_list", compact('pms'));
     public function mentor_status($id)
     {
         $mentor = DB::table('employees')->where('id', $id)->first();
-      
+
         if ($mentor->status == 1) {
 
             DB::table('employees')
@@ -442,7 +441,7 @@ return view("superadmin.project_manager_list", compact('pms'));
 
     public function mentor_edit($id)
     {
-         $user = DB::table('employees')
+        $user = DB::table('employees')
             ->where('id', $id)
             ->first();
 
@@ -465,7 +464,7 @@ return view("superadmin.project_manager_list", compact('pms'));
             'company',
             'subdepartment'
         ));
-         }
+    }
 
     public function mentor_update(Request $request, $id)
     {
@@ -542,7 +541,7 @@ return view("superadmin.project_manager_list", compact('pms'));
     public function tm_status($id)
     {
         $tm = DB::table('employees')->where('id', $id)->first();
-   
+
 
         if ($tm->status == 1) {
 
@@ -724,7 +723,7 @@ return view("superadmin.project_manager_list", compact('pms'));
     {
         $intern = DB::table('employees')->where('id', $id)->first();
 
-      
+
         if ($intern->status == 1) {
 
             DB::table('employees')
@@ -878,6 +877,14 @@ return view("superadmin.project_manager_list", compact('pms'));
             'description' => $request->description,
             'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
         ]);
+        DB::table('logs')->insert([
+            'user_id' => session('user_id'),
+            'action' => 'Create',
+            'module' => 'Project',
+            'description' => ' Project Create ',
+            'created_at' =>  Carbon::now('Asia/Kolkata'),
+            'updated_at' =>  Carbon::now('Asia/Kolkata')
+        ]);
 
         return redirect()->back()->with('success', 'Project Created Successfully');
     }
@@ -885,19 +892,23 @@ return view("superadmin.project_manager_list", compact('pms'));
     public function project_pending()
     {
         $project = DB::table('project')
-        ->where('status', 0)
+            ->where('status', 0)
             ->get();
         return view('superAdmin.pending_project', compact('project'));
     }
 
+public function details($id)
+{
+    $project = DB::table('project')->where('id', $id)->first();
 
-    public function details($id)
-    {
-        $project = DB::table('project')->where('id', $id)->first();
+    // get all old update requests
+    $oldData = DB::table('old_project_data')
+                ->where('project_id', $id)
+                
+                ->get();
 
-        return view('superAdmin.project_details_ajax', compact('project'));
-    }
-
+    return view('superAdmin.project_details_ajax', compact('project','oldData'));
+}
 
     public function project_edit($id)
     {
@@ -924,56 +935,177 @@ return view("superadmin.project_manager_list", compact('pms'));
         return response()->json($designations);
     }
 
-  public function project_list()
+    public function project_list()
     {
         $project = DB::table('project')
             ->get();
+
         return view('superAdmin.project_list', compact('project'));
     }
-   public function project_ongoing()
+    public function project_ongoing()
     {
         $project = DB::table('project')
-        ->where('status', 1)
+            ->where('status', 1)
             ->get();
+
         return view('superAdmin.ongoing_project', compact('project'));
     }
 
-   public function project_completed()
+    public function project_completed()
     {
         $project = DB::table('project')
-        ->where('status', 2)
+            ->where('status', 2)
             ->get();
+
         return view('superAdmin.completed_project', compact('project'));
     }
- public function project_hold_list()
+    public function project_hold_list()
     {
         $project = DB::table('project')
-        ->where('status', 3)
+            ->where('status', 3)
             ->get();
+
         return view('superAdmin.hold_project', compact('project'));
     }
 
-public function project_delete($id) {
+    public function project_delete($id)
+    {
         DB::table('project')->where('id', $id)->delete();
-        return redirect()->route('project.list')->with('success', ' Project deleted  successfully.');
 
-}
-   
-public function project_hold($id) {
-    //   dd(session('user_id'));
-    DB::table('project')
-        ->where('id', $id)
-        ->update([
-            'status' => 3,
+        DB::table('logs')->insert([
+            'user_id' => session('user_id'),
+            'action' => 'Delete',
+            'module' => 'Project',
+            'description' => ' Project delete ',
+            'created_at' =>  Carbon::now('Asia/Kolkata'),
+            'updated_at' =>  Carbon::now('Asia/Kolkata')
+        ]);
+        return redirect()->route('project.list')->with('success', ' Project deleted  successfully.');
+    }
+
+    public function project_hold($id)
+    {
+        //   dd(session('user_id'));
+        DB::table('project')
+            ->where('id', $id)
+            ->update([
+                'status' => 3,
+            ]);
+        DB::table('logs')->insert([
+            'user_id' => session('user_id'),
+            'action' => 'Hold',
+            'module' => 'Project',
+            'description' => 'Pending project hold ',
+            'created_at' =>  Carbon::now('Asia/Kolkata'),
+            'updated_at' =>  Carbon::now('Asia/Kolkata')
         ]);
 
         return redirect()->route('project.list')->with('success', ' Project Hold  successfully.');
+    }
 
-}
+
    
 
-    public function project_update($id, Request $request)
-    {
-        dd("update");
-    }
+public function project_update($id, Request $request)
+{
+$project = DB::table('project')->where('id', $id)->first();
+
+if(!$project){
+    return redirect()->back()->with('error','Project not found');
+}
+
+$documentName = $project->project_document;
+
+// Upload new document
+if ($request->hasFile('project_document')) {
+    $documentName = time().'_'.$request->file('project_document')->getClientOriginalName();
+    $request->file('project_document')->move(public_path('project_documents'), $documentName);
+}
+
+if($project->status == 0){
+
+    DB::table('project')
+        ->where('id',$id)
+        ->update([
+            'project_title' => $request->project_title,
+            'company_name' => $request->company_name,
+            'project_department' => $request->domain,
+            'technology' => $request->technology,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'noe' => $request->employee_required,
+            'project_document' => $documentName,
+            'description' => $request->description,
+           
+        ]);
+
+    DB::table('logs')->insert([
+        'user_id' => session('user_id'),
+        'action' => 'Update',
+        'module' => 'Project',
+        'description' => 'Updated pending project ID '.$id,
+        'created_at' => Carbon::now('Asia/Kolkata'),
+        'updated_at' => Carbon::now('Asia/Kolkata')
+    ]);
+}
+
+
+elseif($project->status == 1){
+
+    DB::table('old_project_data')->insert([
+        'project_id' => $id,
+
+          'project_title' => $request->project_title,
+            'company_name' => $request->company_name,
+            'project_department' => $request->domain,
+            'technology' => $request->technology,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'noe' => $request->employee_required,
+            'project_document' => $documentName,
+            'description' => $request->description,
+            'created_at' => Carbon::now('Asia/Kolkata'),
+    ]);
+
+    DB::table('logs')->insert([
+        'user_id' => session('user_id'),
+        'action' => 'Update Request',
+        'module' => 'Project',
+        'description' => 'Update request created for ongoing project ID '.$id,
+        'created_at' => Carbon::now('Asia/Kolkata'),
+        'updated_at' => Carbon::now('Asia/Kolkata')
+    ]);
+}
+
+elseif($project->status == 3){
+
+    DB::table('old_project_data')->insert([
+        'project_id' => $id,
+
+          'project_title' => $request->project_title,
+            'company_name' => $request->company_name,
+            'project_department' => $request->domain,
+            'technology' => $request->technology,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'noe' => $request->employee_required,
+            'project_document' => $documentName,
+            'description' => $request->description,
+            'created_at' => Carbon::now('Asia/Kolkata'),
+    ]);
+
+    DB::table('logs')->insert([
+        'user_id' => session('user_id'),
+        'action' => 'Update Request',
+        'module' => 'Project',
+        'description' => 'Update request created for ongoing project ID '.$id,
+        'created_at' => Carbon::now('Asia/Kolkata'),
+        'updated_at' => Carbon::now('Asia/Kolkata')
+    ]);
+}
+return redirect()->route('project.list')->with('success','Project updated successfully.');
+
+
+}
+
 }

@@ -65,7 +65,7 @@ Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 
 
 
 Route::get('/project/edit/{id}', [SuperAdminController::class, 'project_edit'])->name('project.edit');
-
+Route::put('/project/update/{id}', [SuperAdminController::class, 'project_update'])->name('project.update');
 Route::delete('/project/delete/{id}', [SuperAdminController::class, 'project_delete'])->name('project.delete');
 
 Route::get('/project/view/{id}', [SuperAdminController::class, 'peoject_view'])->name('project.view');

@@ -117,3 +117,91 @@
     @endif
 
 </div>
+
+
+<div class="row">
+
+    @foreach ($oldData as $oldData)
+        <h3> Old Data{{ $oldData->created_at }} </h3>
+        <div class="col-md-6">
+            <div class="project-box">
+                <div class="project-label">Project Title</div>
+                <div class="project-value">{{ $oldData->project_title }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="project-box">
+                <div class="project-label">Company</div>
+                <div class="project-value">{{ $oldData->company_name }}</div>
+            </div>
+        </div>
+
+        @php
+            $department = DB::table('departments')->where('id', $oldData->project_department)->first();
+        @endphp
+
+        <div class="col-md-6">
+            <div class="project-box">
+                <div class="project-label">Domain</div>
+                <div class="project-value">{{ $department->department_name ?? 'N/A' }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="project-box">
+                <div class="project-label">Technology</div>
+                <div class="project-value">{{ $oldData->technology }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="project-box">
+                <div class="project-label">Start Date</div>
+                <div class="project-value">
+                    {{ \Carbon\Carbon::parse($oldData->start_date)->format('d M Y') }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="project-box">
+                <div class="project-label">End Date</div>
+                <div class="project-value">
+                    {{ \Carbon\Carbon::parse($oldData->end_date)->format('d M Y') }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="project-box">
+                <div class="project-label">Employee Required</div>
+                <div class="project-value">{{ $oldData->noe }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mt-3">
+
+            <div class="project-label mb-1">Description</div>
+
+            <div class="project-description">
+                {{ $oldData->description }}
+            </div>
+
+        </div>
+
+        @if ($oldData->project_document)
+            <div class="col-md-12 mt-3 text-end">
+
+                <a href="{{ asset('project_documents/' . $oldData->project_document) }}" target="_blank"
+                    class="btn btn-success btn-sm">
+
+                    <i class="bi bi-download me-1"></i> Download Document
+
+                </a>
+
+            </div>
+        @endif
+    @endforeach
+
+</div>
