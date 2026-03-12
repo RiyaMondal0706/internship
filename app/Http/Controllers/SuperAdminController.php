@@ -897,18 +897,18 @@ class SuperAdminController extends Controller
         return view('superAdmin.pending_project', compact('project'));
     }
 
-public function details($id)
-{
-    $project = DB::table('project')->where('id', $id)->first();
+    public function details($id)
+    {
+        $project = DB::table('project')->where('id', $id)->first();
 
-    // get all old update requests
-    $oldData = DB::table('old_project_data')
-                ->where('project_id', $id)
-                
-                ->get();
+        // get all old update requests
+        $oldData = DB::table('old_project_data')
+            ->where('project_id', $id)
 
-    return view('superAdmin.project_details_ajax', compact('project','oldData'));
-}
+            ->get();
+
+        return view('superAdmin.project_details_ajax', compact('project', 'oldData'));
+    }
 
     public function project_edit($id)
     {
@@ -1004,108 +1004,167 @@ public function details($id)
     }
 
 
-   
 
-public function project_update($id, Request $request)
-{
-$project = DB::table('project')->where('id', $id)->first();
 
-if(!$project){
-    return redirect()->back()->with('error','Project not found');
-}
+    public function project_update($id, Request $request)
+    {
+        $project = DB::table('project')->where('id', $id)->first();
 
-$documentName = $project->project_document;
+        if (!$project) {
+            return redirect()->back()->with('error', 'Project not found');
+        }
 
-// Upload new document
-if ($request->hasFile('project_document')) {
-    $documentName = time().'_'.$request->file('project_document')->getClientOriginalName();
-    $request->file('project_document')->move(public_path('project_documents'), $documentName);
-}
+        $documentName = $project->project_document;
 
-if($project->status == 0){
+        // Upload new document
+        if ($request->hasFile('project_document')) {
+            $documentName = time() . '_' . $request->file('project_document')->getClientOriginalName();
+            $request->file('project_document')->move(public_path('project_documents'), $documentName);
+        }
 
-    DB::table('project')
-        ->where('id',$id)
-        ->update([
-            'project_title' => $request->project_title,
-            'company_name' => $request->company_name,
-            'project_department' => $request->domain,
-            'technology' => $request->technology,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'noe' => $request->employee_required,
-            'project_document' => $documentName,
-            'description' => $request->description,
-           
+        if ($project->status == 0) {
+
+            DB::table('project')
+                ->where('id', $id)
+                ->update([
+                    'project_title' => $request->project_title,
+                    'company_name' => $request->company_name,
+                    'project_department' => $request->domain,
+                    'technology' => $request->technology,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'noe' => $request->employee_required,
+                    'project_document' => $documentName,
+                    'description' => $request->description,
+
+                ]);
+
+            DB::table('logs')->insert([
+                'user_id' => session('user_id'),
+                'action' => 'Update',
+                'module' => 'Project',
+                'description' => 'Updated pending project ID ' . $id,
+                'created_at' => Carbon::now('Asia/Kolkata'),
+                'updated_at' => Carbon::now('Asia/Kolkata')
+            ]);
+        } elseif ($project->status == 1) {
+
+            DB::table('old_project_data')->insert([
+                'project_id' => $id,
+
+                'project_title' => $request->project_title,
+                'company_name' => $request->company_name,
+                'project_department' => $request->domain,
+                'technology' => $request->technology,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'noe' => $request->employee_required,
+                'project_document' => $documentName,
+                'description' => $request->description,
+                'created_at' => Carbon::now('Asia/Kolkata'),
+            ]);
+
+            DB::table('logs')->insert([
+                'user_id' => session('user_id'),
+                'action' => 'Update Request',
+                'module' => 'Project',
+                'description' => 'Update request created for ongoing project ID ' . $id,
+                'created_at' => Carbon::now('Asia/Kolkata'),
+                'updated_at' => Carbon::now('Asia/Kolkata')
+            ]);
+        } elseif ($project->status == 3) {
+
+            DB::table('old_project_data')->insert([
+                'project_id' => $id,
+
+                'project_title' => $request->project_title,
+                'company_name' => $request->company_name,
+                'project_department' => $request->domain,
+                'technology' => $request->technology,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'noe' => $request->employee_required,
+                'project_document' => $documentName,
+                'description' => $request->description,
+                'created_at' => Carbon::now('Asia/Kolkata'),
+            ]);
+
+            DB::table('logs')->insert([
+                'user_id' => session('user_id'),
+                'action' => 'Update Request',
+                'module' => 'Project',
+                'description' => 'Update request created for ongoing project ID ' . $id,
+                'created_at' => Carbon::now('Asia/Kolkata'),
+                'updated_at' => Carbon::now('Asia/Kolkata')
+            ]);
+        }
+        return redirect()->route('project.list')->with('success', 'Project updated successfully.');
+    }
+
+    public function assign_student()
+    {
+        $designation = DB::table('designation')
+            ->where('id', '!=', 1)
+            ->get();
+
+        return view('superAdmin.assign_student', compact('designation'));
+    }
+
+    public function assignTypeData(Request $request)
+    {
+        $type = $request->type;
+
+        if ($type == 'employee') {
+
+            $mentors = DB::table('employees')
+                ->where('designation', 'teamlead')
+                ->get();
+
+            $users = DB::table('employees')
+                ->where('designation', 'employee')
+                ->get();
+        } else {
+
+            $mentors = DB::table('employees')
+                ->where('designation', 'employee')
+                ->get();
+
+            $users = DB::table('employees')
+                ->where('designation', 'intern')
+                ->get();
+        }
+
+        return response()->json([
+            'mentors' => $mentors,
+            'users' => $users
+        ]);
+    }
+
+    public function submit_student(Request $request)
+    {
+        DB::table('assign')->insert([
+            'assign_type' => $request->assign_type,
+            'mentor_id'       => $request->mentor_id,
+            'employee_id'       => $request->user_id,
+            'created_at'  => Carbon::now('Asia/Kolkata'),
+
         ]);
 
-    DB::table('logs')->insert([
-        'user_id' => session('user_id'),
-        'action' => 'Update',
-        'module' => 'Project',
-        'description' => 'Updated pending project ID '.$id,
-        'created_at' => Carbon::now('Asia/Kolkata'),
-        'updated_at' => Carbon::now('Asia/Kolkata')
-    ]);
-}
-
-
-elseif($project->status == 1){
-
-    DB::table('old_project_data')->insert([
-        'project_id' => $id,
-
-          'project_title' => $request->project_title,
-            'company_name' => $request->company_name,
-            'project_department' => $request->domain,
-            'technology' => $request->technology,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'noe' => $request->employee_required,
-            'project_document' => $documentName,
-            'description' => $request->description,
+        DB::table('logs')->insert([
+            'user_id' => session('user_id'),
+            'action' => 'Assign Student ',
+            'module' => 'Assign',
+            'description' => 'Assign ' . $request->assign_type,
             'created_at' => Carbon::now('Asia/Kolkata'),
-    ]);
+            'updated_at' => Carbon::now('Asia/Kolkata')
+        ]);
 
-    DB::table('logs')->insert([
-        'user_id' => session('user_id'),
-        'action' => 'Update Request',
-        'module' => 'Project',
-        'description' => 'Update request created for ongoing project ID '.$id,
-        'created_at' => Carbon::now('Asia/Kolkata'),
-        'updated_at' => Carbon::now('Asia/Kolkata')
-    ]);
-}
-
-elseif($project->status == 3){
-
-    DB::table('old_project_data')->insert([
-        'project_id' => $id,
-
-          'project_title' => $request->project_title,
-            'company_name' => $request->company_name,
-            'project_department' => $request->domain,
-            'technology' => $request->technology,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'noe' => $request->employee_required,
-            'project_document' => $documentName,
-            'description' => $request->description,
-            'created_at' => Carbon::now('Asia/Kolkata'),
-    ]);
-
-    DB::table('logs')->insert([
-        'user_id' => session('user_id'),
-        'action' => 'Update Request',
-        'module' => 'Project',
-        'description' => 'Update request created for ongoing project ID '.$id,
-        'created_at' => Carbon::now('Asia/Kolkata'),
-        'updated_at' => Carbon::now('Asia/Kolkata')
-    ]);
-}
-return redirect()->route('project.list')->with('success','Project updated successfully.');
+        return redirect()->back()->with('success', 'Employee assign Successfully');
+       }
 
 
-}
 
+       public function assign_employee_list(){
+        dd("ok");
+       }
 }

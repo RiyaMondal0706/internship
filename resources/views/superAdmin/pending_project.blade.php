@@ -153,7 +153,7 @@
                                         </form>
 
                                         <!-- Pending -->
-                                        <a href="{{ route('project.hold', $item->id) }}""
+                                        <a href="{{ route('project.hold', $item->id) }}"
                                             class="btn btn-sm btn-light border">
                                             <i class="bi bi-pause-circle text-danger" title="Hold"></i>
                                         </a>

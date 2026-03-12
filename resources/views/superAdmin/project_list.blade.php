@@ -175,7 +175,10 @@
                                                 class="btn btn-sm btn-light border">
                                                 <i class="bi bi-pencil-fill text-primary"title="Edit"></i>
                                             </a>
-
+                                            <a href="{{ route('project.hold', $item->id) }}"
+                                                class="btn btn-sm btn-light border">
+                                                <i class="bi bi-pause-circle text-danger" title="Hold"></i>
+                                            </a>
 
                                             {{-- Status = 2 (Completed) --}}
                                         @elseif ($item->status == 2)

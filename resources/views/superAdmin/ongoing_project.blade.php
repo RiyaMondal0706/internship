@@ -139,7 +139,11 @@
                                             class="btn btn-sm btn-light border">
                                             <i class="bi bi-pencil-fill text-primary"title="Edit"></i>
                                         </a>
-
+                                        <!-- Pending -->
+                                        <a href="{{ route('project.hold', $item->id) }}"
+                                            class="btn btn-sm btn-light border">
+                                            <i class="bi bi-pause-circle text-danger" title="Hold"></i>
+                                        </a>
 
                                     </td>
 

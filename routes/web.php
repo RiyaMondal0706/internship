@@ -44,9 +44,9 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::put('/employee/{id}/update', [SuperAdminController::class, 'update'])->name('employee.update');
         Route::get('/superadmin/employee/create', [SuperAdminController::class, 'create'])->name('employee.create');
         Route::post('/superadmin/employee/store', [SuperAdminController::class, 'store'])->name('employee.store');
-Route::get('/get-subdepartments/{departmentId}', [SuperAdminController::class, 'getSubdepartments']);
-Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 'getDesignations']);
-   Route::get('/superadmin/Project/create', [SuperAdminController::class, 'project_create'])->name('project.create');
+        Route::get('/get-subdepartments/{departmentId}', [SuperAdminController::class, 'getSubdepartments']);
+        Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 'getDesignations']);
+        Route::get('/superadmin/Project/create', [SuperAdminController::class, 'project_create'])->name('project.create');
         Route::post('/superadmin/Project/store', [SuperAdminController::class, 'project_store'])->name('project.store');
         Route::get('/superadmin/Project/pending', [SuperAdminController::class, 'project_pending'])->name('project.pending');
         Route::get('/project/details/{id}', [SuperAdminController::class, 'details']);
@@ -56,6 +56,14 @@ Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 
         Route::get('/superadmin/Project/completed', [SuperAdminController::class, 'project_completed'])->name('project.completed');
 
         Route::get('/superadmin/Project/hold', [SuperAdminController::class, 'project_hold_list'])->name('project.hold.list');
+        Route::get('/project/edit/{id}', [SuperAdminController::class, 'project_edit'])->name('project.edit');
+        Route::put('/project/update/{id}', [SuperAdminController::class, 'project_update'])->name('project.update');
+        Route::delete('/project/delete/{id}', [SuperAdminController::class, 'project_delete'])->name('project.delete');
+
+        Route::get('/project/view/{id}', [SuperAdminController::class, 'peoject_view'])->name('project.view');
+
+        Route::get('/project/reassign/{id}', [SuperAdminController::class, 'project_reassign'])->name('project.reassign');
+        Route::get('/project/hold/{id}', [SuperAdminController::class, 'project_hold'])->name('project.hold');
 
 
 
@@ -64,17 +72,18 @@ Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 
 
 
 
-Route::get('/project/edit/{id}', [SuperAdminController::class, 'project_edit'])->name('project.edit');
-Route::put('/project/update/{id}', [SuperAdminController::class, 'project_update'])->name('project.update');
-Route::delete('/project/delete/{id}', [SuperAdminController::class, 'project_delete'])->name('project.delete');
-
-Route::get('/project/view/{id}', [SuperAdminController::class, 'peoject_view'])->name('project.view');
-
-Route::get('/project/reassign/{id}', [SuperAdminController::class, 'project_reassign'])->name('project.reassign');
-Route::get('/project/hold/{id}', [SuperAdminController::class, 'project_hold'])->name('project.hold');
-
-        
 
 
+Route::get('/assign/project', [SuperAdminController::class, 'assign_project'])->name('assign.project');
 
-});
+Route::get('/assign/student', [SuperAdminController::class, 'assign_student'])->name('assign.student');
+
+Route::post('/assign/student', [SuperAdminController::class, 'submit_student'])->name('assign.student.store');
+Route::get('/assign-type-data',[SuperAdminController::class,'assignTypeData'])->name('assign.type.data');
+
+Route::get('/assign/student/list', [SuperAdminController::class, 'assign_employee_list'])->name('assign.employee.list');
+
+
+
+
+        });
