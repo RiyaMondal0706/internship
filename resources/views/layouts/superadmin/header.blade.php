@@ -116,7 +116,7 @@
                 </li>
 
                 <li>
-                    <a class="dropdown-item text-danger" href="#">
+                    <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                         <i class="bi bi-box-arrow-right me-2"></i>Logout
                     </a>
                 </li>

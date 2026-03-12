@@ -191,109 +191,74 @@ class SuperAdminController extends Controller
     }
     public function hr_list()
     {
-        $hrs = DB::table('hr_data')
-
+        $hrs = DB::table('employees')
+          ->whereIn('subdepartment', [20, 21])
             ->get();
         return view("superadmin.hr_list", compact('hrs'));
     }
     public function hr_viewProfile($id)
     {
-        $hr = DB::table('hr_data')
+        $tm =  DB::table('employees')
             ->where('id', $id)
             ->first();
-        return view('superadmin.hr_profile', compact('hr'));
+        return view('superadmin.hr_profile', compact('tm'));
     }
     public function hr_edit($id)
-    {
-        $user =  DB::table('hr_data')
+    {  {
+          $user = DB::table('employees')
             ->where('id', $id)
             ->first();
-        $state = DB::table('states')
-            ->get();
-        $districs = DB::table('districts')
-            ->get();
-        return view('superadmin.hr_profile_edit', compact('user', 'state', 'districs'));
+
+        $state = DB::table('states')->get();
+
+        $districs = DB::table('districts')->get();
+
+        $department = DB::table('departments')->get();
+        $subdepartment = DB::table('subdepartment')
+            ->where('id', $user->subdepartment)
+            ->first();
+
+        $company = DB::table('companis')->get(); // fixed variable name
+
+        return view('superadmin.hr_profile_edit', compact(
+            'user',
+            'state',
+            'districs',
+            'department',
+            'company',
+            'subdepartment'
+        ));
+    }
+
     }
 
 
 
-    public function hr_update(Request $request, $id)
-    {
-
-        // dd("ok");
-        // 2. Fetch existing HR record
-        $user = DB::table('hr_data')->where('id', $id)->first();
-
-        if (!$user) {
-            return redirect()->back()->with('error', 'HR not found.');
-        }
-
-        // 3. Prepare data
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'designation' => $request->designation,
-            'joining' => $request->joning_date,
-            'address' => $request->address,
-            'state' => $request->state,
-            'district' => $request->district,
-            'city' => $request->city,
-            'updated_at' => now(),
-            // Keep old image by default
-            'image' => $user->image,
-        ];
-
-        // 4. Handle new image upload
-        if ($request->hasFile('image')) {
-            $imageName = time() . '_' . $request->image->getClientOriginalName();
-            $request->image->move(public_path('images/hr'), $imageName);
-            $data['image'] = $imageName;
-        }
-
-        // 5. Update HR record
-        DB::table('hr_data')->where('id', $id)->update($data);
-
-        DB::table('users')
-            ->where('email', $user->email)
-            ->update([
-                'email' => $request->email,
-
-            ]);
-
-        // 6. Redirect with success
-        return redirect()->route('hr.list')->with('success', 'HR updated successfully.');
-    }
 
     public function hr_status($id)
     {
-        $hr = DB::table('hr_data')->where('id', $id)->first();
+        $hr = DB::table('employees')->where('id', $id)->first();
 
         if ($hr->status == 1) {
 
-            DB::table('hr_data')
+            DB::table('employees')
                 ->where('id', $id)
+                ->update(['status' => 0]);
+                  DB::table('users')
+                ->where('employee_id', $hr->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-            DB::table('hr_data')
+            DB::table('employees')
                 ->where('id', $id)
+                ->update(['status' => 1]);
+                   DB::table('users')
+                ->where('employee_id', $hr->employee_code)
                 ->update(['status' => 1]);
         }
 
         return redirect()->back()->with('success', 'Status Updated Successfully');
     }
-
-    public function hr_delete($id)
-    {
-        DB::table('hr_data')->where('id', $id)->delete();
-
-        $employeeId = 'hr-' . $id;
-        DB::table('users')->where('employee_id', $employeeId)->delete();
-
-        return redirect()->back()->with('success', 'HR deleted successfully');
-    }
-
 
     public function project_manager_list()
     {
@@ -307,14 +272,14 @@ return view("superadmin.project_manager_list", compact('pms'));
     public function pm_status($id)
     {
         $pm = DB::table('employees')->where('id', $id)->first();
-$emp_id = 'projectmanager-'.$id;
+
         if ($pm->status == 1) {
 
             DB::table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
                 DB::table('users')
-                ->where('employee_id', $emp_id)
+                ->where('employee_id', $pm->employee_code)
                 ->update(['status' => 0]);
         } else {
 
@@ -322,7 +287,7 @@ $emp_id = 'projectmanager-'.$id;
                 ->where('id', $id)
                 ->update(['status' => 1]);
                       DB::table('users')
-                ->where('employee_id', $emp_id)
+                ->where('employee_id', $pm->employee_code)
                 ->update(['status' => 1]);
         }
 
@@ -442,14 +407,14 @@ $emp_id = 'projectmanager-'.$id;
     public function mentor_status($id)
     {
         $mentor = DB::table('employees')->where('id', $id)->first();
-        $emp_id = 'employee-' . $id;
+      
         if ($mentor->status == 1) {
 
             DB::table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
             DB::table('users')
-                ->where('employee_id', $emp_id)
+                ->where('employee_id', $mentor->employee_code)
                 ->update(['status' => 0]);
         } else {
 
@@ -457,7 +422,7 @@ $emp_id = 'projectmanager-'.$id;
                 ->where('id', $id)
                 ->update(['status' => 1]);
             DB::table('users')
-                ->where('employee_id', $emp_id)
+                ->where('employee_id', $mentor->employee_code)
                 ->update(['status' => 1]);
         }
 
@@ -577,7 +542,7 @@ $emp_id = 'projectmanager-'.$id;
     public function tm_status($id)
     {
         $tm = DB::table('employees')->where('id', $id)->first();
-        $tm_id = 'teamlead-' . $id;
+   
 
         if ($tm->status == 1) {
 
@@ -585,7 +550,7 @@ $emp_id = 'projectmanager-'.$id;
                 ->where('id', $id)
                 ->update(['status' => 0]);
             DB::table('users')
-                ->where('employee_id', $tm_id)
+                ->where('employee_id', $tm->employee_code)
                 ->update(['status' => 0]);
         } else {
 
@@ -593,7 +558,7 @@ $emp_id = 'projectmanager-'.$id;
                 ->where('id', $id)
                 ->update(['status' => 1]);
             DB::table('users')
-                ->where('employee_id', $tm_id)
+                ->where('employee_id', $tm->employee_code)
                 ->update(['status' => 1]);
         }
 
@@ -759,14 +724,14 @@ $emp_id = 'projectmanager-'.$id;
     {
         $intern = DB::table('employees')->where('id', $id)->first();
 
-        $emp_id = 'intern-' . $id;
+      
         if ($intern->status == 1) {
 
             DB::table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
             DB::table('users')
-                ->where('employee_id', $emp_id)
+                ->where('employee_id', $intern->employee_code)
                 ->update(['status' => 0]);
         } else {
 
@@ -774,7 +739,7 @@ $emp_id = 'projectmanager-'.$id;
                 ->where('id', $id)
                 ->update(['status' => 1]);
             DB::table('users')
-                ->where('employee_id', $emp_id)
+                ->where('employee_id', $intern->employee_code)
                 ->update(['status' => 1]);
         }
 

@@ -47,7 +47,7 @@
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
                 <h6 class="mb-0 fw-bold text-dark">HR Management List</h6>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('hr.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
+                    <a href="{{ route('employee.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
                     </a>
                 </div>
@@ -70,11 +70,11 @@
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/hr/' . $hr->image) }}" class="rounded-circle me-3"
-                                            width="38">
+                                        <img src="{{ asset('upload_images/' . $hr->image) }}"
+                                            class="rounded-circle me-3" width="38">
                                         <div>
                                             <div class="fw-bold mb-0">{{ $hr->name }}</div>
-                                            <small class="text-muted">ID: #HR-9921</small>
+                                            <small class="text-muted">ID: #{{ $hr->employee_code }}</small>
                                         </div>
                                     </div>
                                 </td>
@@ -82,11 +82,14 @@
                                     <div class="small fw-semibold">{{ $hr->email }}</div>
                                     <div class="small text-muted">+91 {{ $hr->phone }}</div>
                                 </td>
+                                @php
+                                    $dep = DB::table('subdepartment')->where('id', $hr->subdepartment)->first();
+                                @endphp
                                 <td><span
-                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($hr->designation) }}</span>
+                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($dep->subdepartment_name) }}</span>
                                 </td>
                                 <td class="small text-secondary">
-                                    {{ \Carbon\Carbon::parse($hr->joining)->format('d F Y') }}</td>
+                                    {{ \Carbon\Carbon::parse($hr->joining_date)->format('d F Y') }}</td>
                                 <td class="small"> {{ strtoupper($hr->address) }}</td>
                                 <td>
                                     <a href="{{ route('hr.status', $hr->id) }}">
@@ -117,21 +120,8 @@
                                             <li><a class="dropdown-item" href="{{ route('hr.edit', $hr->id) }}"><i
                                                         class="bi bi-pencil me-2"></i>
                                                     Edit</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <form action="{{ route('hr.delete', $hr->id) }}" method="POST"
-                                                    class="delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
 
-                                                    <button type="button" class="dropdown-item text-danger delete-btn">
-                                                        <i class="bi bi-trash me-2"></i> Delete
-                                                    </button>
 
-                                                </form>
-                                            </li>
                                         </ul>
                                     </div>
                                 </td>

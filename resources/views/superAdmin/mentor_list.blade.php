@@ -45,7 +45,7 @@
 
         <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                <h6 class="mb-0 fw-bold text-dark">Mentor List</h6>
+                <h6 class="mb-0 fw-bold text-dark">Employe List</h6>
                 <div class="d-flex gap-2">
                     <a href="{{ route('employee.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
@@ -56,7 +56,7 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <th class="ps-4">Mentor Name</th>
+                            <th class="ps-4">Employe Name</th>
                             <th>Contact Info</th>
                             <th>Designation</th>
                             <th>Department</th>
