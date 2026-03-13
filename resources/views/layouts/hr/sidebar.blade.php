@@ -250,13 +250,13 @@
                                 <ul class="nav flex-column ms-4">
 
                                     <li class="nav-item">
-                                        <a href="{{ route('assign.student') }}" class="nav-link">
+                                        <a href="{{ route('hr.assign.student') }}" class="nav-link">
                                             <i class="bi bi-person-plus me-2"></i> Assign Employee
                                         </a>
                                     </li>
 
                                     <li class="nav-item">
-                                        <a href="{{ route('assign.employee.list') }}" class="nav-link">
+                                        <a href="{{ route('hr.assign.employee.list') }}" class="nav-link">
                                             <i class="bi bi-list-check me-2"></i> Assign Employee List
                                         </a>
                                     </li>

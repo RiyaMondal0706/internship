@@ -71,7 +71,7 @@
 
 
     <!-- SIDEBAR -->
-    @include('layouts.superadmin.sidebar')
+    @include('layouts.hr.sidebar')
 
 
     <!-- MAIN CONTENT -->
@@ -81,7 +81,7 @@
 
         <!-- HEADER -->
 
-        @include('layouts.superadmin.header')
+        @include('layouts.hr.header')
 
 
         <!-- CONTENT -->
@@ -95,7 +95,7 @@
 
                 <div class="card-body p-4">
 
-                    <form action="{{ route('assign.student.store') }}" method="POST">
+                    <form action="{{ route('hr.assign.student.store') }}" method="POST">
                         @csrf
 
                         <div class="row g-3">
@@ -223,7 +223,7 @@
             var type = $(this).val();
 
             $.ajax({
-                url: "{{ route('superadmin.assign.type.data') }}",
+                url: "{{ route('hr.assign.type.data') }}",
                 type: "GET",
                 data: {
                     type: type

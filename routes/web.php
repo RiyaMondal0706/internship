@@ -68,9 +68,21 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('/assign/project', [SuperAdminController::class, 'assign_project'])->name('assign.project');
         Route::get('/assign/student', [SuperAdminController::class, 'assign_student'])->name('assign.student');
         Route::post('/assign/student', [SuperAdminController::class, 'submit_student'])->name('assign.student.store');
-        Route::get('/assign-type-data', [SuperAdminController::class, 'assignTypeData'])->name('assign.type.data');
+        Route::get('superadmin/assign-type-data', [SuperAdminController::class, 'superadmin_assignTypeData'])->name('superadmin.assign.type.data');
         Route::get('/assign/student/list', [SuperAdminController::class, 'assign_employee_list'])->name('assign.employee.list');
-});
+
+Route::get('/superadmin/assign-employee-status/{id}', [SuperAdminController::class, 'assign_employee_status'])->name('assign_employee.status');
+        Route::get('/superadmin/assign-employee/edit/{id}', [SuperAdminController::class, 'assign_employee_edit'])
+                ->name('assign_employee.edit');
+        Route::delete('/superadmin/assign-employee/delete/{id}', [SuperAdminController::class, 'assign_employee_delete'])
+                ->name('assign_employee.delete');
+        Route::put('/superadmin/assign-employee/update/{id}', [SuperAdminController::class, 'superadmin_assign_employee_update'])
+                ->name('assign.student.update');
+
+
+
+
+        });
 
 
 Route::middleware(['role.session:hr'])->group(function () {
@@ -92,41 +104,28 @@ Route::middleware(['role.session:hr'])->group(function () {
         Route::get('/hr/Team-Leader/profile/{id}', [HrController::class, 'hr_tm_Profile'])->name('hr.tm.view.profile');
         Route::get('/hr/Team Leader/{id}/edit', [HrController::class, 'hr_tm_edit'])->name('hr.tm.edit');
         Route::get('/hr/mentor/list', [HrController::class, 'hr_mentor_list'])->name('hr.mentor.list');
-
-
-
-
         Route::get('/hr/mentor-status/{id}', [HrController::class, 'hr_mentor_status'])->name('hr.mentor.status');
         Route::get('/hr/mentor/profile/{id}', [HrController::class, 'hr_mentor_Profile'])->name('hr.mentor.view.profile');
-
         Route::get('/hr/mentor/{id}/edit', [HrController::class, 'hr_mentor_edit'])->name('hr.mentor.edit');
-
-
         Route::get('/hr/Intern/list', [HrController::class, 'hr_intern_list'])->name('hr.intern.list');
-
         Route::get('/hr/intern-status/{id}', [HrController::class, 'hr_intern_status'])->name('hr.intern.status');
-
         Route::get('/hr/Intern/profile/{id}', [HrController::class, 'hr_intern_Profile'])->name('hr.intern.view.profile');
         Route::get('/hr/Intern/{id}/edit', [HrController::class, 'hr_intern_edit'])->name('hr.intern.edit');
-
         Route::get('/hr/Project/list', [HrController::class, 'hr_project_list'])->name('hr.project.list');
-
         Route::get('/project/details/{id}', [HrController::class, 'details']);
         Route::get('/hr/Project/ongoing', [HrController::class, 'hr_project_ongoing'])->name('hr.project.ongoing');
-
         Route::get('/hr/Project/pending', [HrController::class, 'hr_project_pending'])->name('hr.project.pending');
-
         Route::get('/hr/Project/hold', [HrController::class, 'hr_project_hold_list'])->name('hr.project.hold.list');
-
         Route::get('/hr/Project/completed', [HrController::class, 'hr_project_completed'])->name('hr.project.completed');
-
-
-
-
-
-
-
-
-
-
-        });
+        Route::get('/hr/assign/student', [HrController::class, 'hr_assign_student'])->name('hr.assign.student');
+        Route::get('/assign-type-data', [HrController::class, 'hr_assignTypeData'])->name('hr.assign.type.data');
+        Route::post('/hr/assign/student', [HrController::class, 'hr_submit_student'])->name('hr.assign.student.store');
+        Route::get('/hr/assign/student/list', [HrController::class, 'hr_assign_employee_list'])->name('hr.assign.employee.list');
+        Route::get('/hr/assign-employee-status/{id}', [HrController::class, 'hr_assign_employee_status'])->name('hr.assign_employee.status');
+        Route::get('/assign-employee/edit/{id}', [HrController::class, 'hr_assign_employee_edit'])
+                ->name('hr.assign_employee.edit');
+        Route::delete('/assign-employee/delete/{id}', [HrController::class, 'hr_assign_employee_delete'])
+                ->name('hr.assign_employee.delete');
+        Route::put('/hr/assign-employee/update/{id}', [HRController::class, 'assign_employee_update'])
+                ->name('hr.assign.student.update');
+});

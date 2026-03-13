@@ -95,8 +95,9 @@
 
                 <div class="card-body p-4">
 
-                    <form action="{{ route('assign.student.store') }}" method="POST">
+                    <form action="{{ route('assign.student.update', $assign->id) }}" method="POST">
                         @csrf
+                        @method('PUT')
 
                         <div class="row g-3">
 
@@ -110,49 +111,62 @@
                                     <option value="">Select Type</option>
 
                                     @foreach ($designation as $des)
-                                        <option value="{{ $des->code }}">{{ $des->name }}</option>
+                                        <option value="{{ $des->code }}"
+                                            {{ $assign->assign_type == $des->code ? 'selected' : '' }}>
+                                            {{ $des->name }}
+                                        </option>
                                     @endforeach
 
                                 </select>
                             </div>
 
 
-                            <!-- Mentor / Team Leader -->
+                            <!-- Mentor -->
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">
                                     Select Mentor / Team Leader
                                 </label>
 
                                 <select name="mentor_id" class="form-select bg-light border-0" id="mentor_list">
-                                    <option value="">Select Mentor</option>
+
+                                    <option value="{{ $mentor->id }}" selected>
+                                        {{ $mentor->name }}
+                                    </option>
+
                                 </select>
                             </div>
 
 
-                            <!-- Employee / Intern -->
+                            <!-- Employee -->
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">
                                     Select Employee / Intern
                                 </label>
 
                                 <select name="user_id" class="form-select bg-light border-0" id="person_list">
-                                    <option value="">Select Person</option>
+
+                                    <option value="{{ $employee->id }}" selected>
+                                        {{ $employee->name }}
+                                    </option>
+
                                 </select>
                             </div>
 
 
                             <div class="mt-4 text-end">
 
-                                <button type="reset" class="btn btn-outline-secondary">
-                                    Discard
-                                </button>
+                                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
 
                                 <button type="submit" class="btn btn-primary px-4">
                                     <i class="bi bi-check-circle me-2"></i>
-                                    Assign Employee
+                                    Update Assign
                                 </button>
 
                             </div>
+
+                        </div>
 
                     </form>
 
@@ -216,43 +230,38 @@
         });
     </script>
 
-
     <script>
-        $("#assign_type").change(function() {
+        $(document).ready(function() {
 
-            var type = $(this).val();
+            $("#assign_type").change(function() {
 
-            $.ajax({
-                url: "{{ route('superadmin.assign.type.data') }}",
-                type: "GET",
-                data: {
-                    type: type
-                },
+                var type = $(this).val();
 
-                success: function(response) {
+                $.ajax({
+                    url: "{{ route('superadmin.assign.type.data') }}",
+                    type: "GET",
+                    data: {
+                        type: type
+                    },
 
-                    $("#mentor_list").html('<option value="">Select Mentor</option>');
-                    $("#person_list").html('<option value="">Select Person</option>');
+                    success: function(response) {
 
-                    // Mentor dropdown
-                    $.each(response.mentors, function(key, value) {
+                        $("#mentor_list").html('<option value="">Select Mentor</option>');
+                        $("#person_list").html('<option value="">Select Person</option>');
 
-                        $("#mentor_list").append(
-                            '<option value="' + value.id + '">' + value.name + '</option>'
-                        );
+                        $.each(response.mentors, function(key, value) {
+                            $("#mentor_list").append('<option value="' + value.id +
+                                '">' + value.name + '</option>');
+                        });
 
-                    });
+                        $.each(response.users, function(key, value) {
+                            $("#person_list").append('<option value="' + value.id +
+                                '">' + value.name + '</option>');
+                        });
 
-                    // Person dropdown
-                    $.each(response.users, function(key, value) {
+                    }
 
-                        $("#person_list").append(
-                            '<option value="' + value.id + '">' + value.name + '</option>'
-                        );
-
-                    });
-
-                }
+                });
 
             });
 

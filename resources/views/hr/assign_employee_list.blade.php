@@ -28,7 +28,7 @@
 
 
     <!-- SIDEBAR -->
-    @include('layouts.superadmin.sidebar')
+    @include('layouts.hr.sidebar')
 
 
     <!-- MAIN CONTENT -->
@@ -38,7 +38,7 @@
 
         <!-- HEADER -->
 
-        @include('layouts.superadmin.header')
+        @include('layouts.hr.header')
 
 
         <!-- CONTENT -->
@@ -91,7 +91,7 @@
 
                                     <td>{{ $intern->name }}</td>
                                     <td>
-                                        <a href="{{ route('assign_employee.status', $row->id) }}"
+                                        <a href="{{ route('hr.assign_employee.status', $row->id) }}"
                                             style="text-decoration:none;">
                                             @if ($row->status == 1)
                                                 <span class="badge bg-success px-3 py-2">
@@ -107,14 +107,14 @@
                                     <td class="text-end pe-4">
 
                                         <!-- Edit -->
-                                        <a href="{{ route('assign_employee.edit', $row->id) }}"
+                                        <a href="{{ route('hr.assign_employee.edit', $row->id) }}"
                                             class="btn btn-sm btn-outline-primary me-1">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
 
                                     <td class="text-end pe-4">
 
-                                        <form action="{{ route('assign_employee.delete', $row->id) }}" method="POST"
+                                        <form action="{{ route('hr.assign_employee.delete', $row->id) }}" method="POST"
                                             class="deleteForm" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
