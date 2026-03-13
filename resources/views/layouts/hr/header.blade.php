@@ -89,8 +89,8 @@
                 data-bs-toggle="dropdown">
 
                 <div class="text-end me-2 d-none d-md-block">
-                    <small class="fw-bold d-block">Admin User</small>
-                    <small class="text-muted role-text">Super Admin</small>
+                    <small class="fw-bold d-block">HR User</small>
+                    <small class="text-muted role-text">HR</small>
                 </div>
 
                 <img src="https://ui-avatars.com/api/?name=Admin+User&background=4e73df&color=fff"

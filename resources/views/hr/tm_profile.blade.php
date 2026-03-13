@@ -106,12 +106,30 @@
                                 <i class="bi bi-envelope me-2"></i>Send Email
                             </a>
 
+                            <a href="{{ route('hr.tm.edit', $tm->id) }}" class="btn btn-outline-dark">
+
+                                <i class="bi bi-pencil me-2"></i>Edit Account
+                            </a>
 
                         </div>
 
                         <hr>
 
+                        <div class="text-start">
 
+                            <h6 class="section-title">Quick Actions</h6>
+
+                            <div class="list-group">
+
+                                <a href="#" class="list-group-item list-group-item-action text-danger">
+
+                                    <i class="bi bi-slash-circle me-2"></i>Deactivate
+
+                                </a>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -181,7 +199,10 @@
                                 <div class="info-value">{{ $dep->subdepartment_name }}</div>
                             </div>
 
-
+                            <div class="col-md-4 mb-3">
+                                <div class="info-label">Designation</div>
+                                <div class="info-value">{{ $tm->designation }}</div>
+                            </div>
 
                             <div class="col-md-4 mb-3">
                                 <div class="info-label">Employee Type</div>
@@ -193,6 +214,10 @@
                                 <div class="info-value">{{ $tm->work_location }}</div>
                             </div>
 
+                            <div class="col-md-4 mb-3">
+                                <div class="info-label">Salary</div>
+                                <div class="info-value">₹ {{ $tm->salary }}</div>
+                            </div>
 
                         </div>
 

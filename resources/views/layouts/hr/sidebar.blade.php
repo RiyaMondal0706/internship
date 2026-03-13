@@ -137,7 +137,7 @@
     <nav id="sidebar">
         <div class="brand-area">
             <h5 class="text-white fw-bold mb-0">
-                <i class="bi bi-person-workspace me-2 text-primary"></i> SUPERADMIN
+                <i class="bi bi-person-workspace me-2 text-primary"></i> HR
             </h5>
         </div>
 
@@ -171,8 +171,8 @@
                             <li><a href="{{ route('hr.hr_list') }}" class="nav-link">HR</a></li>
                             <li><a href="{{ route('hr.project_manager.list') }}" class="nav-link">Project Manager</a>
                             </li>
-                            <li><a href="{{ route('tm.list') }}" class="nav-link">Team Leader</a></li>
-                            <li><a href="{{ route('mentor.list') }}" class="nav-link">Employee</a></li>
+                            <li><a href="{{ route('hr.tm.list') }}" class="nav-link">Team Leader</a></li>
+                            <li><a href="{{ route('hr.mentor.list') }}" class="nav-link">Employee</a></li>
                             <li><a href="{{ route('intern.list') }}" class="nav-link">Intern</a></li>
                         </ul>
                     </li>

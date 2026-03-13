@@ -17,7 +17,7 @@
         #main-content {
             margin-left: var(--sidebar-width);
             width: calc(100% - var(--sidebar-width));
-            min-height: 100vh;
+            S min-height: 100vh;
             transition: 0.3s;
         }
     </style>
@@ -45,7 +45,7 @@
 
         <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                <h6 class="mb-0 fw-bold text-dark">HR Management List</h6>
+                <h6 class="mb-0 fw-bold text-dark">Team Leader List</h6>
                 <div class="d-flex gap-2">
                     <a href="{{ route('hr.employee.create') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
@@ -56,44 +56,50 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <th class="ps-4">HR Name</th>
+                            <th class="ps-4">Team Leader Name</th>
                             <th>Contact Info</th>
-                            <th>Designation</th>
+
+                            <th>Department</th>
                             <th>Joining Date</th>
                             <th>Location</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th class="text-end pe-4">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($hrs as $hr)
+                        @foreach ($tm as $tm)
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ asset('upload_images/' . $hr->image) }}"
+                                        <img src="{{ asset('upload_images/' . $tm->image) }}"
                                             class="rounded-circle me-3" width="38">
                                         <div>
-                                            <div class="fw-bold mb-0">{{ $hr->name }}</div>
-                                            <small class="text-muted">ID: #{{ $hr->employee_code }}</small>
+                                            <div class="fw-bold mb-0">{{ $tm->name }}</div>
+                                            <small class="text-muted">ID:#{{ $tm->employee_code }}</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="small fw-semibold">{{ $hr->email }}</div>
-                                    <div class="small text-muted">+91 {{ $hr->phone }}</div>
+                                    <div class="small fw-semibold">
+                                        {{ \Illuminate\Support\Str::limit($tm->email, 10) }}
+                                    </div>
+                                    <div class="small text-muted">+91 {{ $tm->phone }}</div>
                                 </td>
+
+
                                 @php
-                                    $dep = DB::table('subdepartment')->where('id', $hr->subdepartment)->first();
+                                    $department = DB::table('departments')->where('id', $tm->department)->first();
+
                                 @endphp
                                 <td><span
-                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($dep->subdepartment_name) }}</span>
+                                        class="badge bg-light text-dark border fw-medium">{{ strtoupper($department->department_name) }}</span>
                                 </td>
                                 <td class="small text-secondary">
-                                    {{ \Carbon\Carbon::parse($hr->joining_date)->format('d F Y') }}</td>
-                                <td class="small"> {{ strtoupper($hr->address) }}</td>
+                                    {{ \Carbon\Carbon::parse($tm->joining_date)->format('d F Y') }}</td>
+                                <td class="small"> {{ strtoupper($tm->address) }}</td>
                                 <td>
-                                    <a href="">
-                                        @if ($hr->status == 1)
+                                    <a href="{{ route('hr.tm.status', $tm->id) }}">
+                                        @if ($tm->status == 1)
                                             <span
                                                 class="badge bg-success-subtle text-success border border-success-subtle px-3">
                                                 Active
@@ -106,11 +112,24 @@
                                         @endif
                                     </a>
                                 </td>
-                                <td>
-                                    <a href="{{ route('hr.hr_view.profile', ['id' => $hr->id]) }}"
-                                        class="btn btn-sm btn-primary">
-                                        <i class="bi bi-eye me-1"></i> View
-                                    </a>
+                                <td class="text-end pe-4">
+                                    <div class="dropdown">
+                                        <button class="btn btn-light btn-sm border" data-bs-toggle="dropdown"><i
+                                                class="bi bi-three-dots"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('hr.tm.view.profile', ['id' => $tm->id]) }}">
+                                                    <i class="bi bi-eye me-2"></i> View Profile
+                                                </a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="{{ route('hr.tm.edit', $tm->id) }}"><i
+                                                        class="bi bi-pencil me-2"></i>
+                                                    Edit</a></li>
+
+
+                                        </ul>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -129,6 +148,33 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
+    <script id="c9x3av">
+        document.querySelectorAll('.delete-btn').forEach(button => {
+
+            button.addEventListener('click', function() {
+
+                let form = this.closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to delete this Team Leader!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+
+                });
+
+            });
+
+        });
+    </script>
 </body>
 
 </html>

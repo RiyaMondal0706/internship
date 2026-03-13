@@ -89,7 +89,7 @@
                                     {{ \Carbon\Carbon::parse($pm->joining_date)->format('d F Y') }}</td>
                                 <td class="small"> {{ strtoupper($pm->address) }}</td>
                                 <td>
-                                    <a href="{{ route('pm.status', $pm->id) }}">
+                                    <a href="{{ route('hr.pm.status', $pm->id) }}">
                                         @if ($pm->status == 1)
                                             <span
                                                 class="badge bg-success-subtle text-success border border-success-subtle px-3">
@@ -110,11 +110,11 @@
                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                             <li>
                                                 <a class="dropdown-item"
-                                                    href="{{ route('pm.view.profile', ['id' => $pm->id]) }}">
+                                                    href="{{ route('hr.pm.view.profile', ['id' => $pm->id]) }}">
                                                     <i class="bi bi-eye me-2"></i> View Profile
                                                 </a>
                                             </li>
-                                            <li><a class="dropdown-item" href="{{ route('pm.edit', $pm->id) }}"><i
+                                            <li><a class="dropdown-item" href="{{ route('hr.pm.edit', $pm->id) }}"><i
                                                         class="bi bi-pencil me-2"></i>
                                                     Edit</a></li>
 

@@ -74,21 +74,39 @@ Route::middleware(['role.session:superadmin'])->group(function () {
 
 
 Route::middleware(['role.session:hr'])->group(function () {
-               Route::get('/hr/dashboard', [HrController::class, 'hr_dashboard'])->name('hr.dashboard');
+        Route::get('/hr/dashboard', [HrController::class, 'hr_dashboard'])->name('hr.dashboard');
         Route::get('/hr/employee/create', [HrController::class, 'hr_employee_create'])->name('hr.employee.create');
-Route::get('/get-subdepartments/{departmentId}', [HrController::class, 'getSubdepartments']);
+        Route::get('/get-subdepartments/{departmentId}', [HrController::class, 'getSubdepartments']);
         Route::get('/get-designations/{subdepartmentId}', [HrController::class, 'getDesignations']);
         Route::get('/get-districts/{state_id}', [HrController::class, 'getDistricts']);
-
         Route::post('/hr/employee/store', [HrController::class, 'hr_employee_store'])->name('hr.employee.store');
         Route::get('/hr/list', [HrController::class, 'hr_list_show'])->name('hr.hr_list');
         Route::get('/hr/project-manager/list', [HrController::class, 'hr_project_manager_list'])->name('hr.project_manager.list');
-
         Route::get('/hr/hr-profile/{id}', [HrController::class, 'hr_view_Profile'])->name('hr.hr_view.profile');
+        Route::get('/hr/project-manager/profile/{id}', [HrController::class, 'hr_pm_viewProfile'])->name('hr.pm.view.profile');
+        Route::get('/hr/Project-manager-status/{id}', [HrController::class, 'hr_pm_status'])->name('hr.pm.status');
+        Route::get('/hr/Project-manager/{id}/edit', [HrController::class, 'hr_pm_edit'])->name('hr.pm.edit');
+        Route::put('/hr/employee/{id}/update', [HrController::class, 'hr_employee_update'])->name('hr.employee.update');
+        Route::get('/hr/Team-leader/list', [HrController::class, 'hr_tm_list'])->name('hr.tm.list');
+        Route::get('/hr/Team-Leader-status/{id}', [HrController::class, 'hr_tm_status'])->name('hr.tm.status');
+        Route::get('/hr/Team-Leader/profile/{id}', [HrController::class, 'hr_tm_Profile'])->name('hr.tm.view.profile');
+        Route::get('/hr/Team Leader/{id}/edit', [HrController::class, 'hr_tm_edit'])->name('hr.tm.edit');
+        Route::get('/hr/mentor/list', [HrController::class, 'hr_mentor_list'])->name('hr.mentor.list');
 
 
 
-        
-        
 
-});
+        Route::get('/hr/mentor-status/{id}', [HrController::class, 'hr_mentor_status'])->name('hr.mentor.status');
+        Route::get('/hr/mentor/profile/{id}', [HrController::class, 'hr_mentor_Profile'])->name('hr.mentor.view.profile');
+
+
+
+
+
+
+
+
+
+
+
+        });
