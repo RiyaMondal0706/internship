@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HrController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SuperAdminController;
@@ -64,26 +65,30 @@ Route::middleware(['role.session:superadmin'])->group(function () {
 
         Route::get('/project/reassign/{id}', [SuperAdminController::class, 'project_reassign'])->name('project.reassign');
         Route::get('/project/hold/{id}', [SuperAdminController::class, 'project_hold'])->name('project.hold');
+        Route::get('/assign/project', [SuperAdminController::class, 'assign_project'])->name('assign.project');
+        Route::get('/assign/student', [SuperAdminController::class, 'assign_student'])->name('assign.student');
+        Route::post('/assign/student', [SuperAdminController::class, 'submit_student'])->name('assign.student.store');
+        Route::get('/assign-type-data', [SuperAdminController::class, 'assignTypeData'])->name('assign.type.data');
+        Route::get('/assign/student/list', [SuperAdminController::class, 'assign_employee_list'])->name('assign.employee.list');
+});
+
+
+Route::middleware(['role.session:hr'])->group(function () {
+               Route::get('/hr/dashboard', [HrController::class, 'hr_dashboard'])->name('hr.dashboard');
+        Route::get('/hr/employee/create', [HrController::class, 'hr_employee_create'])->name('hr.employee.create');
+Route::get('/get-subdepartments/{departmentId}', [HrController::class, 'getSubdepartments']);
+        Route::get('/get-designations/{subdepartmentId}', [HrController::class, 'getDesignations']);
+        Route::get('/get-districts/{state_id}', [HrController::class, 'getDistricts']);
+
+        Route::post('/hr/employee/store', [HrController::class, 'hr_employee_store'])->name('hr.employee.store');
+        Route::get('/hr/list', [HrController::class, 'hr_list_show'])->name('hr.hr_list');
+        Route::get('/hr/project-manager/list', [HrController::class, 'hr_project_manager_list'])->name('hr.project_manager.list');
+
+        Route::get('/hr/hr-profile/{id}', [HrController::class, 'hr_view_Profile'])->name('hr.hr_view.profile');
 
 
 
+        
+        
 
-
-
-
-
-
-
-Route::get('/assign/project', [SuperAdminController::class, 'assign_project'])->name('assign.project');
-
-Route::get('/assign/student', [SuperAdminController::class, 'assign_student'])->name('assign.student');
-
-Route::post('/assign/student', [SuperAdminController::class, 'submit_student'])->name('assign.student.store');
-Route::get('/assign-type-data',[SuperAdminController::class,'assignTypeData'])->name('assign.type.data');
-
-Route::get('/assign/student/list', [SuperAdminController::class, 'assign_employee_list'])->name('assign.employee.list');
-
-
-
-
-        });
+});

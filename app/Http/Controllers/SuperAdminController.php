@@ -266,7 +266,6 @@ class SuperAdminController extends Controller
             ->get();
 
         return view("superadmin.project_manager_list", compact('pms'));
-        return view("superadmin.project_manager_list", compact('pms'));
     }
     public function pm_status($id)
     {
@@ -1142,17 +1141,28 @@ class SuperAdminController extends Controller
 
     public function submit_student(Request $request)
     {
+
+        $exists = DB::table('assign')
+            ->where('mentor_id', $request->mentor_id)
+            ->where('employee_id', $request->user_id)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->with('error', 'This student is already assigned to this mentor.');
+        }
+
+
         DB::table('assign')->insert([
             'assign_type' => $request->assign_type,
-            'mentor_id'       => $request->mentor_id,
-            'employee_id'       => $request->user_id,
+            'mentor_id'   => $request->mentor_id,
+            'employee_id' => $request->user_id,
             'created_at'  => Carbon::now('Asia/Kolkata'),
-
         ]);
+
 
         DB::table('logs')->insert([
             'user_id' => session('user_id'),
-            'action' => 'Assign Student ',
+            'action' => 'Assign Student',
             'module' => 'Assign',
             'description' => 'Assign ' . $request->assign_type,
             'created_at' => Carbon::now('Asia/Kolkata'),
@@ -1160,11 +1170,18 @@ class SuperAdminController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Employee assign Successfully');
-       }
+    }
 
 
+    public function assign_employee_list()
+    {
 
-       public function assign_employee_list(){
-        dd("ok");
-       }
+       $assign = DB::table('assign')
+    ->where('status', 1)
+    ->get()
+    ->groupBy('mentor_id');
+
+
+        return view('superAdmin.assign_employee_list', compact('assign'));
+    }
 }
