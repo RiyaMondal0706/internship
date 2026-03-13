@@ -407,14 +407,14 @@ class HrController extends Controller
                     'employee_id' => $request->company . $id,
                     'updated_at' => now()
                 ]);
-                     DB::table('logs')->insert([
-                    'user_id' => session('user_id'),
-                    'action' => 'Update',
-                    'module' => 'Employee',
-                    'description' => 'Update ' . $id,
-                    'created_at' => Carbon::now('Asia/Kolkata'),
-                    'updated_at' => Carbon::now('Asia/Kolkata')
-                ]);
+            DB::table('logs')->insert([
+                'user_id' => session('user_id'),
+                'action' => 'Update',
+                'module' => 'Employee',
+                'description' => 'Update ' . $id,
+                'created_at' => Carbon::now('Asia/Kolkata'),
+                'updated_at' => Carbon::now('Asia/Kolkata')
+            ]);
 
             DB::commit();
 
@@ -436,19 +436,19 @@ class HrController extends Controller
     }
     public function hr_tm_status($id)
     {
-        try{
-        $tm = DB::table('employees')->where('id', $id)->first();
+        try {
+            $tm = DB::table('employees')->where('id', $id)->first();
 
 
-        if ($tm->status == 1) {
+            if ($tm->status == 1) {
 
-            DB::table('employees')
-                ->where('id', $id)
-                ->update(['status' => 0]);
-            DB::table('users')
-                ->where('employee_id', $tm->employee_code)
-                ->update(['status' => 0]);
-                     DB::table('logs')->insert([
+                DB::table('employees')
+                    ->where('id', $id)
+                    ->update(['status' => 0]);
+                DB::table('users')
+                    ->where('employee_id', $tm->employee_code)
+                    ->update(['status' => 0]);
+                DB::table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -456,16 +456,15 @@ class HrController extends Controller
                     'created_at' => Carbon::now('Asia/Kolkata'),
                     'updated_at' => Carbon::now('Asia/Kolkata')
                 ]);
+            } else {
 
-        } else {
-
-            DB::table('employees')
-                ->where('id', $id)
-                ->update(['status' => 1]);
-            DB::table('users')
-                ->where('employee_id', $tm->employee_code)
-                ->update(['status' => 1]);
-                      DB::table('logs')->insert([
+                DB::table('employees')
+                    ->where('id', $id)
+                    ->update(['status' => 1]);
+                DB::table('users')
+                    ->where('employee_id', $tm->employee_code)
+                    ->update(['status' => 1]);
+                DB::table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -473,8 +472,8 @@ class HrController extends Controller
                     'created_at' => Carbon::now('Asia/Kolkata'),
                     'updated_at' => Carbon::now('Asia/Kolkata')
                 ]);
-        }
-          } catch (\Exception $e) {
+            }
+        } catch (\Exception $e) {
 
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
@@ -525,18 +524,18 @@ class HrController extends Controller
     }
     public function hr_mentor_status($id)
     {
-        try{
-        $mentor = DB::table('employees')->where('id', $id)->first();
+        try {
+            $mentor = DB::table('employees')->where('id', $id)->first();
 
-        if ($mentor->status == 1) {
+            if ($mentor->status == 1) {
 
-            DB::table('employees')
-                ->where('id', $id)
-                ->update(['status' => 0]);
-            DB::table('users')
-                ->where('employee_id', $mentor->employee_code)
-                ->update(['status' => 0]);
-                        DB::table('logs')->insert([
+                DB::table('employees')
+                    ->where('id', $id)
+                    ->update(['status' => 0]);
+                DB::table('users')
+                    ->where('employee_id', $mentor->employee_code)
+                    ->update(['status' => 0]);
+                DB::table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -544,15 +543,15 @@ class HrController extends Controller
                     'created_at' => Carbon::now('Asia/Kolkata'),
                     'updated_at' => Carbon::now('Asia/Kolkata')
                 ]);
-        } else {
+            } else {
 
-            DB::table('employees')
-                ->where('id', $id)
-                ->update(['status' => 1]);
-            DB::table('users')
-                ->where('employee_id', $mentor->employee_code)
-                ->update(['status' => 1]);
-                        DB::table('logs')->insert([
+                DB::table('employees')
+                    ->where('id', $id)
+                    ->update(['status' => 1]);
+                DB::table('users')
+                    ->where('employee_id', $mentor->employee_code)
+                    ->update(['status' => 1]);
+                DB::table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -560,8 +559,8 @@ class HrController extends Controller
                     'created_at' => Carbon::now('Asia/Kolkata'),
                     'updated_at' => Carbon::now('Asia/Kolkata')
                 ]);
-        }
-    } catch (\Exception $e) {
+            }
+        } catch (\Exception $e) {
 
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
@@ -575,7 +574,174 @@ class HrController extends Controller
             ->first();
         return view('hr.mentor_profile', compact('tm'));
     }
+    public function hr_mentor_edit($id)
+    {
+        $user = DB::table('employees')
+            ->where('id', $id)
+            ->first();
+
+        $state = DB::table('states')->get();
+
+        $districs = DB::table('districts')->get();
+
+        $department = DB::table('departments')->get();
+        $subdepartment = DB::table('subdepartment')
+            ->where('id', $user->subdepartment)
+            ->first();
+
+        $company = DB::table('companis')->get(); // fixed variable name
+
+        return view('hr.mentor_profile_edit', compact(
+            'user',
+            'state',
+            'districs',
+            'department',
+            'company',
+            'subdepartment'
+        ));
+    }
+
+    public function hr_intern_list()
+    {
+        $interns = DB::table('employees')
+            ->where('designation', 'intern')
+            ->get();
+
+        return view("hr.intern_list", compact('interns'));
+    }
+    public function hr_intern_status($id)
+    {
+        try {
+            $intern = DB::table('employees')->where('id', $id)->first();
 
 
+            if ($intern->status == 1) {
+
+                DB::table('employees')
+                    ->where('id', $id)
+                    ->update(['status' => 0]);
+                DB::table('users')
+                    ->where('employee_id', $intern->employee_code)
+                    ->update(['status' => 0]);
+                DB::table('logs')->insert([
+                    'user_id' => session('user_id'),
+                    'action' => 'Status',
+                    'module' => 'Employee',
+                    'description' => 'status ' . $id,
+                    'created_at' => Carbon::now('Asia/Kolkata'),
+                    'updated_at' => Carbon::now('Asia/Kolkata')
+                ]);
+            } else {
+
+                DB::table('employees')
+                    ->where('id', $id)
+                    ->update(['status' => 1]);
+                DB::table('users')
+                    ->where('employee_id', $intern->employee_code)
+                    ->update(['status' => 1]);
+                DB::table('logs')->insert([
+                    'user_id' => session('user_id'),
+                    'action' => 'Status',
+                    'module' => 'Employee',
+                    'description' => 'status ' . $id,
+                    'created_at' => Carbon::now('Asia/Kolkata'),
+                    'updated_at' => Carbon::now('Asia/Kolkata')
+                ]);
+            }
+        } catch (\Exception $e) {
+
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Status Updated Successfully');
+    }
+
+    public function hr_intern_Profile($id)
+    {
+        $tm = DB::table('employees')
+            ->where('id', $id)
+            ->first();
+        return view('hr.intern_profile', compact('tm'));
+    }
+
+    public function hr_intern_edit($id)
+    {
+        $user = DB::table('employees')
+            ->where('id', $id)
+            ->first();
+
+        $state = DB::table('states')->get();
+
+        $districs = DB::table('districts')->get();
+
+        $department = DB::table('departments')->get();
+        $subdepartment = DB::table('subdepartment')
+            ->where('id', $user->subdepartment)
+            ->first();
+
+        $company = DB::table('companis')->get(); // fixed variable name
+
+        return view('hr.intern_profile_edit', compact(
+            'user',
+            'state',
+            'districs',
+            'department',
+            'company',
+            'subdepartment'
+        ));
+    }
+
+
+  public function hr_project_list()
+    {
+        $project = DB::table('project')
+            ->get();
+
+        return view('hr.project_list', compact('project'));
+    }
+    public function details($id)
+    {
+        $project = DB::table('project')->where('id', $id)->first();
+
+        // get all old update requests
+        $oldData = DB::table('old_project_data')
+            ->where('project_id', $id)
+
+            ->get();
+
+        return view('superAdmin.project_details_ajax', compact('project', 'oldData'));
+    }
+       public function hr_project_ongoing()
+    {
+        $project = DB::table('project')
+            ->where('status', 1)
+            ->get();
+
+        return view('hr.ongoing_project', compact('project'));
+    }
+
+    public function hr_project_pending()
+    {
+        $project = DB::table('project')
+            ->where('status', 0)
+            ->get();
+        return view('hr.pending_project', compact('project'));
+    }
+    public function hr_project_hold_list()
+    {
+        $project = DB::table('project')
+            ->where('status', 3)
+            ->get();
+
+        return view('hr.hold_project', compact('project'));
+    }
+    public function hr_project_completed()
+    {
+        $project = DB::table('project')
+            ->where('status', 2)
+            ->get();
+
+        return view('hr.completed_project', compact('project'));
+    }
 
 }

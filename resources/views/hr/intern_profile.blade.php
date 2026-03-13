@@ -106,7 +106,7 @@
                                 <i class="bi bi-envelope me-2"></i>Send Email
                             </a>
 
-                            <a href="{{ route('hr.mentor.edit', $tm->id) }}" class="btn btn-outline-dark">
+                            <a href="{{ route('hr.intern.edit', $tm->id) }}" class="btn btn-outline-dark">
 
                                 <i class="bi bi-pencil me-2"></i>Edit Account
                             </a>
@@ -165,10 +165,24 @@
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <div class="info-label">Address</div>
-                                <div class="info-value">{{ $tm->address }}</div>
+                                <div class="info-label">Pincode</div>
+                                <div class="info-value">{{ $tm->pincode }}</div>
                             </div>
 
+                            <div class="col-md-4 mb-3">
+                                <div class="info-label">College Name</div>
+                                <div class="info-value">{{ $tm->collage_name }}</div>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <div class="info-label">Course</div>
+                                <div class="info-value">{{ $tm->course }}</div>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <div class="info-label">Internship Duration</div>
+                                <div class="info-value">{{ $tm->internship_duration }} </div>
+                            </div>
                         </div>
 
                     </div>

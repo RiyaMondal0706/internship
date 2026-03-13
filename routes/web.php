@@ -38,7 +38,6 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('/Team-Leader-status/{id}', [SuperAdminController::class, 'tm_status'])->name('tm.status');
         Route::get('/Team-Leader/profile/{id}', [SuperAdminController::class, 'tm_Profile'])->name('tm.view.profile');
         Route::get('/Team Leader/{id}/edit', [SuperAdminController::class, 'tm_edit'])->name('tm.edit');
-        Route::get('/superadmin/Intern/list', [SuperAdminController::class, 'intern_list'])->name('intern.list');
         Route::get('/intern-status/{id}', [SuperAdminController::class, 'intern_status'])->name('intern.status');
         Route::get('/Intern/profile/{id}', [SuperAdminController::class, 'intern_Profile'])->name('intern.view.profile');
         Route::get('/Intern/{id}/edit', [SuperAdminController::class, 'intern_edit'])->name('intern.edit');
@@ -49,6 +48,7 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 'getDesignations']);
         Route::get('/superadmin/Project/create', [SuperAdminController::class, 'project_create'])->name('project.create');
         Route::post('/superadmin/Project/store', [SuperAdminController::class, 'project_store'])->name('project.store');
+        Route::get('/superadmin/Intern/list', [SuperAdminController::class, 'intern_list'])->name('intern.list');
         Route::get('/superadmin/Project/pending', [SuperAdminController::class, 'project_pending'])->name('project.pending');
         Route::get('/project/details/{id}', [SuperAdminController::class, 'details']);
 
@@ -99,6 +99,26 @@ Route::middleware(['role.session:hr'])->group(function () {
         Route::get('/hr/mentor-status/{id}', [HrController::class, 'hr_mentor_status'])->name('hr.mentor.status');
         Route::get('/hr/mentor/profile/{id}', [HrController::class, 'hr_mentor_Profile'])->name('hr.mentor.view.profile');
 
+        Route::get('/hr/mentor/{id}/edit', [HrController::class, 'hr_mentor_edit'])->name('hr.mentor.edit');
+
+
+        Route::get('/hr/Intern/list', [HrController::class, 'hr_intern_list'])->name('hr.intern.list');
+
+        Route::get('/hr/intern-status/{id}', [HrController::class, 'hr_intern_status'])->name('hr.intern.status');
+
+        Route::get('/hr/Intern/profile/{id}', [HrController::class, 'hr_intern_Profile'])->name('hr.intern.view.profile');
+        Route::get('/hr/Intern/{id}/edit', [HrController::class, 'hr_intern_edit'])->name('hr.intern.edit');
+
+        Route::get('/hr/Project/list', [HrController::class, 'hr_project_list'])->name('hr.project.list');
+
+        Route::get('/project/details/{id}', [HrController::class, 'details']);
+        Route::get('/hr/Project/ongoing', [HrController::class, 'hr_project_ongoing'])->name('hr.project.ongoing');
+
+        Route::get('/hr/Project/pending', [HrController::class, 'hr_project_pending'])->name('hr.project.pending');
+
+        Route::get('/hr/Project/hold', [HrController::class, 'hr_project_hold_list'])->name('hr.project.hold.list');
+
+        Route::get('/hr/Project/completed', [HrController::class, 'hr_project_completed'])->name('hr.project.completed');
 
 
 
