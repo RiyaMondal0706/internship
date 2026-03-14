@@ -896,7 +896,7 @@ class SuperAdminController extends Controller
         return view('superAdmin.pending_project', compact('project'));
     }
 
-    public function details($id)
+    public function superadmin_details($id)
     {
         $project =DB::connection('mysql_second')->table('project')->where('id', $id)->first();
 
@@ -986,7 +986,7 @@ class SuperAdminController extends Controller
     public function project_hold($id)
     {
         //   dd(session('user_id'));
-       DB::connection('mysql')->table('project')
+       DB::connection('mysql_second')->table('project')
             ->where('id', $id)
             ->update([
                 'status' => 3,
@@ -1292,12 +1292,12 @@ class SuperAdminController extends Controller
 
 
     // Get assigned project ids
-    $assignedProjects =DB::connection('mysql')->table('assign_project')
+    $assignedProjects =DB::connection('mysql_second')->table('assign_project')
         ->pluck('project_id');
 
 
     // Get available projects
-    $projects =DB::connection('mysql')->table('project')
+    $projects =DB::connection('mysql_second')->table('project')
         ->whereIn('status', [0,3])
         ->whereNotIn('id', $assignedProjects)
         ->get();
@@ -1310,7 +1310,7 @@ class SuperAdminController extends Controller
     }
 
 public function assign_project_employee_store(Request $request){
-   DB::connection('mysql')->table('assign_project')->insert([
+   DB::connection('mysql_second')->table('assign_project')->insert([
     'designation' => $request->designation,
    'employee_id' => $request->employee_id,
    'project_id'       => $request->project_id,
@@ -1318,12 +1318,72 @@ public function assign_project_employee_store(Request $request){
     'created_at'  => Carbon::now('Asia/Kolkata'),
 ]);
 
+ DB::connection('mysql')->table('logs')->insert([
+                'user_id' => session('user_id'),
+                'action' => 'Assign',
+                'module' => 'Assign',
+                'description' => 'Assign project Status  Project-ID ' .$request->project_id,
+                'created_at' => Carbon::now('Asia/Kolkata'),
+                'updated_at' => Carbon::now('Asia/Kolkata')
+            ]);
+
+                DB::connection('mysql_second')->table('project')
+            ->where('id', $request->project_id)
+            ->update([
+                'status' => 1,
+            ]);
         return redirect()->back()->with('success', 'Assignment Project to employee Successfully');
 
 
 
 }
+public function assign_project_list(){
+
+    $ass =DB::connection('mysql_second')->table('assign_project')
+        ->get();
+
+    return view('superAdmin.assign_project_list',compact('ass'));
+}
 
 
+public function assign_project_status($id)
+{
+    try {
+
+        $project = DB::connection('mysql_second')
+            ->table('assign_project')
+            ->where('id', $id)
+            ->first();
+
+        if (!$project) {
+            return redirect()->back()->with('error', 'Project not found');
+        }
+
+        // Toggle assign_project status
+        $newStatus = $project->status == 1 ? 0 : 1;
+
+        DB::connection('mysql_second')
+            ->table('assign_project')
+            ->where('id', $id)
+            ->update(['status' => $newStatus]);
+
+        // Set project status based on assign_project status
+        $projectStatus = $newStatus == 1 ? 1 : 3;
+
+        DB::connection('mysql_second')
+            ->table('project')
+            ->where('id', $project->project_id)
+            ->update([
+                'status' => $projectStatus,
+            ]);
+
+        return redirect()->back()->with('success', 'Status updated successfully');
+
+    } catch (\Exception $e) {
+
+        return redirect()->back()->with('error', $e->getMessage());
+
+    }
+}
 
 }

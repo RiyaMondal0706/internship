@@ -250,7 +250,7 @@
             );
 
             $.ajax({
-                url: "{{ url('project/details') }}/" + project_id,
+                url: "{{ url('/superadmin/project/details') }}/" + project_id,
                 method: "GET",
 
                 success: function(response) {

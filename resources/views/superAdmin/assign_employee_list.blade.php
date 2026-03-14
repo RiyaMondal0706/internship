@@ -67,13 +67,16 @@
 
                         @foreach ($assign as $mentor_id => $rows)
                             @php
-                                $mentor = DB::table('employees')->where('id', $mentor_id)->first();
+                                $mentor = DB::connection('mysql')->table('employees')->where('id', $mentor_id)->first();
                                 $designation = $mentor->designation == 'teamlead' ? 'Team Leader' : 'Mentor';
                             @endphp
 
                             @foreach ($rows as $key => $row)
                                 @php
-                                    $intern = DB::table('employees')->where('id', $row->employee_id)->first();
+                                    $intern = DB::connection('mysql')
+                                        ->table('employees')
+                                        ->where('id', $row->employee_id)
+                                        ->first();
                                 @endphp
 
                                 <tr>

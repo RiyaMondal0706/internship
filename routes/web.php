@@ -50,7 +50,7 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::post('/superadmin/Project/store', [SuperAdminController::class, 'project_store'])->name('project.store');
         Route::get('/superadmin/Intern/list', [SuperAdminController::class, 'intern_list'])->name('intern.list');
         Route::get('/superadmin/Project/pending', [SuperAdminController::class, 'project_pending'])->name('project.pending');
-        Route::get('/project/details/{id}', [SuperAdminController::class, 'details']);
+        Route::get('/superadmin/project/details/{id}', [SuperAdminController::class, 'superadmin_details']);
 
         Route::get('/superadmin/Project/list', [SuperAdminController::class, 'project_list'])->name('project.list');
         Route::get('/superadmin/Project/ongoing', [SuperAdminController::class, 'project_ongoing'])->name('project.ongoing');
@@ -87,6 +87,12 @@ Route::middleware(['role.session:superadmin'])->group(function () {
 
 
         Route::post('/superadmin/assign-Project-employee/student', [SuperAdminController::class, 'assign_project_employee_store'])->name('assign.project.employee.store');
+        Route::get('superadmin/assign/project/list', [SuperAdminController::class, 'assign_project_list'])->name('assign.project.list');
+
+Route::get('/assign-project-status/{id}', [SuperAdminController::class, 'assign_project_status'])
+    ->name('assign_project.status');
+
+
 
 
 
