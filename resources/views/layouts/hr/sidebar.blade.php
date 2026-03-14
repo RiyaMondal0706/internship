@@ -229,42 +229,35 @@
 
                 <div class="collapse" id="assignMenu">
 
+
+
+                    <!-- Assign Student Dropdown -->
                     <ul class="nav flex-column ms-4">
 
-                        <!-- Assign Project -->
-                        <li class="nav-item">
-                            <a href="{{ route('assign.project') }}" class="nav-link">
-                                <i class="bi bi-kanban me-2"></i> Assign Project
-                            </a>
-                        </li>
+                        <a class="nav-link" data-bs-toggle="collapse" href="#assignStudentMenu">
+                            <i class="bi bi-person-check me-2"></i> Assign Employee
+                            <i class="bi bi-chevron-down float-end"></i>
+                        </a>
 
-                        <!-- Assign Student Dropdown -->
-                        <ul class="nav-item">
+                        <div class="collapse" id="assignStudentMenu">
+                            <ul class="nav flex-column ms-4">
 
-                            <a class="nav-link" data-bs-toggle="collapse" href="#assignStudentMenu">
-                                <i class="bi bi-person-check me-2"></i> Assign Employee
-                                <i class="bi bi-chevron-down float-end"></i>
-                            </a>
+                                <li class="nav-item">
+                                    <a href="{{ route('hr.assign.student') }}" class="nav-link">
+                                        <i class="bi bi-person-plus me-2"></i> Assign Employee
+                                    </a>
+                                </li>
 
-                            <div class="collapse" id="assignStudentMenu">
-                                <ul class="nav flex-column ms-4">
+                                <li class="nav-item">
+                                    <a href="{{ route('hr.assign.employee.list') }}" class="nav-link">
+                                        <i class="bi bi-list-check me-2"></i> Assign Employee List
+                                    </a>
+                                </li>
 
-                                    <li class="nav-item">
-                                        <a href="{{ route('hr.assign.student') }}" class="nav-link">
-                                            <i class="bi bi-person-plus me-2"></i> Assign Employee
-                                        </a>
-                                    </li>
+                            </ul>
+                        </div>
 
-                                    <li class="nav-item">
-                                        <a href="{{ route('hr.assign.employee.list') }}" class="nav-link">
-                                            <i class="bi bi-list-check me-2"></i> Assign Employee List
-                                        </a>
-                                    </li>
 
-                                </ul>
-                            </div>
-
-                        </ul>
 
                     </ul>
 
