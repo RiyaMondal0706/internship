@@ -61,6 +61,13 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+        'mysql_second' => [
+            'driver' => 'mysql',
+            'host' => env('DB_SECOND_HOST'),
+            'database' => env('DB_SECOND_DATABASE'),
+            'username' => env('DB_SECOND_USERNAME'),
+            'password' => env('DB_SECOND_PASSWORD'),
+        ],
 
         'mariadb' => [
             'driver' => 'mariadb',
@@ -147,7 +154,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [

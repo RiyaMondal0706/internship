@@ -19,29 +19,29 @@ class HrController extends Controller
 
     public function hr_employee_create()
     {
-        $state = DB::table('states')
+        $state =DB::connection('mysql')->table('states')
             ->get();
-        $compay = DB::table('companis')
+        $compay =DB::connection('mysql')->table('companis')
             ->get();
-        $department = DB::table('departments')
+        $department =DB::connection('mysql')->table('departments')
             ->whereNotIn('id', [6])
             ->get();
         return view('hr.create', compact('state', 'compay', 'department'));
     }
     public function getSubdepartments($departmentId)
     {
-        $subdepartments =  DB::table('subdepartment')->where('department_id', $departmentId)->get();
+        $subdepartments = DB::connection('mysql')->table('subdepartment')->where('department_id', $departmentId)->get();
         return response()->json($subdepartments);
     }
 
     public function getDesignations($subdepartmentId)
     {
-        $designations =  DB::table('designation')->get();
+        $designations = DB::connection('mysql')->table('designation')->get();
         return response()->json($designations);
     }
     public function getDistricts($state_id)
     {
-        $districts = DB::table('districts')->where('state_id', $state_id)->get();
+        $districts =DB::connection('mysql')->table('districts')->where('state_id', $state_id)->get();
 
         return response()->json($districts);
     }
@@ -68,7 +68,7 @@ class HrController extends Controller
 
         try {
 
-            DB::beginTransaction();
+           DB::connection('mysql')->beginTransaction();
 
             // Profile Image
             if ($request->hasFile('image')) {
@@ -111,7 +111,7 @@ class HrController extends Controller
             }
 
             // Insert Employee
-            $id = DB::table('employees')->insertGetId([
+            $id =DB::connection('mysql')->table('employees')->insertGetId([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
@@ -141,7 +141,7 @@ class HrController extends Controller
             ]);
 
             // Update Employee Code
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update([
                     'employee_code' => $request->company . '-' . $id
@@ -159,7 +159,7 @@ class HrController extends Controller
             }
 
             // Create User Login
-            DB::table('users')->insert([
+           DB::connection('mysql')->table('users')->insert([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($plainPassword),
@@ -170,7 +170,7 @@ class HrController extends Controller
             ]);
 
             // Logs
-            DB::table('logs')->insert([
+           DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Create',
                 'module' => 'Employee',
@@ -188,12 +188,12 @@ class HrController extends Controller
                 )
             );
 
-            DB::commit();
+           DB::connection('mysql')->commit();
 
             return redirect()->back()->with('success', 'Employee Created Successfully');
         } catch (\Exception $e) {
 
-            DB::rollback();
+           DB::connection('mysql')->rollback();
 
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
@@ -201,7 +201,7 @@ class HrController extends Controller
 
     public function hr_list_show()
     {
-        $hrs = DB::table('employees')
+        $hrs =DB::connection('mysql')->table('employees')
             ->whereIn('subdepartment', [20, 21])
             ->get();
         return view("hr.hr_list", compact('hrs'));
@@ -209,7 +209,7 @@ class HrController extends Controller
 
     public function hr_project_manager_list()
     {
-        $pms = DB::table('employees')
+        $pms =DB::connection('mysql')->table('employees')
             ->whereIn('subdepartment', [26, 27])
             ->get();
 
@@ -217,7 +217,7 @@ class HrController extends Controller
     }
     public function hr_view_Profile($id)
     {
-        $tm =  DB::table('employees')
+        $tm = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('hr.hr_profile', compact('tm'));
@@ -227,18 +227,18 @@ class HrController extends Controller
         try {
 
 
-            $pm = DB::table('employees')->where('id', $id)->first();
+            $pm =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
             if ($pm->status == 1) {
 
-                DB::table('employees')
+               DB::connection('mysql')->table('employees')
                     ->where('id', $id)
                     ->update(['status' => 0]);
-                DB::table('users')
+               DB::connection('mysql')->table('users')
                     ->where('employee_id', $pm->employee_code)
                     ->update(['status' => 0]);
 
-                DB::table('logs')->insert([
+               DB::connection('mysql')->table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'status',
                     'module' => 'Employee',
@@ -248,13 +248,13 @@ class HrController extends Controller
                 ]);
             } else {
 
-                DB::table('employees')
+               DB::connection('mysql')->table('employees')
                     ->where('id', $id)
                     ->update(['status' => 1]);
-                DB::table('users')
+               DB::connection('mysql')->table('users')
                     ->where('employee_id', $pm->employee_code)
                     ->update(['status' => 1]);
-                DB::table('logs')->insert([
+               DB::connection('mysql')->table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'status',
                     'module' => 'Employee',
@@ -271,7 +271,7 @@ class HrController extends Controller
 
     public function hr_pm_viewProfile($id)
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('hr.pm_profile', compact('tm'));
@@ -279,20 +279,20 @@ class HrController extends Controller
 
     public function hr_pm_edit($id)
     {
-        $user = DB::table('employees')
+        $user =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state = DB::table('states')->get();
+        $state =DB::connection('mysql')->table('states')->get();
 
-        $districs = DB::table('districts')->get();
+        $districs =DB::connection('mysql')->table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
+        $department =DB::connection('mysql')->table('departments')->get();
+        $subdepartment =DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('hr.pm_profile_edit', compact(
             'user',
@@ -312,10 +312,10 @@ class HrController extends Controller
 
         try {
 
-            DB::beginTransaction();
+           DB::connection('mysql')->beginTransaction();
 
             // Get old employee
-            $employee = DB::table('employees')->where('id', $id)->first();
+            $employee =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
             if (!$employee) {
                 return redirect()->back()->with('error', 'Employee not found');
@@ -358,7 +358,7 @@ class HrController extends Controller
             }
 
             // Update Employee
-            DB::table('employees')->where('id', $id)->update([
+           DB::connection('mysql')->table('employees')->where('id', $id)->update([
 
                 'employee_code' => $request->company . $id,
                 'name' => $request->name,
@@ -399,7 +399,7 @@ class HrController extends Controller
             ]);
 
             // Update User Table
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('email', $employee->email)
                 ->update([
                     'email' => $request->email,
@@ -407,7 +407,7 @@ class HrController extends Controller
                     'employee_id' => $request->company . $id,
                     'updated_at' => now()
                 ]);
-            DB::table('logs')->insert([
+           DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Update',
                 'module' => 'Employee',
@@ -416,12 +416,12 @@ class HrController extends Controller
                 'updated_at' => Carbon::now('Asia/Kolkata')
             ]);
 
-            DB::commit();
+           DB::connection('mysql')->commit();
 
             return redirect()->back()->with('success', 'Profile Updated Successfully');
         } catch (\Exception $e) {
 
-            DB::rollback();
+           DB::connection('mysql')->rollback();
 
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
@@ -429,7 +429,7 @@ class HrController extends Controller
 
     public function hr_tm_list()
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('designation', 'teamlead')
             ->get();
         return view("hr.tm_list", compact('tm'));
@@ -437,18 +437,18 @@ class HrController extends Controller
     public function hr_tm_status($id)
     {
         try {
-            $tm = DB::table('employees')->where('id', $id)->first();
+            $tm =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
 
             if ($tm->status == 1) {
 
-                DB::table('employees')
+               DB::connection('mysql')->table('employees')
                     ->where('id', $id)
                     ->update(['status' => 0]);
-                DB::table('users')
+               DB::connection('mysql')->table('users')
                     ->where('employee_id', $tm->employee_code)
                     ->update(['status' => 0]);
-                DB::table('logs')->insert([
+               DB::connection('mysql')->table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -458,13 +458,13 @@ class HrController extends Controller
                 ]);
             } else {
 
-                DB::table('employees')
+               DB::connection('mysql')->table('employees')
                     ->where('id', $id)
                     ->update(['status' => 1]);
-                DB::table('users')
+               DB::connection('mysql')->table('users')
                     ->where('employee_id', $tm->employee_code)
                     ->update(['status' => 1]);
-                DB::table('logs')->insert([
+               DB::connection('mysql')->table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -482,7 +482,7 @@ class HrController extends Controller
     }
     public function hr_tm_Profile($id)
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('hr.tm_profile', compact('tm'));
@@ -490,20 +490,20 @@ class HrController extends Controller
 
     public function hr_tm_edit($id)
     {
-        $user = DB::table('employees')
+        $user =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state = DB::table('states')->get();
+        $state =DB::connection('mysql')->table('states')->get();
 
-        $districs = DB::table('districts')->get();
+        $districs =DB::connection('mysql')->table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
+        $department =DB::connection('mysql')->table('departments')->get();
+        $subdepartment =DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('hr.tm_profile_edit', compact(
             'user',
@@ -516,7 +516,7 @@ class HrController extends Controller
     }
     public function hr_mentor_list()
     {
-        $mentors = DB::table('employees')
+        $mentors =DB::connection('mysql')->table('employees')
             ->where('designation', 'employee')
             ->get();
 
@@ -525,17 +525,17 @@ class HrController extends Controller
     public function hr_mentor_status($id)
     {
         try {
-            $mentor = DB::table('employees')->where('id', $id)->first();
+            $mentor =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
             if ($mentor->status == 1) {
 
-                DB::table('employees')
+               DB::connection('mysql')->table('employees')
                     ->where('id', $id)
                     ->update(['status' => 0]);
-                DB::table('users')
+               DB::connection('mysql')->table('users')
                     ->where('employee_id', $mentor->employee_code)
                     ->update(['status' => 0]);
-                DB::table('logs')->insert([
+               DB::connection('mysql')->table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -545,13 +545,13 @@ class HrController extends Controller
                 ]);
             } else {
 
-                DB::table('employees')
+               DB::connection('mysql')->table('employees')
                     ->where('id', $id)
                     ->update(['status' => 1]);
-                DB::table('users')
+               DB::connection('mysql')->table('users')
                     ->where('employee_id', $mentor->employee_code)
                     ->update(['status' => 1]);
-                DB::table('logs')->insert([
+               DB::connection('mysql')->table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -569,27 +569,27 @@ class HrController extends Controller
     }
     public function hr_mentor_Profile($id)
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('hr.mentor_profile', compact('tm'));
     }
     public function hr_mentor_edit($id)
     {
-        $user = DB::table('employees')
+        $user =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state = DB::table('states')->get();
+        $state =DB::connection('mysql')->table('states')->get();
 
-        $districs = DB::table('districts')->get();
+        $districs =DB::connection('mysql')->table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
+        $department =DB::connection('mysql')->table('departments')->get();
+        $subdepartment =DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('hr.mentor_profile_edit', compact(
             'user',
@@ -603,7 +603,7 @@ class HrController extends Controller
 
     public function hr_intern_list()
     {
-        $interns = DB::table('employees')
+        $interns =DB::connection('mysql')->table('employees')
             ->where('designation', 'intern')
             ->get();
 
@@ -612,18 +612,18 @@ class HrController extends Controller
     public function hr_intern_status($id)
     {
         try {
-            $intern = DB::table('employees')->where('id', $id)->first();
+            $intern =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
 
             if ($intern->status == 1) {
 
-                DB::table('employees')
+               DB::connection('mysql')->table('employees')
                     ->where('id', $id)
                     ->update(['status' => 0]);
-                DB::table('users')
+               DB::connection('mysql')->table('users')
                     ->where('employee_id', $intern->employee_code)
                     ->update(['status' => 0]);
-                DB::table('logs')->insert([
+               DB::connection('mysql')->table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -633,13 +633,13 @@ class HrController extends Controller
                 ]);
             } else {
 
-                DB::table('employees')
+               DB::connection('mysql')->table('employees')
                     ->where('id', $id)
                     ->update(['status' => 1]);
-                DB::table('users')
+               DB::connection('mysql')->table('users')
                     ->where('employee_id', $intern->employee_code)
                     ->update(['status' => 1]);
-                DB::table('logs')->insert([
+               DB::connection('mysql')->table('logs')->insert([
                     'user_id' => session('user_id'),
                     'action' => 'Status',
                     'module' => 'Employee',
@@ -658,7 +658,7 @@ class HrController extends Controller
 
     public function hr_intern_Profile($id)
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('hr.intern_profile', compact('tm'));
@@ -666,20 +666,20 @@ class HrController extends Controller
 
     public function hr_intern_edit($id)
     {
-        $user = DB::table('employees')
+        $user =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state = DB::table('states')->get();
+        $state =DB::connection('mysql')->table('states')->get();
 
-        $districs = DB::table('districts')->get();
+        $districs =DB::connection('mysql')->table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
+        $department =DB::connection('mysql')->table('departments')->get();
+        $subdepartment =DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('hr.intern_profile_edit', compact(
             'user',
@@ -694,17 +694,17 @@ class HrController extends Controller
 
     public function hr_project_list()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql')->table('project')
             ->get();
 
         return view('hr.project_list', compact('project'));
     }
     public function details($id)
     {
-        $project = DB::table('project')->where('id', $id)->first();
+        $project =DB::connection('mysql')->table('project')->where('id', $id)->first();
 
         // get all old update requests
-        $oldData = DB::table('old_project_data')
+        $oldData =DB::connection('mysql')->table('old_project_data')
             ->where('project_id', $id)
 
             ->get();
@@ -713,7 +713,7 @@ class HrController extends Controller
     }
     public function hr_project_ongoing()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql')->table('project')
             ->where('status', 1)
             ->get();
 
@@ -722,14 +722,14 @@ class HrController extends Controller
 
     public function hr_project_pending()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql')->table('project')
             ->where('status', 0)
             ->get();
         return view('hr.pending_project', compact('project'));
     }
     public function hr_project_hold_list()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql')->table('project')
             ->where('status', 3)
             ->get();
 
@@ -737,7 +737,7 @@ class HrController extends Controller
     }
     public function hr_project_completed()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql')->table('project')
             ->where('status', 2)
             ->get();
 
@@ -746,7 +746,7 @@ class HrController extends Controller
 
     public function hr_assign_student()
     {
-        $designation = DB::table('designation')
+        $designation =DB::connection('mysql')->table('designation')
             ->where('id', '!=', 1)
             ->get();
 
@@ -759,20 +759,20 @@ class HrController extends Controller
 
         if ($type == 'employee') {
 
-            $mentors = DB::table('employees')
+            $mentors =DB::connection('mysql')->table('employees')
                 ->where('designation', 'teamlead')
                 ->get();
 
-            $users = DB::table('employees')
+            $users =DB::connection('mysql')->table('employees')
                 ->where('designation', 'employee')
                 ->get();
         } else {
 
-            $mentors = DB::table('employees')
+            $mentors =DB::connection('mysql')->table('employees')
                 ->where('designation', 'employee')
                 ->get();
 
-            $users = DB::table('employees')
+            $users =DB::connection('mysql')->table('employees')
                 ->where('designation', 'intern')
                 ->get();
         }
@@ -789,28 +789,28 @@ class HrController extends Controller
     {
         try {
 
-            DB::beginTransaction();
+           DB::connection('mysql')->beginTransaction();
 
-            $exists = DB::table('assign')
+            $exists =DB::connection('mysql')->table('assign')
                 ->where('mentor_id', $request->mentor_id)
                 ->where('employee_id', $request->user_id)
                 ->exists();
 
             if ($exists) {
 
-                DB::rollBack();
+               DB::connection('mysql')->rollBack();
 
                 return redirect()->back()->with('error', 'This student is already assigned to this mentor.');
             }
 
-            DB::table('assign')->insert([
+           DB::connection('mysql')->table('assign')->insert([
                 'assign_type' => $request->assign_type,
                 'mentor_id'   => $request->mentor_id,
                 'employee_id' => $request->user_id,
                 'created_at'  => Carbon::now('Asia/Kolkata'),
             ]);
 
-            DB::table('logs')->insert([
+           DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Assign Student',
                 'module' => 'Assign',
@@ -819,12 +819,12 @@ class HrController extends Controller
                 'updated_at' => Carbon::now('Asia/Kolkata')
             ]);
 
-            DB::commit();
+           DB::connection('mysql')->commit();
 
             return redirect()->back()->with('success', 'Employee assign Successfully');
         } catch (\Exception $e) {
 
-            DB::rollBack();
+           DB::connection('mysql')->rollBack();
 
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
@@ -835,7 +835,7 @@ class HrController extends Controller
     public function hr_assign_employee_list()
     {
 
-       $assign = DB::table('assign')
+       $assign =DB::connection('mysql')->table('assign')
  
     ->get()
     ->groupBy('mentor_id');
@@ -848,9 +848,9 @@ class HrController extends Controller
 {
     try {
 
-        DB::beginTransaction();
+       DB::connection('mysql')->beginTransaction();
 
-        $ass = DB::table('assign')->where('id', $id)->first();
+        $ass =DB::connection('mysql')->table('assign')->where('id', $id)->first();
 
         if (!$ass) {
             return redirect()->back()->with('error', 'Record not found');
@@ -858,13 +858,13 @@ class HrController extends Controller
 
         $newStatus = $ass->status == 1 ? 0 : 1;
 
-        DB::table('assign')
+       DB::connection('mysql')->table('assign')
             ->where('id', $id)
             ->update([
                 'status' => $newStatus
             ]);
 
-        DB::table('logs')->insert([
+       DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Status',
             'module' => 'Assign',
@@ -873,26 +873,26 @@ class HrController extends Controller
             'updated_at' => Carbon::now('Asia/Kolkata')
         ]);
 
-        DB::commit();
+       DB::connection('mysql')->commit();
 
         return redirect()->back()->with('success', 'Status Updated Successfully');
 
     } catch (\Exception $e) {
 
-        DB::rollBack();
+       DB::connection('mysql')->rollBack();
 
         return redirect()->back()->with('error', 'Something went wrong: '.$e->getMessage());
     }
 }
 public function hr_assign_employee_edit($id)
 {
-    $assign = DB::table('assign')->where('id', $id)->first();
+    $assign =DB::connection('mysql')->table('assign')->where('id', $id)->first();
 
-    $mentor = DB::table('employees')->where('id', $assign->mentor_id)->first();
+    $mentor =DB::connection('mysql')->table('employees')->where('id', $assign->mentor_id)->first();
 
-    $employee = DB::table('employees')->where('id', $assign->employee_id)->first();
+    $employee =DB::connection('mysql')->table('employees')->where('id', $assign->employee_id)->first();
 
-    $designation = DB::table('designation')->get();
+    $designation =DB::connection('mysql')->table('designation')->get();
 
     return view('hr.edit_assign_employee', compact(
         'assign',
@@ -903,21 +903,21 @@ public function hr_assign_employee_edit($id)
 }
 public function hr_assign_employee_delete($id)
 {
-    DB::table('assign')->where('id', $id)->delete();
+   DB::connection('mysql')->table('assign')->where('id', $id)->delete();
 
     return redirect()->back()->with('success','Assignment Deleted Successfully');
 }
 public function assign_employee_update(Request $request, $id)
 {
 
-    DB::table('assign')
+   DB::connection('mysql')->table('assign')
         ->where('id', $id)
         ->update([
             'assign_type' => $request->assign_type,
             'mentor_id' => $request->mentor_id,
             'employee_id' => $request->user_id
         ]);
-    DB::table('logs')->insert([
+   DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Update',
             'module' => 'Assign',

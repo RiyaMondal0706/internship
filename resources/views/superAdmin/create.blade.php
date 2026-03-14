@@ -572,7 +572,7 @@
             var state_id = $(this).val();
 
             $.ajax({
-                url: '/get-districts/' + state_id,
+                url: '/superadmin/get-districts/' + state_id,
                 type: 'GET',
 
                 success: function(data) {
@@ -630,7 +630,7 @@
 
                     // AJAX to get Subdepartments
                     $.ajax({
-                        url: '/get-subdepartments/' + deptId,
+                        url: '/superadmin/get-subdepartments/' + deptId,
                         type: 'GET',
                         success: function(response) {
                             var options = '<option value="">Choose Subdepartment</option>';
@@ -660,7 +660,7 @@
                 if (subId != "") {
                     // AJAX to get Designations for selected Subdepartment
                     $.ajax({
-                        url: '/get-designations/' + subId,
+                        url: '/superadmin/get-designations/' + subId,
                         type: 'GET',
                         success: function(response) {
                             var options = '<option value="">Choose Designation</option>';

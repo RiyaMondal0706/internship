@@ -17,7 +17,7 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        $user = DB::table('users')
+        $user =DB::connection('mysql')->table('users')
             ->where('email', $request->email)
             ->where('status',1)
             ->first();

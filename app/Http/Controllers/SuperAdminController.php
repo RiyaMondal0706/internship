@@ -19,17 +19,17 @@ class SuperAdminController extends Controller
 
     public function create()
     {
-        $state = DB::table('states')
+        $state =DB::connection('mysql')->table('states')
             ->get();
-        $compay = DB::table('companis')
+        $compay =DB::connection('mysql')->table('companis')
             ->get();
-        $department = DB::table('departments')
+        $department =DB::connection('mysql')->table('departments')
             ->get();
         return view('superAdmin.create', compact('state', 'compay', 'department'));
     }
-    public function getDistricts($state_id)
+    public function superadmin_getDistricts($state_id)
     {
-        $districts = DB::table('districts')->where('state_id', $state_id)->get();
+        $districts =DB::connection('mysql')->table('districts')->where('state_id', $state_id)->get();
 
         return response()->json($districts);
     }
@@ -103,7 +103,7 @@ class SuperAdminController extends Controller
 
 
         // Save Employee
-        $id =  DB::table('employees')->insertGetId([
+        $id = DB::connection('mysql')->table('employees')->insertGetId([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -147,7 +147,7 @@ class SuperAdminController extends Controller
 
         ]);
 
-        DB::table('employees')
+       DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->update([
                 'employee_code'       => $request->company . '-' . $id,
@@ -168,7 +168,7 @@ class SuperAdminController extends Controller
         }
 
 
-        DB::table('users')->insert([
+       DB::connection('mysql')->table('users')->insert([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($plainPassword),
@@ -191,34 +191,34 @@ class SuperAdminController extends Controller
     }
     public function hr_list()
     {
-        $hrs = DB::table('employees')
+        $hrs =DB::connection('mysql')->table('employees')
             ->whereIn('subdepartment', [20, 21])
             ->get();
         return view("superadmin.hr_list", compact('hrs'));
     }
     public function hr_viewProfile($id)
     {
-        $tm =  DB::table('employees')
+        $tm = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.hr_profile', compact('tm'));
     }
     public function hr_edit($id)
     { {
-            $user = DB::table('employees')
+            $user =DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->first();
 
-            $state = DB::table('states')->get();
+            $state =DB::connection('mysql')->table('states')->get();
 
-            $districs = DB::table('districts')->get();
+            $districs =DB::connection('mysql')->table('districts')->get();
 
-            $department = DB::table('departments')->get();
-            $subdepartment = DB::table('subdepartment')
+            $department =DB::connection('mysql')->table('departments')->get();
+            $subdepartment =DB::connection('mysql')->table('subdepartment')
                 ->where('id', $user->subdepartment)
                 ->first();
 
-            $company = DB::table('companis')->get(); // fixed variable name
+            $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
             return view('superadmin.hr_profile_edit', compact(
                 'user',
@@ -236,22 +236,22 @@ class SuperAdminController extends Controller
 
     public function hr_status($id)
     {
-        $hr = DB::table('employees')->where('id', $id)->first();
+        $hr =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
         if ($hr->status == 1) {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $hr->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $hr->employee_code)
                 ->update(['status' => 1]);
         }
@@ -261,7 +261,7 @@ class SuperAdminController extends Controller
 
     public function project_manager_list()
     {
-        $pms = DB::table('employees')
+        $pms =DB::connection('mysql')->table('employees')
             ->whereIn('subdepartment', [26, 27])
             ->get();
 
@@ -269,22 +269,22 @@ class SuperAdminController extends Controller
     }
     public function pm_status($id)
     {
-        $pm = DB::table('employees')->where('id', $id)->first();
+        $pm =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
         if ($pm->status == 1) {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $pm->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $pm->employee_code)
                 ->update(['status' => 1]);
         }
@@ -294,7 +294,7 @@ class SuperAdminController extends Controller
 
     public function pm_viewProfile($id)
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.pm_profile', compact('tm'));
@@ -304,20 +304,20 @@ class SuperAdminController extends Controller
 
     public function pm_edit($id)
     {
-        $user = DB::table('employees')
+        $user =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state = DB::table('states')->get();
+        $state =DB::connection('mysql')->table('states')->get();
 
-        $districs = DB::table('districts')->get();
+        $districs =DB::connection('mysql')->table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
+        $department =DB::connection('mysql')->table('departments')->get();
+        $subdepartment =DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('superadmin.pm_profile_edit', compact(
             'user',
@@ -335,7 +335,7 @@ class SuperAdminController extends Controller
 
         // dd("ok");
         // 2. Fetch existing HR record
-        $user = DB::table('pr_data')->where('id', $id)->first();
+        $user =DB::connection('mysql')->table('pr_data')->where('id', $id)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'HR not found.');
@@ -365,9 +365,9 @@ class SuperAdminController extends Controller
         }
 
         // 5. Update HR record
-        DB::table('pr_data')->where('id', $id)->update($data);
+       DB::connection('mysql')->table('pr_data')->where('id', $id)->update($data);
 
-        DB::table('users')
+       DB::connection('mysql')->table('users')
             ->where('email', $user->email)
             ->update([
                 'email' => $request->email,
@@ -380,23 +380,23 @@ class SuperAdminController extends Controller
 
     public function pm_delete($id)
     {
-        DB::table('pr_data')->where('id', $id)->delete();
+       DB::connection('mysql')->table('pr_data')->where('id', $id)->delete();
 
         $employeeId = 'pm-' . $id;
-        DB::table('users')->where('employee_id', $employeeId)->delete();
+       DB::connection('mysql')->table('users')->where('employee_id', $employeeId)->delete();
 
         return redirect()->back()->with('success', 'HR deleted successfully');
     }
 
-    public function getDesignation($id)
+    public function superadmin_getDesignation($id)
     {
-        $designation = DB::table('designations')->where('department_id', $id)->get();
+        $designation =DB::connection('mysql')->table('designations')->where('department_id', $id)->get();
 
         return response()->json($designation);
     }
     public function mentor_list()
     {
-        $mentors = DB::table('employees')
+        $mentors =DB::connection('mysql')->table('employees')
             ->where('designation', 'employee')
             ->get();
 
@@ -404,22 +404,22 @@ class SuperAdminController extends Controller
     }
     public function mentor_status($id)
     {
-        $mentor = DB::table('employees')->where('id', $id)->first();
+        $mentor =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
         if ($mentor->status == 1) {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $mentor->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $mentor->employee_code)
                 ->update(['status' => 1]);
         }
@@ -430,7 +430,7 @@ class SuperAdminController extends Controller
 
     public function mentor_Profile($id)
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.mentor_profile', compact('tm'));
@@ -440,20 +440,20 @@ class SuperAdminController extends Controller
 
     public function mentor_edit($id)
     {
-        $user = DB::table('employees')
+        $user =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state = DB::table('states')->get();
+        $state =DB::connection('mysql')->table('states')->get();
 
-        $districs = DB::table('districts')->get();
+        $districs =DB::connection('mysql')->table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
+        $department =DB::connection('mysql')->table('departments')->get();
+        $subdepartment =DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('superadmin.mentor_profile_edit', compact(
             'user',
@@ -468,7 +468,7 @@ class SuperAdminController extends Controller
     public function mentor_update(Request $request, $id)
     {
 
-        $user = DB::table('mentor_data')->where('id', $id)->first();
+        $user =DB::connection('mysql')->table('mentor_data')->where('id', $id)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'Mentor not found.');
@@ -501,11 +501,11 @@ class SuperAdminController extends Controller
         }
 
         // Update mentor_data
-        DB::table('mentor_data')->where('id', $id)->update($data);
+       DB::connection('mysql')->table('mentor_data')->where('id', $id)->update($data);
 
 
         // 🔵 Update email in users table
-        DB::table('users')
+       DB::connection('mysql')->table('users')
             ->where('email', $user->email)
             ->update([
                 'email' => $request->email,
@@ -518,10 +518,10 @@ class SuperAdminController extends Controller
 
     public function mentor_delete($id)
     {
-        DB::table('mentor_data')->where('id', $id)->delete();
+       DB::connection('mysql')->table('mentor_data')->where('id', $id)->delete();
 
         $employeeId = 'mentor-' . $id;
-        DB::table('users')->where('employee_id', $employeeId)->delete();
+       DB::connection('mysql')->table('users')->where('employee_id', $employeeId)->delete();
 
         return redirect()->back()->with('success', 'HR deleted successfully');
     }
@@ -530,7 +530,7 @@ class SuperAdminController extends Controller
 
     public function tm_list()
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('designation', 'teamlead')
             ->get();
         return view("superadmin.tm_list", compact('tm'));
@@ -539,23 +539,23 @@ class SuperAdminController extends Controller
 
     public function tm_status($id)
     {
-        $tm = DB::table('employees')->where('id', $id)->first();
+        $tm =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
 
         if ($tm->status == 1) {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $tm->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $tm->employee_code)
                 ->update(['status' => 1]);
         }
@@ -565,7 +565,7 @@ class SuperAdminController extends Controller
 
     public function tm_Profile($id)
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.tm_profile', compact('tm'));
@@ -573,20 +573,20 @@ class SuperAdminController extends Controller
 
     public function tm_edit($id)
     {
-        $user = DB::table('employees')
+        $user =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state = DB::table('states')->get();
+        $state =DB::connection('mysql')->table('states')->get();
 
-        $districs = DB::table('districts')->get();
+        $districs =DB::connection('mysql')->table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
+        $department =DB::connection('mysql')->table('departments')->get();
+        $subdepartment =DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('superadmin.tm_profile_edit', compact(
             'user',
@@ -606,7 +606,7 @@ class SuperAdminController extends Controller
         // dd($request);
 
         // Get old employee
-        $employee = DB::table('employees')->where('id', $id)->first();
+        $employee =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
         if (!$employee) {
             return redirect()->back()->with('error', 'Employee not found');
@@ -653,7 +653,7 @@ class SuperAdminController extends Controller
         }
 
 
-        DB::table('employees')->where('id', $id)->update([
+       DB::connection('mysql')->table('employees')->where('id', $id)->update([
             'employee_code' => $request->company . $id,
             'name' => $request->name,
             'email' => $request->email,
@@ -696,7 +696,7 @@ class SuperAdminController extends Controller
 
         ]);
 
-        DB::table('users')
+       DB::connection('mysql')->table('users')
             ->where('email', $employee->email)
             ->update([
                 'email' => $request->email,
@@ -712,7 +712,7 @@ class SuperAdminController extends Controller
 
     public function intern_list()
     {
-        $interns = DB::table('employees')
+        $interns =DB::connection('mysql')->table('employees')
             ->where('designation', 'intern')
             ->get();
 
@@ -720,23 +720,23 @@ class SuperAdminController extends Controller
     }
     public function intern_status($id)
     {
-        $intern = DB::table('employees')->where('id', $id)->first();
+        $intern =DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
 
         if ($intern->status == 1) {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $intern->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-            DB::table('employees')
+           DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-            DB::table('users')
+           DB::connection('mysql')->table('users')
                 ->where('employee_id', $intern->employee_code)
                 ->update(['status' => 1]);
         }
@@ -746,7 +746,7 @@ class SuperAdminController extends Controller
 
     public function intern_Profile($id)
     {
-        $tm = DB::table('employees')
+        $tm =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.intern_profile', compact('tm'));
@@ -754,20 +754,20 @@ class SuperAdminController extends Controller
 
     public function intern_edit($id)
     {
-        $user = DB::table('employees')
+        $user =DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state = DB::table('states')->get();
+        $state =DB::connection('mysql')->table('states')->get();
 
-        $districs = DB::table('districts')->get();
+        $districs =DB::connection('mysql')->table('districts')->get();
 
-        $department = DB::table('departments')->get();
-        $subdepartment = DB::table('subdepartment')
+        $department =DB::connection('mysql')->table('departments')->get();
+        $subdepartment =DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company = DB::table('companis')->get(); // fixed variable name
+        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('superadmin.intern_profile_edit', compact(
             'user',
@@ -782,7 +782,7 @@ class SuperAdminController extends Controller
     public function intern_update(Request $request, $id)
     {
 
-        $user = DB::table('intern_data')->where('id', $id)->first();
+        $user =DB::connection('mysql')->table('intern_data')->where('id', $id)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'Mentor not found.');
@@ -815,10 +815,10 @@ class SuperAdminController extends Controller
         }
 
         // Update mentor_data
-        DB::table('intern_data')->where('id', $id)->update($data);
+       DB::connection('mysql')->table('intern_data')->where('id', $id)->update($data);
 
 
-        DB::table('users')
+       DB::connection('mysql')->table('users')
             ->where('email', $user->email)
             ->update([
                 'email' => $request->email,
@@ -832,7 +832,7 @@ class SuperAdminController extends Controller
 
     public function project_create()
     {
-        $department = DB::table('departments')
+        $department =DB::connection('mysql')->table('departments')
             ->get();
         return view('superAdmin.project_create', compact('department'));
     }
@@ -864,7 +864,7 @@ class SuperAdminController extends Controller
         }
 
         // Insert project
-        DB::table('project')->insert([
+       DB::connection('mysql_second')->table('project')->insert([
             'project_title' => $request->project_title,
             'company_name' => $request->company_name,
             'project_department' => $request->domain,
@@ -876,7 +876,7 @@ class SuperAdminController extends Controller
             'description' => $request->description,
             'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
         ]);
-        DB::table('logs')->insert([
+       DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Create',
             'module' => 'Project',
@@ -890,7 +890,7 @@ class SuperAdminController extends Controller
 
     public function project_pending()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('status', 0)
             ->get();
         return view('superAdmin.pending_project', compact('project'));
@@ -898,10 +898,10 @@ class SuperAdminController extends Controller
 
     public function details($id)
     {
-        $project = DB::table('project')->where('id', $id)->first();
+        $project =DB::connection('mysql_second')->table('project')->where('id', $id)->first();
 
         // get all old update requests
-        $oldData = DB::table('old_project_data')
+        $oldData =DB::connection('mysql_second')->table('old_project_data')
             ->where('project_id', $id)
 
             ->get();
@@ -912,38 +912,39 @@ class SuperAdminController extends Controller
     public function project_edit($id)
     {
 
-        $department = DB::table('departments')
+        $department =DB::connection('mysql')->table('departments')
             ->get();
 
-        $project = DB::table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('id', $id)
             ->first();
 
         return view('superAdmin.project_edit', compact('department', 'project'));
     }
 
-    public function getSubdepartments($departmentId)
-    {
-        $subdepartments =  DB::table('subdepartment')->where('department_id', $departmentId)->get();
+    public function superadmin_getSubdepartments($departmentId)
+    { 
+        $subdepartments = DB::connection('mysql')->table('subdepartment')->where('department_id', $departmentId)->get();
         return response()->json($subdepartments);
     }
 
-    public function getDesignations($subdepartmentId)
+    public function superadmin_getDesignations($subdepartmentId)
     {
-        $designations =  DB::table('designation')->get();
+      
+        $designations = DB::connection('mysql')->table('designation')->get();
         return response()->json($designations);
     }
 
     public function project_list()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->get();
 
         return view('superAdmin.project_list', compact('project'));
     }
     public function project_ongoing()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('status', 1)
             ->get();
 
@@ -952,7 +953,7 @@ class SuperAdminController extends Controller
 
     public function project_completed()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('status', 2)
             ->get();
 
@@ -960,7 +961,7 @@ class SuperAdminController extends Controller
     }
     public function project_hold_list()
     {
-        $project = DB::table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('status', 3)
             ->get();
 
@@ -969,9 +970,9 @@ class SuperAdminController extends Controller
 
     public function project_delete($id)
     {
-        DB::table('project')->where('id', $id)->delete();
+       DB::connection('mysql_second')->table('project')->where('id', $id)->delete();
 
-        DB::table('logs')->insert([
+       DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Delete',
             'module' => 'Project',
@@ -985,12 +986,12 @@ class SuperAdminController extends Controller
     public function project_hold($id)
     {
         //   dd(session('user_id'));
-        DB::table('project')
+       DB::connection('mysql')->table('project')
             ->where('id', $id)
             ->update([
                 'status' => 3,
             ]);
-        DB::table('logs')->insert([
+       DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Hold',
             'module' => 'Project',
@@ -1007,7 +1008,7 @@ class SuperAdminController extends Controller
 
     public function project_update($id, Request $request)
     {
-        $project = DB::table('project')->where('id', $id)->first();
+        $project =DB::connection('mysql')->table('project')->where('id', $id)->first();
 
         if (!$project) {
             return redirect()->back()->with('error', 'Project not found');
@@ -1023,7 +1024,7 @@ class SuperAdminController extends Controller
 
         if ($project->status == 0) {
 
-            DB::table('project')
+           DB::connection('mysql')->table('project')
                 ->where('id', $id)
                 ->update([
                     'project_title' => $request->project_title,
@@ -1038,7 +1039,7 @@ class SuperAdminController extends Controller
 
                 ]);
 
-            DB::table('logs')->insert([
+           DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Update',
                 'module' => 'Project',
@@ -1048,7 +1049,7 @@ class SuperAdminController extends Controller
             ]);
         } elseif ($project->status == 1) {
 
-            DB::table('old_project_data')->insert([
+           DB::connection('mysql')->table('old_project_data')->insert([
                 'project_id' => $id,
 
                 'project_title' => $request->project_title,
@@ -1063,7 +1064,7 @@ class SuperAdminController extends Controller
                 'created_at' => Carbon::now('Asia/Kolkata'),
             ]);
 
-            DB::table('logs')->insert([
+           DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Update Request',
                 'module' => 'Project',
@@ -1073,7 +1074,7 @@ class SuperAdminController extends Controller
             ]);
         } elseif ($project->status == 3) {
 
-            DB::table('old_project_data')->insert([
+           DB::connection('mysql')->table('old_project_data')->insert([
                 'project_id' => $id,
 
                 'project_title' => $request->project_title,
@@ -1088,7 +1089,7 @@ class SuperAdminController extends Controller
                 'created_at' => Carbon::now('Asia/Kolkata'),
             ]);
 
-            DB::table('logs')->insert([
+           DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Update Request',
                 'module' => 'Project',
@@ -1102,7 +1103,7 @@ class SuperAdminController extends Controller
 
     public function assign_student()
     {
-        $designation = DB::table('designation')
+        $designation =DB::connection('mysql')->table('designation')
             ->where('id', '!=', 1)
             ->get();
 
@@ -1112,7 +1113,7 @@ class SuperAdminController extends Controller
     public function submit_student(Request $request)
     {
 
-        $exists = DB::table('assign')
+        $exists =DB::connection('mysql')->table('assign')
             ->where('mentor_id', $request->mentor_id)
             ->where('employee_id', $request->user_id)
             ->exists();
@@ -1122,7 +1123,7 @@ class SuperAdminController extends Controller
         }
 
 
-        DB::table('assign')->insert([
+       DB::connection('mysql')->table('assign')->insert([
             'assign_type' => $request->assign_type,
             'mentor_id'   => $request->mentor_id,
             'employee_id' => $request->user_id,
@@ -1130,7 +1131,7 @@ class SuperAdminController extends Controller
         ]);
 
 
-        DB::table('logs')->insert([
+       DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Assign Student',
             'module' => 'Assign',
@@ -1146,7 +1147,7 @@ class SuperAdminController extends Controller
     public function assign_employee_list()
     {
 
-        $assign = DB::table('assign')
+        $assign =DB::connection('mysql')->table('assign')
             ->where('status', 1)
             ->get()
             ->groupBy('mentor_id');
@@ -1160,9 +1161,9 @@ class SuperAdminController extends Controller
     {
         try {
 
-            DB::beginTransaction();
+           DB::connection('mysql')->beginTransaction();
 
-            $ass = DB::table('assign')->where('id', $id)->first();
+            $ass =DB::connection('mysql')->table('assign')->where('id', $id)->first();
 
             if (!$ass) {
                 return redirect()->back()->with('error', 'Record not found');
@@ -1170,13 +1171,13 @@ class SuperAdminController extends Controller
 
             $newStatus = $ass->status == 1 ? 0 : 1;
 
-            DB::table('assign')
+           DB::connection('mysql')->table('assign')
                 ->where('id', $id)
                 ->update([
                     'status' => $newStatus
                 ]);
 
-            DB::table('logs')->insert([
+           DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Status',
                 'module' => 'Assign',
@@ -1185,25 +1186,25 @@ class SuperAdminController extends Controller
                 'updated_at' => Carbon::now('Asia/Kolkata')
             ]);
 
-            DB::commit();
+           DB::connection('mysql')->commit();
 
             return redirect()->back()->with('success', 'Status Updated Successfully');
         } catch (\Exception $e) {
 
-            DB::rollBack();
+           DB::connection('mysql')->rollBack();
 
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
     public function assign_employee_edit($id)
     {
-        $assign = DB::table('assign')->where('id', $id)->first();
+        $assign =DB::connection('mysql')->table('assign')->where('id', $id)->first();
 
-        $mentor = DB::table('employees')->where('id', $assign->mentor_id)->first();
+        $mentor =DB::connection('mysql')->table('employees')->where('id', $assign->mentor_id)->first();
 
-        $employee = DB::table('employees')->where('id', $assign->employee_id)->first();
+        $employee =DB::connection('mysql')->table('employees')->where('id', $assign->employee_id)->first();
 
-        $designation = DB::table('designation')
+        $designation =DB::connection('mysql')->table('designation')
             ->where('id', '!=', 1)
             ->get();
 
@@ -1216,21 +1217,21 @@ class SuperAdminController extends Controller
     }
     public function assign_employee_delete($id)
     {
-        DB::table('assign')->where('id', $id)->delete();
+       DB::connection('mysql')->table('assign')->where('id', $id)->delete();
 
         return redirect()->back()->with('success', 'Assignment Deleted Successfully');
     }
     public function superadmin_assign_employee_update(Request $request, $id)
     {
 
-        DB::table('assign')
+       DB::connection('mysql')->table('assign')
             ->where('id', $id)
             ->update([
                 'assign_type' => $request->assign_type,
                 'mentor_id' => $request->mentor_id,
                 'employee_id' => $request->user_id
             ]);
-        DB::table('logs')->insert([
+       DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Update',
             'module' => 'Assign',
@@ -1250,20 +1251,20 @@ class SuperAdminController extends Controller
 
         if ($type == 'employee') {
 
-            $mentors = DB::table('employees')
+            $mentors =DB::connection('mysql')->table('employees')
                 ->where('designation', 'teamlead')
                 ->get();
 
-            $users = DB::table('employees')
+            $users =DB::connection('mysql')->table('employees')
                 ->where('designation', 'employee')
                 ->get();
         } else {
 
-            $mentors = DB::table('employees')
+            $mentors =DB::connection('mysql')->table('employees')
                 ->where('designation', 'employee')
                 ->get();
 
-            $users = DB::table('employees')
+            $users =DB::connection('mysql')->table('employees')
                 ->where('designation', 'intern')
                 ->get();
         }
@@ -1276,7 +1277,7 @@ class SuperAdminController extends Controller
 
     public function assign_project()
     {
-        $designation = DB::table('designation')
+        $designation =DB::connection('mysql')->table('designation')
 
             ->get();
         return view('superAdmin.assign_projeect', compact('designation'));
@@ -1285,18 +1286,18 @@ class SuperAdminController extends Controller
     public function project_designationData(Request $request)
     {
 
-    $employees = DB::table('employees')
+    $employees =DB::connection('mysql')->table('employees')
         ->where('designation', $request->designation)
         ->get();
 
 
     // Get assigned project ids
-    $assignedProjects = DB::table('assign_project')
+    $assignedProjects =DB::connection('mysql')->table('assign_project')
         ->pluck('project_id');
 
 
     // Get available projects
-    $projects = DB::table('project')
+    $projects =DB::connection('mysql')->table('project')
         ->whereIn('status', [0,3])
         ->whereNotIn('id', $assignedProjects)
         ->get();
@@ -1309,7 +1310,7 @@ class SuperAdminController extends Controller
     }
 
 public function assign_project_employee_store(Request $request){
-    DB::table('assign_project')->insert([
+   DB::connection('mysql')->table('assign_project')->insert([
     'designation' => $request->designation,
    'employee_id' => $request->employee_id,
    'project_id'       => $request->project_id,

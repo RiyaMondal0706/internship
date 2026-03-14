@@ -20,7 +20,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
-        Route::get('/get-districts/{state_id}', [SuperAdminController::class, 'getDistricts']);
+        Route::get('/superadmin/get-districts/{state_id}', [SuperAdminController::class, 'superadmin_getDistricts']);
         Route::get('/superadmin/hr/list', [SuperAdminController::class, 'hr_list'])->name('hr.list');
         Route::get('/hr/profile/{id}', [SuperAdminController::class, 'hr_viewProfile'])->name('hr.view.profile');
         Route::get('/hr/{id}/edit', [SuperAdminController::class, 'hr_edit'])->name('hr.edit');
@@ -44,8 +44,8 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::put('/employee/{id}/update', [SuperAdminController::class, 'update'])->name('employee.update');
         Route::get('/superadmin/employee/create', [SuperAdminController::class, 'create'])->name('employee.create');
         Route::post('/superadmin/employee/store', [SuperAdminController::class, 'store'])->name('employee.store');
-        Route::get('/get-subdepartments/{departmentId}', [SuperAdminController::class, 'getSubdepartments']);
-        Route::get('/get-designations/{subdepartmentId}', [SuperAdminController::class, 'getDesignations']);
+        Route::get('/superadmin/get-subdepartments/{departmentId}', [SuperAdminController::class, 'superadmin_getSubdepartments']);
+        Route::get('/superadmin/get-designations/{subdepartmentId}', [SuperAdminController::class, 'superadmin_getDesignations']);
         Route::get('/superadmin/Project/create', [SuperAdminController::class, 'project_create'])->name('project.create');
         Route::post('/superadmin/Project/store', [SuperAdminController::class, 'project_store'])->name('project.store');
         Route::get('/superadmin/Intern/list', [SuperAdminController::class, 'intern_list'])->name('intern.list');
