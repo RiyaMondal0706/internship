@@ -71,18 +71,26 @@ Route::middleware(['role.session:superadmin'])->group(function () {
         Route::get('superadmin/assign-type-data', [SuperAdminController::class, 'superadmin_assignTypeData'])->name('superadmin.assign.type.data');
         Route::get('/assign/student/list', [SuperAdminController::class, 'assign_employee_list'])->name('assign.employee.list');
 
-Route::get('/superadmin/assign-employee-status/{id}', [SuperAdminController::class, 'assign_employee_status'])->name('assign_employee.status');
+        Route::get('/superadmin/assign-employee-status/{id}', [SuperAdminController::class, 'assign_employee_status'])->name('assign_employee.status');
         Route::get('/superadmin/assign-employee/edit/{id}', [SuperAdminController::class, 'assign_employee_edit'])
                 ->name('assign_employee.edit');
         Route::delete('/superadmin/assign-employee/delete/{id}', [SuperAdminController::class, 'assign_employee_delete'])
                 ->name('assign_employee.delete');
         Route::put('/superadmin/assign-employee/update/{id}', [SuperAdminController::class, 'superadmin_assign_employee_update'])
                 ->name('assign.student.update');
+        Route::get(
+                '/project/designation-data',
+                [SuperAdminController::class, 'project_designationData']
+        )
+                ->name('project.designation.data');
 
 
 
+        Route::post('/superadmin/assign-Project-employee/student', [SuperAdminController::class, 'assign_project_employee_store'])->name('assign.project.employee.store');
 
-        });
+
+
+});
 
 
 Route::middleware(['role.session:hr'])->group(function () {

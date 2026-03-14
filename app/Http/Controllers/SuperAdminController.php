@@ -1146,106 +1146,105 @@ class SuperAdminController extends Controller
     public function assign_employee_list()
     {
 
-       $assign = DB::table('assign')
-    ->where('status', 1)
-    ->get()
-    ->groupBy('mentor_id');
+        $assign = DB::table('assign')
+            ->where('status', 1)
+            ->get()
+            ->groupBy('mentor_id');
 
 
         return view('superAdmin.assign_employee_list', compact('assign'));
     }
 
 
-      public function assign_employee_status($id)
-{
-    try {
+    public function assign_employee_status($id)
+    {
+        try {
 
-        DB::beginTransaction();
+            DB::beginTransaction();
 
-        $ass = DB::table('assign')->where('id', $id)->first();
+            $ass = DB::table('assign')->where('id', $id)->first();
 
-        if (!$ass) {
-            return redirect()->back()->with('error', 'Record not found');
+            if (!$ass) {
+                return redirect()->back()->with('error', 'Record not found');
+            }
+
+            $newStatus = $ass->status == 1 ? 0 : 1;
+
+            DB::table('assign')
+                ->where('id', $id)
+                ->update([
+                    'status' => $newStatus
+                ]);
+
+            DB::table('logs')->insert([
+                'user_id' => session('user_id'),
+                'action' => 'Status',
+                'module' => 'Assign',
+                'description' => 'Assign Employee Status Update Assign-ID ' . $id,
+                'created_at' => Carbon::now('Asia/Kolkata'),
+                'updated_at' => Carbon::now('Asia/Kolkata')
+            ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Status Updated Successfully');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
+    }
+    public function assign_employee_edit($id)
+    {
+        $assign = DB::table('assign')->where('id', $id)->first();
 
-        $newStatus = $ass->status == 1 ? 0 : 1;
+        $mentor = DB::table('employees')->where('id', $assign->mentor_id)->first();
+
+        $employee = DB::table('employees')->where('id', $assign->employee_id)->first();
+
+        $designation = DB::table('designation')
+            ->where('id', '!=', 1)
+            ->get();
+
+        return view('superAdmin.edit_assign_employee', compact(
+            'assign',
+            'mentor',
+            'employee',
+            'designation'
+        ));
+    }
+    public function assign_employee_delete($id)
+    {
+        DB::table('assign')->where('id', $id)->delete();
+
+        return redirect()->back()->with('success', 'Assignment Deleted Successfully');
+    }
+    public function superadmin_assign_employee_update(Request $request, $id)
+    {
 
         DB::table('assign')
             ->where('id', $id)
             ->update([
-                'status' => $newStatus
+                'assign_type' => $request->assign_type,
+                'mentor_id' => $request->mentor_id,
+                'employee_id' => $request->user_id
             ]);
-
         DB::table('logs')->insert([
-            'user_id' => session('user_id'),
-            'action' => 'Status',
-            'module' => 'Assign',
-            'description' => 'Assign Employee Status Update Assign-ID '.$id,
-            'created_at' => Carbon::now('Asia/Kolkata'),
-            'updated_at' => Carbon::now('Asia/Kolkata')
-        ]);
-
-        DB::commit();
-
-        return redirect()->back()->with('success', 'Status Updated Successfully');
-
-    } catch (\Exception $e) {
-
-        DB::rollBack();
-
-        return redirect()->back()->with('error', 'Something went wrong: '.$e->getMessage());
-    }
-}
-public function assign_employee_edit($id)
-{
-    $assign = DB::table('assign')->where('id', $id)->first();
-
-    $mentor = DB::table('employees')->where('id', $assign->mentor_id)->first();
-
-    $employee = DB::table('employees')->where('id', $assign->employee_id)->first();
-
-$designation = DB::table('designation')
-    ->where('id', '!=', 1)
-    ->get();
-
-    return view('superAdmin.edit_assign_employee', compact(
-        'assign',
-        'mentor',
-        'employee',
-        'designation'
-    ));
-}
-public function assign_employee_delete($id)
-{
-    DB::table('assign')->where('id', $id)->delete();
-
-    return redirect()->back()->with('success','Assignment Deleted Successfully');
-}
-public function superadmin_assign_employee_update(Request $request, $id)
-{
-
-    DB::table('assign')
-        ->where('id', $id)
-        ->update([
-            'assign_type' => $request->assign_type,
-            'mentor_id' => $request->mentor_id,
-            'employee_id' => $request->user_id
-        ]);
-    DB::table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Update',
             'module' => 'Assign',
-            'description' => 'Assign Employee Update Assign-ID '.$id,
+            'description' => 'Assign Employee Update Assign-ID ' . $id,
             'created_at' => Carbon::now('Asia/Kolkata'),
             'updated_at' => Carbon::now('Asia/Kolkata')
         ]);
 
 
-    return redirect()->route('assign.employee.list')
-        ->with('success','Assignment Updated Successfully');
-}
+        return redirect()->route('assign.employee.list')
+            ->with('success', 'Assignment Updated Successfully');
+    }
 
-  public function superadmin_assignTypeData(Request $request)
+    public function superadmin_assignTypeData(Request $request)
     {
         $type = $request->type;
 
@@ -1275,7 +1274,54 @@ public function superadmin_assign_employee_update(Request $request, $id)
         ]);
     }
 
+    public function assign_project()
+    {
+        $designation = DB::table('designation')
 
+            ->get();
+        return view('superAdmin.assign_projeect', compact('designation'));
+    }
+
+    public function project_designationData(Request $request)
+    {
+
+    $employees = DB::table('employees')
+        ->where('designation', $request->designation)
+        ->get();
+
+
+    // Get assigned project ids
+    $assignedProjects = DB::table('assign_project')
+        ->pluck('project_id');
+
+
+    // Get available projects
+    $projects = DB::table('project')
+        ->whereIn('status', [0,3])
+        ->whereNotIn('id', $assignedProjects)
+        ->get();
+
+
+    return response()->json([
+        'employees' => $employees,
+        'projects' => $projects
+    ]);
+    }
+
+public function assign_project_employee_store(Request $request){
+    DB::table('assign_project')->insert([
+    'designation' => $request->designation,
+   'employee_id' => $request->employee_id,
+   'project_id'       => $request->project_id,
+    'work'       => $request->work,
+    'created_at'  => Carbon::now('Asia/Kolkata'),
+]);
+
+        return redirect()->back()->with('success', 'Assignment Project to employee Successfully');
+
+
+
+}
 
 
 
