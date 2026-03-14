@@ -959,14 +959,16 @@ class SuperAdminController extends Controller
 
         return view('superAdmin.completed_project', compact('project'));
     }
-    public function project_hold_list()
-    {
-        $project =DB::connection('mysql_second')->table('project')
-            ->where('status', 3)
-            ->get();
+public function project_hold_list()
+{
+    $project = DB::connection('mysql_second')
+        ->table('project')
+        ->where('status', 3)
+        ->get();
 
-        return view('superAdmin.hold_project', compact('project'));
-    }
+    return view('superAdmin.hold_project', compact('project'));
+}
+
 
     public function project_delete($id)
     {
@@ -1385,5 +1387,58 @@ public function assign_project_status($id)
 
     }
 }
+
+public function superadmin_reassignSame($projectId)
+{
+// dd("ok");
+   DB::connection('mysql_second')
+            ->table('project')
+        ->where('id',$projectId)
+        ->update([
+            'status'=>1
+        ]);
+           DB::connection('mysql_second')
+        ->table('assign_project')
+            ->where('project_id',$projectId)
+        ->update([
+            'status'=>1
+        ]);
+
+    return back()->with('success','Project reassigned to same person');
+}
+
+
+public function superadmin_reassignNew($projectId,$employeeId)
+{
+   DB::connection('mysql_second')
+            ->table('assign_project')
+        ->where('project_id',$projectId)
+        ->update([
+            'employee_id'=>$employeeId,
+            'status'=>1
+        ]);
+
+           DB::connection('mysql_second')
+        ->table('project')
+            ->where('id',$projectId)
+        ->update([
+            'status'=>1
+        ]);
+
+    return back()->with('success','Project reassigned successfully');
+}
+
+public function superadmin_getEmployees($designation)
+{
+    $employees = DB::connection('mysql')
+        ->table('employees')
+        ->where('designation', $designation)
+        ->get();
+
+    return response()->json($employees);
+}
+
+
+
 
 }

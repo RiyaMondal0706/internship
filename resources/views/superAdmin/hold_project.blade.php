@@ -13,10 +13,9 @@
 
     <style>
         #main-content {
-            margin-left: var(--sidebar-width);
-            width: calc(100% - var(--sidebar-width));
+            margin-left: 260px;
+            width: calc(100% - 260px);
             min-height: 100vh;
-            transition: .3s;
         }
     </style>
 
@@ -24,25 +23,23 @@
 
 <body>
 
-
     @include('layouts.superadmin.sidebar')
 
     <div id="main-content">
 
         @include('layouts.superadmin.header')
 
-
         <div class="container-fluid p-4">
 
-            <div class="card border-0 shadow-sm" style="border-radius:12px; overflow:hidden;">
+            <div class="card shadow-sm border-0">
 
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                <div class="card-header d-flex justify-content-between">
 
-                    <h6 class="mb-0 fw-bold text-dark">Project Management List</h6>
+                    <h6 class="fw-bold">Project Management List</h6>
 
                     <a href="{{ route('project.create') }}">
-                        <button class="btn btn-primary btn-sm px-3">
-                            <i class="bi bi-plus-lg me-1"></i> Add New
+                        <button class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-lg"></i> Add New
                         </button>
                     </a>
 
@@ -51,18 +48,18 @@
 
                 <div class="table-responsive">
 
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover">
 
                         <thead class="table-light">
 
-                            <tr style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">
+                            <tr>
 
-                                <th class="ps-4">Project Title</th>
-                                <th>Company Name</th>
+                                <th>Project Title</th>
+                                <th>Company</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Status</th>
-                                <th class="text-end pe-4">Actions</th>
+                                <th class="text-end">Action</th>
 
                             </tr>
 
@@ -72,19 +69,19 @@
                         <tbody>
 
                             @foreach ($project as $item)
-                                <tr style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">
+                                <tr>
 
-                                    <td class="ps-4">
+                                    <td>
 
-                                        <div class="fw-semibold">
-                                            {{ \Illuminate\Support\Str::limit($item->project_title, 10) }}
-                                        </div>
+                                        {{ \Illuminate\Support\Str::limit($item->project_title, 10) }}
 
-                                        <a href="javascript:void(0)"
-                                            class="btn btn-sm btn-outline-primary mt-1 viewProject"
+                                        <br>
+
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-primary viewProject"
                                             data-id="{{ $item->id }}">
 
-                                            <i class="bi bi-eye me-1"></i> Project Details
+                                            <i class="bi bi-eye"></i> Details
+
                                         </a>
 
                                     </td>
@@ -101,17 +98,17 @@
                                     <td>
 
                                         @php
+
                                             $endDate = \Carbon\Carbon::parse($item->end_date);
                                             $today = \Carbon\Carbon::today();
                                             $daysLeft = $today->diffInDays($endDate, false);
+
                                         @endphp
 
-                                        <!-- Normal Date -->
-                                        <span>{{ $endDate->format('d M Y') }}</span>
+                                        {{ $endDate->format('d M Y') }}
 
                                         <br>
 
-                                        <!-- Days Left with Color -->
                                         @if ($daysLeft <= 3)
                                             <span class="text-danger fw-bold">
                                                 {{ $daysLeft }} Days Left
@@ -128,37 +125,63 @@
 
                                     </td>
 
+
                                     <td>
 
                                         <span class="badge bg-danger">Hold</span>
 
                                     </td>
 
-                                    <td class="text-end pe-4">
 
-                                        <!-- Edit -->
+                                    <td class="text-end">
+
                                         <a href="{{ route('project.edit', $item->id) }}"
                                             class="btn btn-sm btn-light border">
-                                            <i class="bi bi-pencil-fill text-primary" title="Edit"></i>
+
+                                            <i class="bi bi-pencil-fill text-primary"></i>
+
                                         </a>
 
-                                        <!-- Reassign -->
-                                        <a href="{{ route('project.reassign', $item->id) }}"
-                                            class="btn btn-sm btn-light border">
-                                            <i class="bi bi-arrow-repeat text-info" title="Reassign"></i>
+                                        @php
+
+                                            $ass = DB::connection('mysql_second')
+                                                ->table('assign_project')
+                                                ->where('project_id', $item->id)
+                                                ->first();
+
+                                            $emp = DB::connection('mysql')
+                                                ->table('employees')
+                                                ->where('id', $ass->employee_id)
+                                                ->first();
+
+                                            if ($emp) {
+                                                $employeeName = $emp->name;
+                                            }
+
+                                        @endphp
+
+
+                                        <a href="#" class="btn btn-sm btn-light border reassignBtn"
+                                            data-id="{{ $item->id }}" data-name="{{ $employeeName }}">
+
+                                            <i class="bi bi-arrow-repeat text-info"></i>
+
                                         </a>
 
-                                        <!-- Delete -->
+
                                         <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                            class="delete-form" style="display:inline;">
+                                            style="display:inline;">
+
                                             @csrf
                                             @method('DELETE')
 
                                             <button type="button" class="btn btn-sm btn-light border delete-btn">
-                                                <i class="bi bi-trash text-danger" title="Delete Project"></i>
-                                            </button>
-                                        </form>
 
+                                                <i class="bi bi-trash text-danger"></i>
+
+                                            </button>
+
+                                        </form>
 
                                     </td>
 
@@ -178,37 +201,6 @@
     </div>
 
 
-
-    <!-- PROJECT DETAILS MODAL -->
-
-    <div class="modal fade" id="projectModal" tabindex="-1" aria-hidden="true">
-
-        <div class="modal-dialog modal-lg">
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Project Details</h5>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body" id="projectDetails">
-
-                    <div class="text-center p-4">
-                        <div class="spinner-border text-primary"></div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -220,55 +212,141 @@
 
     <script>
         document.querySelectorAll('.delete-btn').forEach(button => {
+
             button.addEventListener('click', function() {
 
                 let form = this.closest('form');
 
                 Swal.fire({
+
                     title: "Are you sure?",
-                    text: "You want to delete this project!",
+                    text: "Delete this project?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, Delete it!"
+                    confirmButtonText: "Yes Delete"
+
                 }).then((result) => {
+
                     if (result.isConfirmed) {
                         form.submit();
                     }
+
                 });
 
             });
+
         });
     </script>
 
 
-    <!-- AJAX PROJECT DETAILS -->
+    <!-- REASSIGN SCRIPT -->
 
     <script>
-        $(document).on("click", ".viewProject", function() {
+        $(document).on('click', '.reassignBtn', function() {
 
-            let project_id = $(this).data("id");
+            let projectId = $(this).data('id');
+            let personName = $(this).data('name');
 
-            let modal = new bootstrap.Modal(document.getElementById('projectModal'));
-            modal.show();
+            Swal.fire({
 
-            $("#projectDetails").html(
-                '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>'
-            );
+                title: "Reassign Project",
 
-            $.ajax({
-                url: "{{ url('/superadmin/project/details') }}/" + project_id,
-                method: "GET",
+                html: `
+<p>Current Person : <b>${personName}</b></p>
+<p>Do you want same person?</p>
+`,
 
-                success: function(response) {
-                    $("#projectDetails").html(response);
-                },
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
 
-                error: function() {
-                    $("#projectDetails").html("<div class='text-danger'>Error loading project</div>");
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    window.location.href = "/superadmin/project/reassign/" + projectId + "/same";
+
+                } else {
+
+                    Swal.fire({
+
+                        title: "Select Employee",
+
+                        html: `
+
+<select id="designation" class="swal2-input">
+
+<option value="">Select Designation</option>
+<option value="teamlead">Team Leader</option>
+<option value="mentor">Mentor</option>
+<option value="intern">Intern</option>
+
+</select>
+
+<select id="employee" class="swal2-input">
+
+<option value="">Select Employee</option>
+
+</select>
+
+`,
+
+                        confirmButtonText: "Assign"
+
+                    }).then(() => {
+
+                        let emp = $("#employee").val();
+
+                        if (emp) {
+
+                            window.location.href = "/superadmin/project/reassign/" + projectId +
+                                "/new/" + emp;
+
+                        }
+
+                    });
+
                 }
+
             });
+
+        });
+    </script>
+
+
+    <!-- LOAD EMPLOYEE -->
+
+    <script>
+        $(document).on('change', '#designation', function() {
+
+            let designation = $(this).val();
+
+            if (designation != '') {
+
+                $.ajax({
+
+                    url: "/superadmin/get-employees/" + designation,
+                    type: "GET",
+
+                    success: function(data) {
+
+                        $("#employee").html('<option value="">Select Employee</option>');
+
+                        $.each(data, function(key, value) {
+
+                            $("#employee").append(
+                                '<option value="' + value.id + '">' + value.name +
+                                '</option>'
+                            );
+
+                        });
+
+                    }
+
+                });
+
+            }
 
         });
     </script>

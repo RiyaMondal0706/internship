@@ -91,8 +91,9 @@ Route::middleware(['role.session:superadmin'])->group(function () {
 
 Route::get('/assign-project-status/{id}', [SuperAdminController::class, 'assign_project_status'])
     ->name('assign_project.status');
-
-
+Route::get('/superadmin/project/reassign/{project}/same',[SuperAdminController::class,'superadmin_reassignSame']);
+Route::get('/superadmin/project/reassign/{project}/new/{employee}',[SuperAdminController::class,'superadmin_reassignNew']);
+Route::get('/superadmin/get-employees/{designation}', [SuperAdminController::class,'superadmin_getEmployees']);
 
 
 

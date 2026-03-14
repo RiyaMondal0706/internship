@@ -6,15 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    protected $connection = 'mysql';
+
     public function up(): void
     {
         Schema::create('subdepartment', function (Blueprint $table) {
-             $table->id();
+            $table->id();
             $table->integer('department_id')->nullable()->index();
-            $table->string('subdepartment_name',100);
+            $table->string('subdepartment_name', 100);
             $table->timestamps();
         });
     }
