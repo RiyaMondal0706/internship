@@ -137,12 +137,12 @@
     <nav id="sidebar">
         <div class="brand-area">
             <h5 class="text-white fw-bold mb-0">
-                <i class="bi bi-person-workspace me-2 text-primary"></i> SUPERADMIN
+                <i class="bi bi-person-workspace me-2 text-primary"></i> HR
             </h5>
         </div>
 
         <div class="nav flex-column mt-3">
-            <a href="{{ route('superadmin.dashboard') }}" class="nav-link active">
+            <a href="{{ route('hr.dashboard') }}" class="nav-link active">
                 <i class="bi bi-speedometer2 me-3"></i>Dashboard
             </a>
             <div class="nav-item">
@@ -153,12 +153,6 @@
 
                 <ul class="collapse list-unstyled mb-0" id="employeesMenu">
 
-                    <!-- CREATE -->
-                    <li class="nav-item">
-                        <a href="{{ route('employee.create') }}" class="nav-link">
-                            <i class="bi bi-plus-circle me-2"></i> Create
-                        </a>
-                    </li>
 
                     <!-- LIST -->
                     <li class="nav-item">
@@ -168,11 +162,12 @@
                         </a>
 
                         <ul class="collapse list-unstyled" id="employeeListMenu">
-                            <li><a href="{{ route('hr.list') }}" class="nav-link">HR</a></li>
-                            <li><a href="{{ route('project_manager.list') }}" class="nav-link">Project Manager</a></li>
-                            <li><a href="{{ route('tm.list') }}" class="nav-link">Team Leader</a></li>
-                            <li><a href="{{ route('mentor.list') }}" class="nav-link">Employee</a></li>
-                            <li><a href="{{ route('intern.list') }}" class="nav-link">Intern</a></li>
+                            <li><a href="{{ route('pm.hr_list') }}" class="nav-link">HR</a></li>
+                            <li><a href="{{ route('pm.project_manager.list') }}" class="nav-link">Project Manager</a>
+                            </li>
+                            <li><a href="{{ route('pm.tm.list') }}" class="nav-link">Team Leader</a></li>
+                            <li><a href="{{ route('pm.mentor.list') }}" class="nav-link">Employee</a></li>
+                            <li><a href="{{ route('pm.intern.list') }}" class="nav-link">Intern</a></li>
                         </ul>
                     </li>
 
@@ -188,35 +183,35 @@
                 <ul class="collapse list-unstyled ps-4" id="projectMenu">
 
                     <li>
-                        <a href="{{ route('project.list') }}" class="nav-link">
+                        <a href="{{ route('pm.project.list') }}" class="nav-link">
                             <i class="bi bi-list me-2"></i> List
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('project.ongoing') }}" class="nav-link">
+                        <a href="{{ route('pm.project.ongoing') }}" class="nav-link">
                             <i class="bi bi-play-circle me-2"></i> Ongoing
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('project.pending') }}" class="nav-link">
+                        <a href="{{ route('pm.project.pending') }}" class="nav-link">
                             <i class="bi bi-hourglass-split me-2"></i> Pending
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('project.hold.list') }}" class="nav-link">
+                        <a href="{{ route('pm.project.hold.list') }}" class="nav-link">
                             <i class="bi bi-pause-circle me-2"></i> Hold
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('project.completed') }}"class="nav-link">
+                        <a href="{{ route('pm.project.completed') }}"class="nav-link">
                             <i class="bi bi-check-circle me-2"></i> Completed
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('project.create') }}" class="nav-link">
+                        <a href="{{ route('pm.project.create') }}" class="nav-link">
                             <i class="bi bi-plus-circle me-2"></i> Create
                         </a>
                     </li>
@@ -230,93 +225,43 @@
                     <i class="bi bi-diagram-3 me-3"></i> Assign
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
+
                 <div class="collapse" id="assignMenu">
 
-                    <ul class="nav flex-column ms-3">
-
-                        <!-- PROJECT MENU -->
-                        <li class="nav-item">
-
-                            <a class="nav-link" data-bs-toggle="collapse" href="#assignProjectMenu">
-                                <i class="bi bi-kanban me-2"></i> Project
-                                <i class="bi bi-chevron-down float-end"></i>
-                            </a>
-
-                            <div class="collapse" id="assignProjectMenu">
-
-                                <ul class="nav flex-column ms-4">
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('assign.project') }}" class="nav-link">
-                                            <i class="bi bi-plus-circle me-2"></i> Assign Project
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('assign.project.list') }}" class="nav-link">
-                                            <i class="bi bi-list-check me-2"></i> Project List
-                                        </a>
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        </li>
 
 
-                        <!-- EMPLOYEE MENU -->
-                        <li class="nav-item">
-
-                            <a class="nav-link" data-bs-toggle="collapse" href="#assignEmployeeMenu">
-                                <i class="bi bi-person-check me-2"></i> Employee
-                                <i class="bi bi-chevron-down float-end"></i>
-                            </a>
-
-                            <div class="collapse" id="assignEmployeeMenu">
-
-                                <ul class="nav flex-column ms-4">
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('assign.student') }}" class="nav-link">
-                                            <i class="bi bi-person-plus me-2"></i> Assign Employee
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('assign.employee.list') }}" class="nav-link">
-                                            <i class="bi bi-list-ul me-2"></i> Employee List
-                                        </a>
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                        </li>
-
-                    </ul>
-
-                </div>
-            <li class="nav-item">
-
-                <a class="nav-link" data-bs-toggle="collapse" href="#archiveMenu">
-                    <i class="bi bi-archive me-3"></i> Archive
-                    <i class="bi bi-chevron-down float-end"></i>
-                </a>
-
-                <div class="collapse" id="archiveMenu">
+                    <!-- Assign Student Dropdown -->
                     <ul class="nav flex-column ms-4">
 
-                        <li class="nav-item">
-                            <a href="{{ route('archive.project.list') }}" class="nav-link">
-                                <i class="bi bi-folder me-2"></i> Archive Project
-                            </a>
-                        </li>
+                        <a class="nav-link" data-bs-toggle="collapse" href="#assignStudentMenu">
+                            <i class="bi bi-person-check me-2"></i> Assign Employee
+                            <i class="bi bi-chevron-down float-end"></i>
+                        </a>
+
+                        <div class="collapse" id="assignStudentMenu">
+                            <ul class="nav flex-column ms-4">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('hr.assign.student') }}" class="nav-link">
+                                        <i class="bi bi-person-plus me-2"></i> Assign Employee
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('hr.assign.employee.list') }}" class="nav-link">
+                                        <i class="bi bi-list-check me-2"></i> Assign Employee List
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+
 
                     </ul>
+
                 </div>
 
-            </li>
+            </li> <a href="#" class="nav-link"><i class="bi bi-gear me-3"></i>Settings</a>
         </div>
     </nav>

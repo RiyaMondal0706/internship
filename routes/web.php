@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SuperAdminController;
 
+use App\Http\Controllers\porjectmanagerController;
+
 Route::get('/', function () {
         return view('welcome');
 });
@@ -83,20 +85,18 @@ Route::middleware(['role.session:superadmin'])->group(function () {
                 [SuperAdminController::class, 'project_designationData']
         )
                 ->name('project.designation.data');
-
-
-
         Route::post('/superadmin/assign-Project-employee/student', [SuperAdminController::class, 'assign_project_employee_store'])->name('assign.project.employee.store');
         Route::get('superadmin/assign/project/list', [SuperAdminController::class, 'assign_project_list'])->name('assign.project.list');
-
-Route::get('/assign-project-status/{id}', [SuperAdminController::class, 'assign_project_status'])
-    ->name('assign_project.status');
-Route::get('/superadmin/project/reassign/{project}/same',[SuperAdminController::class,'superadmin_reassignSame']);
-Route::get('/superadmin/project/reassign/{project}/new/{employee}',[SuperAdminController::class,'superadmin_reassignNew']);
-Route::get('/superadmin/get-employees/{designation}', [SuperAdminController::class,'superadmin_getEmployees']);
-
-
-
+        Route::get('/assign-project-status/{id}', [SuperAdminController::class, 'assign_project_status'])
+                ->name('assign_project.status');
+        Route::get('/superadmin/project/reassign/{project}/same', [SuperAdminController::class, 'superadmin_reassignSame']);
+        Route::get('/superadmin/project/reassign/{project}/new/{employee}', [SuperAdminController::class, 'superadmin_reassignNew']);
+        Route::get('/superadmin/get-employees/{designation}', [SuperAdminController::class, 'superadmin_getEmployees']);
+        Route::get('/superadmin/project/archive/{id}', [SuperAdminController::class, 'archive'])->name('project.archive');
+        Route::get('/superadmin/archive-project-list', [SuperAdminController::class, 'archive_project_list'])
+                ->name('archive.project.list');
+        Route::post('/project/delete/{id}', [SuperAdminController::class, 'project_archive_delete'])
+                ->name('archive.project.delete');
 });
 
 
@@ -143,4 +143,34 @@ Route::middleware(['role.session:hr'])->group(function () {
                 ->name('hr.assign_employee.delete');
         Route::put('/hr/assign-employee/update/{id}', [HRController::class, 'assign_employee_update'])
                 ->name('hr.assign.student.update');
+});
+
+
+
+Route::middleware(['role.session:projectmanager'])->group(function () {
+        Route::get('/projectmanager/dashboard', [porjectmanagerController::class, 'pm_dashboard'])->name('pm.dashboard');
+        Route::get('/Project-Manager/list', [porjectmanagerController::class, 'pm_list_show'])->name('pm.hr_list');
+        Route::get('/Project-Manager/hr-profile/{id}', [porjectmanagerController::class, 'pm_hr_view_Profile'])->name('pm.hr_view.profile');
+        Route::get('/Project-Manager/project-manager/list', [porjectmanagerController::class, 'pm_project_manager_list'])->name('pm.project_manager.list');
+        Route::get('/Project-Manager/Team-leader/list', [porjectmanagerController::class, 'pm_tm_list'])->name('pm.tm.list');
+        Route::get('/Project-Manager/mentor/list', [porjectmanagerController::class, 'pm_mentor_list'])->name('pm.mentor.list');
+        Route::get('/Project-Manager/Intern/list', [porjectmanagerController::class, 'pm_intern_list'])->name('pm.intern.list');
+        Route::get('/Project-Manager/Project/create', [porjectmanagerController::class, 'pm_project_create'])->name('pm.project.create');
+        Route::post('/Project-Manager/Project/store', [porjectmanagerController::class, 'pm_project_store'])->name('pm.project.store');
+        Route::get('/Project-Manager/Project/list', [porjectmanagerController::class, 'pm_project_list'])->name('pm.project.list');
+        Route::get('/Project-Manager/Project/ongoing', [porjectmanagerController::class, 'pm_project_ongoing'])->name('pm.project.ongoing');
+        Route::get('/Project-Manager/Project/pending', [porjectmanagerController::class, 'pm_project_pending'])->name('pm.project.pending');
+        Route::get('/Project-Manager/Project/hold', [porjectmanagerController::class, 'pm_project_hold_list'])->name('pm.project.hold.list');
+        Route::get('/Project_Manager/Project/completed', [porjectmanagerController::class, 'pm_project_completed'])->name('pm.project.completed');
+        Route::get('/Project-Manager/project/details/{id}', [porjectmanagerController::class, 'pm_project_details']);
+        Route::get('/Project-Manager/project/edit/{id}', [porjectmanagerController::class, 'pm_project_edit'])->name('pm.project.edit');
+        Route::put('/Project-Manager/project/update/{id}', [porjectmanagerController::class, 'pm_project_update'])->name('pm.project.update');
+
+
+
+
+
+
+
+
 });

@@ -203,6 +203,7 @@ class HrController extends Controller
     {
         $hrs =DB::connection('mysql')->table('employees')
             ->whereIn('subdepartment', [20, 21])
+            ->where('status', 1)
             ->get();
         return view("hr.hr_list", compact('hrs'));
     }

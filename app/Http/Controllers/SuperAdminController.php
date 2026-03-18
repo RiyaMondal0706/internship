@@ -19,17 +19,17 @@ class SuperAdminController extends Controller
 
     public function create()
     {
-        $state =DB::connection('mysql')->table('states')
+        $state = DB::connection('mysql')->table('states')
             ->get();
-        $compay =DB::connection('mysql')->table('companis')
+        $compay = DB::connection('mysql')->table('companis')
             ->get();
-        $department =DB::connection('mysql')->table('departments')
+        $department = DB::connection('mysql')->table('departments')
             ->get();
         return view('superAdmin.create', compact('state', 'compay', 'department'));
     }
     public function superadmin_getDistricts($state_id)
     {
-        $districts =DB::connection('mysql')->table('districts')->where('state_id', $state_id)->get();
+        $districts = DB::connection('mysql')->table('districts')->where('state_id', $state_id)->get();
 
         return response()->json($districts);
     }
@@ -147,7 +147,7 @@ class SuperAdminController extends Controller
 
         ]);
 
-       DB::connection('mysql')->table('employees')
+        DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->update([
                 'employee_code'       => $request->company . '-' . $id,
@@ -168,7 +168,7 @@ class SuperAdminController extends Controller
         }
 
 
-       DB::connection('mysql')->table('users')->insert([
+        DB::connection('mysql')->table('users')->insert([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($plainPassword),
@@ -191,7 +191,7 @@ class SuperAdminController extends Controller
     }
     public function hr_list()
     {
-        $hrs =DB::connection('mysql')->table('employees')
+        $hrs = DB::connection('mysql')->table('employees')
             ->whereIn('subdepartment', [20, 21])
             ->get();
         return view("superadmin.hr_list", compact('hrs'));
@@ -205,20 +205,20 @@ class SuperAdminController extends Controller
     }
     public function hr_edit($id)
     { {
-            $user =DB::connection('mysql')->table('employees')
+            $user = DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->first();
 
-            $state =DB::connection('mysql')->table('states')->get();
+            $state = DB::connection('mysql')->table('states')->get();
 
-            $districs =DB::connection('mysql')->table('districts')->get();
+            $districs = DB::connection('mysql')->table('districts')->get();
 
-            $department =DB::connection('mysql')->table('departments')->get();
-            $subdepartment =DB::connection('mysql')->table('subdepartment')
+            $department = DB::connection('mysql')->table('departments')->get();
+            $subdepartment = DB::connection('mysql')->table('subdepartment')
                 ->where('id', $user->subdepartment)
                 ->first();
 
-            $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
+            $company = DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
             return view('superadmin.hr_profile_edit', compact(
                 'user',
@@ -236,22 +236,22 @@ class SuperAdminController extends Controller
 
     public function hr_status($id)
     {
-        $hr =DB::connection('mysql')->table('employees')->where('id', $id)->first();
+        $hr = DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
         if ($hr->status == 1) {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $hr->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $hr->employee_code)
                 ->update(['status' => 1]);
         }
@@ -261,7 +261,7 @@ class SuperAdminController extends Controller
 
     public function project_manager_list()
     {
-        $pms =DB::connection('mysql')->table('employees')
+        $pms = DB::connection('mysql')->table('employees')
             ->whereIn('subdepartment', [26, 27])
             ->get();
 
@@ -269,22 +269,22 @@ class SuperAdminController extends Controller
     }
     public function pm_status($id)
     {
-        $pm =DB::connection('mysql')->table('employees')->where('id', $id)->first();
+        $pm = DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
         if ($pm->status == 1) {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $pm->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $pm->employee_code)
                 ->update(['status' => 1]);
         }
@@ -294,7 +294,7 @@ class SuperAdminController extends Controller
 
     public function pm_viewProfile($id)
     {
-        $tm =DB::connection('mysql')->table('employees')
+        $tm = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.pm_profile', compact('tm'));
@@ -304,20 +304,20 @@ class SuperAdminController extends Controller
 
     public function pm_edit($id)
     {
-        $user =DB::connection('mysql')->table('employees')
+        $user = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state =DB::connection('mysql')->table('states')->get();
+        $state = DB::connection('mysql')->table('states')->get();
 
-        $districs =DB::connection('mysql')->table('districts')->get();
+        $districs = DB::connection('mysql')->table('districts')->get();
 
-        $department =DB::connection('mysql')->table('departments')->get();
-        $subdepartment =DB::connection('mysql')->table('subdepartment')
+        $department = DB::connection('mysql')->table('departments')->get();
+        $subdepartment = DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
+        $company = DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('superadmin.pm_profile_edit', compact(
             'user',
@@ -335,7 +335,7 @@ class SuperAdminController extends Controller
 
         // dd("ok");
         // 2. Fetch existing HR record
-        $user =DB::connection('mysql')->table('pr_data')->where('id', $id)->first();
+        $user = DB::connection('mysql')->table('pr_data')->where('id', $id)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'HR not found.');
@@ -365,9 +365,9 @@ class SuperAdminController extends Controller
         }
 
         // 5. Update HR record
-       DB::connection('mysql')->table('pr_data')->where('id', $id)->update($data);
+        DB::connection('mysql')->table('pr_data')->where('id', $id)->update($data);
 
-       DB::connection('mysql')->table('users')
+        DB::connection('mysql')->table('users')
             ->where('email', $user->email)
             ->update([
                 'email' => $request->email,
@@ -380,23 +380,23 @@ class SuperAdminController extends Controller
 
     public function pm_delete($id)
     {
-       DB::connection('mysql')->table('pr_data')->where('id', $id)->delete();
+        DB::connection('mysql')->table('pr_data')->where('id', $id)->delete();
 
         $employeeId = 'pm-' . $id;
-       DB::connection('mysql')->table('users')->where('employee_id', $employeeId)->delete();
+        DB::connection('mysql')->table('users')->where('employee_id', $employeeId)->delete();
 
         return redirect()->back()->with('success', 'HR deleted successfully');
     }
 
     public function superadmin_getDesignation($id)
     {
-        $designation =DB::connection('mysql')->table('designations')->where('department_id', $id)->get();
+        $designation = DB::connection('mysql')->table('designations')->where('department_id', $id)->get();
 
         return response()->json($designation);
     }
     public function mentor_list()
     {
-        $mentors =DB::connection('mysql')->table('employees')
+        $mentors = DB::connection('mysql')->table('employees')
             ->where('designation', 'employee')
             ->get();
 
@@ -404,22 +404,22 @@ class SuperAdminController extends Controller
     }
     public function mentor_status($id)
     {
-        $mentor =DB::connection('mysql')->table('employees')->where('id', $id)->first();
+        $mentor = DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
         if ($mentor->status == 1) {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $mentor->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $mentor->employee_code)
                 ->update(['status' => 1]);
         }
@@ -430,7 +430,7 @@ class SuperAdminController extends Controller
 
     public function mentor_Profile($id)
     {
-        $tm =DB::connection('mysql')->table('employees')
+        $tm = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.mentor_profile', compact('tm'));
@@ -440,20 +440,20 @@ class SuperAdminController extends Controller
 
     public function mentor_edit($id)
     {
-        $user =DB::connection('mysql')->table('employees')
+        $user = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state =DB::connection('mysql')->table('states')->get();
+        $state = DB::connection('mysql')->table('states')->get();
 
-        $districs =DB::connection('mysql')->table('districts')->get();
+        $districs = DB::connection('mysql')->table('districts')->get();
 
-        $department =DB::connection('mysql')->table('departments')->get();
-        $subdepartment =DB::connection('mysql')->table('subdepartment')
+        $department = DB::connection('mysql')->table('departments')->get();
+        $subdepartment = DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
+        $company = DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('superadmin.mentor_profile_edit', compact(
             'user',
@@ -468,7 +468,7 @@ class SuperAdminController extends Controller
     public function mentor_update(Request $request, $id)
     {
 
-        $user =DB::connection('mysql')->table('mentor_data')->where('id', $id)->first();
+        $user = DB::connection('mysql')->table('mentor_data')->where('id', $id)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'Mentor not found.');
@@ -501,11 +501,11 @@ class SuperAdminController extends Controller
         }
 
         // Update mentor_data
-       DB::connection('mysql')->table('mentor_data')->where('id', $id)->update($data);
+        DB::connection('mysql')->table('mentor_data')->where('id', $id)->update($data);
 
 
         // 🔵 Update email in users table
-       DB::connection('mysql')->table('users')
+        DB::connection('mysql')->table('users')
             ->where('email', $user->email)
             ->update([
                 'email' => $request->email,
@@ -518,10 +518,10 @@ class SuperAdminController extends Controller
 
     public function mentor_delete($id)
     {
-       DB::connection('mysql')->table('mentor_data')->where('id', $id)->delete();
+        DB::connection('mysql')->table('mentor_data')->where('id', $id)->delete();
 
         $employeeId = 'mentor-' . $id;
-       DB::connection('mysql')->table('users')->where('employee_id', $employeeId)->delete();
+        DB::connection('mysql')->table('users')->where('employee_id', $employeeId)->delete();
 
         return redirect()->back()->with('success', 'HR deleted successfully');
     }
@@ -530,7 +530,7 @@ class SuperAdminController extends Controller
 
     public function tm_list()
     {
-        $tm =DB::connection('mysql')->table('employees')
+        $tm = DB::connection('mysql')->table('employees')
             ->where('designation', 'teamlead')
             ->get();
         return view("superadmin.tm_list", compact('tm'));
@@ -539,23 +539,23 @@ class SuperAdminController extends Controller
 
     public function tm_status($id)
     {
-        $tm =DB::connection('mysql')->table('employees')->where('id', $id)->first();
+        $tm = DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
 
         if ($tm->status == 1) {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $tm->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $tm->employee_code)
                 ->update(['status' => 1]);
         }
@@ -565,7 +565,7 @@ class SuperAdminController extends Controller
 
     public function tm_Profile($id)
     {
-        $tm =DB::connection('mysql')->table('employees')
+        $tm = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.tm_profile', compact('tm'));
@@ -573,20 +573,20 @@ class SuperAdminController extends Controller
 
     public function tm_edit($id)
     {
-        $user =DB::connection('mysql')->table('employees')
+        $user = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state =DB::connection('mysql')->table('states')->get();
+        $state = DB::connection('mysql')->table('states')->get();
 
-        $districs =DB::connection('mysql')->table('districts')->get();
+        $districs = DB::connection('mysql')->table('districts')->get();
 
-        $department =DB::connection('mysql')->table('departments')->get();
-        $subdepartment =DB::connection('mysql')->table('subdepartment')
+        $department = DB::connection('mysql')->table('departments')->get();
+        $subdepartment = DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
+        $company = DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('superadmin.tm_profile_edit', compact(
             'user',
@@ -606,7 +606,7 @@ class SuperAdminController extends Controller
         // dd($request);
 
         // Get old employee
-        $employee =DB::connection('mysql')->table('employees')->where('id', $id)->first();
+        $employee = DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
         if (!$employee) {
             return redirect()->back()->with('error', 'Employee not found');
@@ -653,7 +653,7 @@ class SuperAdminController extends Controller
         }
 
 
-       DB::connection('mysql')->table('employees')->where('id', $id)->update([
+        DB::connection('mysql')->table('employees')->where('id', $id)->update([
             'employee_code' => $request->company . $id,
             'name' => $request->name,
             'email' => $request->email,
@@ -696,7 +696,7 @@ class SuperAdminController extends Controller
 
         ]);
 
-       DB::connection('mysql')->table('users')
+        DB::connection('mysql')->table('users')
             ->where('email', $employee->email)
             ->update([
                 'email' => $request->email,
@@ -712,7 +712,7 @@ class SuperAdminController extends Controller
 
     public function intern_list()
     {
-        $interns =DB::connection('mysql')->table('employees')
+        $interns = DB::connection('mysql')->table('employees')
             ->where('designation', 'intern')
             ->get();
 
@@ -720,23 +720,23 @@ class SuperAdminController extends Controller
     }
     public function intern_status($id)
     {
-        $intern =DB::connection('mysql')->table('employees')->where('id', $id)->first();
+        $intern = DB::connection('mysql')->table('employees')->where('id', $id)->first();
 
 
         if ($intern->status == 1) {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 0]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $intern->employee_code)
                 ->update(['status' => 0]);
         } else {
 
-           DB::connection('mysql')->table('employees')
+            DB::connection('mysql')->table('employees')
                 ->where('id', $id)
                 ->update(['status' => 1]);
-           DB::connection('mysql')->table('users')
+            DB::connection('mysql')->table('users')
                 ->where('employee_id', $intern->employee_code)
                 ->update(['status' => 1]);
         }
@@ -746,7 +746,7 @@ class SuperAdminController extends Controller
 
     public function intern_Profile($id)
     {
-        $tm =DB::connection('mysql')->table('employees')
+        $tm = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
         return view('superadmin.intern_profile', compact('tm'));
@@ -754,20 +754,20 @@ class SuperAdminController extends Controller
 
     public function intern_edit($id)
     {
-        $user =DB::connection('mysql')->table('employees')
+        $user = DB::connection('mysql')->table('employees')
             ->where('id', $id)
             ->first();
 
-        $state =DB::connection('mysql')->table('states')->get();
+        $state = DB::connection('mysql')->table('states')->get();
 
-        $districs =DB::connection('mysql')->table('districts')->get();
+        $districs = DB::connection('mysql')->table('districts')->get();
 
-        $department =DB::connection('mysql')->table('departments')->get();
-        $subdepartment =DB::connection('mysql')->table('subdepartment')
+        $department = DB::connection('mysql')->table('departments')->get();
+        $subdepartment = DB::connection('mysql')->table('subdepartment')
             ->where('id', $user->subdepartment)
             ->first();
 
-        $company =DB::connection('mysql')->table('companis')->get(); // fixed variable name
+        $company = DB::connection('mysql')->table('companis')->get(); // fixed variable name
 
         return view('superadmin.intern_profile_edit', compact(
             'user',
@@ -782,7 +782,7 @@ class SuperAdminController extends Controller
     public function intern_update(Request $request, $id)
     {
 
-        $user =DB::connection('mysql')->table('intern_data')->where('id', $id)->first();
+        $user = DB::connection('mysql')->table('intern_data')->where('id', $id)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'Mentor not found.');
@@ -815,10 +815,10 @@ class SuperAdminController extends Controller
         }
 
         // Update mentor_data
-       DB::connection('mysql')->table('intern_data')->where('id', $id)->update($data);
+        DB::connection('mysql')->table('intern_data')->where('id', $id)->update($data);
 
 
-       DB::connection('mysql')->table('users')
+        DB::connection('mysql')->table('users')
             ->where('email', $user->email)
             ->update([
                 'email' => $request->email,
@@ -832,7 +832,7 @@ class SuperAdminController extends Controller
 
     public function project_create()
     {
-        $department =DB::connection('mysql')->table('departments')
+        $department = DB::connection('mysql')->table('departments')
             ->get();
         return view('superAdmin.project_create', compact('department'));
     }
@@ -864,7 +864,7 @@ class SuperAdminController extends Controller
         }
 
         // Insert project
-       DB::connection('mysql_second')->table('project')->insert([
+        DB::connection('mysql_second')->table('project')->insert([
             'project_title' => $request->project_title,
             'company_name' => $request->company_name,
             'project_department' => $request->domain,
@@ -876,7 +876,7 @@ class SuperAdminController extends Controller
             'description' => $request->description,
             'created_at' => Carbon::now('Asia/Kolkata')->toDateString(),
         ]);
-       DB::connection('mysql')->table('logs')->insert([
+        DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Create',
             'module' => 'Project',
@@ -890,7 +890,7 @@ class SuperAdminController extends Controller
 
     public function project_pending()
     {
-        $project =DB::connection('mysql_second')->table('project')
+        $project = DB::connection('mysql_second')->table('project')
             ->where('status', 0)
             ->get();
         return view('superAdmin.pending_project', compact('project'));
@@ -898,10 +898,10 @@ class SuperAdminController extends Controller
 
     public function superadmin_details($id)
     {
-        $project =DB::connection('mysql_second')->table('project')->where('id', $id)->first();
+        $project = DB::connection('mysql_second')->table('project')->where('id', $id)->first();
 
         // get all old update requests
-        $oldData =DB::connection('mysql_second')->table('old_project_data')
+        $oldData = DB::connection('mysql_second')->table('old_project_data')
             ->where('project_id', $id)
 
             ->get();
@@ -912,10 +912,10 @@ class SuperAdminController extends Controller
     public function project_edit($id)
     {
 
-        $department =DB::connection('mysql')->table('departments')
+        $department = DB::connection('mysql')->table('departments')
             ->get();
 
-        $project =DB::connection('mysql_second')->table('project')
+        $project = DB::connection('mysql_second')->table('project')
             ->where('id', $id)
             ->first();
 
@@ -923,28 +923,30 @@ class SuperAdminController extends Controller
     }
 
     public function superadmin_getSubdepartments($departmentId)
-    { 
+    {
         $subdepartments = DB::connection('mysql')->table('subdepartment')->where('department_id', $departmentId)->get();
         return response()->json($subdepartments);
     }
 
     public function superadmin_getDesignations($subdepartmentId)
     {
-      
+
         $designations = DB::connection('mysql')->table('designation')->get();
         return response()->json($designations);
     }
 
     public function project_list()
     {
-        $project =DB::connection('mysql_second')->table('project')
+        $project = DB::connection('mysql_second')
+            ->table('project')
+            ->whereNotIn('status', [4, 5])
             ->get();
 
         return view('superAdmin.project_list', compact('project'));
     }
     public function project_ongoing()
     {
-        $project =DB::connection('mysql_second')->table('project')
+        $project = DB::connection('mysql_second')->table('project')
             ->where('status', 1)
             ->get();
 
@@ -953,28 +955,28 @@ class SuperAdminController extends Controller
 
     public function project_completed()
     {
-        $project =DB::connection('mysql_second')->table('project')
+        $project = DB::connection('mysql_second')->table('project')
             ->where('status', 2)
             ->get();
 
         return view('superAdmin.completed_project', compact('project'));
     }
-public function project_hold_list()
-{
-    $project = DB::connection('mysql_second')
-        ->table('project')
-        ->where('status', 3)
-        ->get();
+    public function project_hold_list()
+    {
+        $project = DB::connection('mysql_second')
+            ->table('project')
+            ->where('status', 3)
+            ->get();
 
-    return view('superAdmin.hold_project', compact('project'));
-}
+        return view('superAdmin.hold_project', compact('project'));
+    }
 
 
     public function project_delete($id)
     {
-       DB::connection('mysql_second')->table('project')->where('id', $id)->delete();
+        DB::connection('mysql_second')->table('project')->where('id', $id)->delete();
 
-       DB::connection('mysql')->table('logs')->insert([
+        DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Delete',
             'module' => 'Project',
@@ -988,12 +990,12 @@ public function project_hold_list()
     public function project_hold($id)
     {
         //   dd(session('user_id'));
-       DB::connection('mysql_second')->table('project')
+        DB::connection('mysql_second')->table('project')
             ->where('id', $id)
             ->update([
                 'status' => 3,
             ]);
-       DB::connection('mysql')->table('logs')->insert([
+        DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Hold',
             'module' => 'Project',
@@ -1010,7 +1012,7 @@ public function project_hold_list()
 
     public function project_update($id, Request $request)
     {
-        $project =DB::connection('mysql')->table('project')->where('id', $id)->first();
+        $project = DB::connection('mysql_second')->table('project')->where('id', $id)->first();
 
         if (!$project) {
             return redirect()->back()->with('error', 'Project not found');
@@ -1026,7 +1028,7 @@ public function project_hold_list()
 
         if ($project->status == 0) {
 
-           DB::connection('mysql')->table('project')
+            DB::connection('mysql_second')->table('project')
                 ->where('id', $id)
                 ->update([
                     'project_title' => $request->project_title,
@@ -1041,7 +1043,7 @@ public function project_hold_list()
 
                 ]);
 
-           DB::connection('mysql')->table('logs')->insert([
+            DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Update',
                 'module' => 'Project',
@@ -1051,7 +1053,7 @@ public function project_hold_list()
             ]);
         } elseif ($project->status == 1) {
 
-           DB::connection('mysql')->table('old_project_data')->insert([
+            DB::connection('mysql')->table('old_project_data')->insert([
                 'project_id' => $id,
 
                 'project_title' => $request->project_title,
@@ -1066,7 +1068,7 @@ public function project_hold_list()
                 'created_at' => Carbon::now('Asia/Kolkata'),
             ]);
 
-           DB::connection('mysql')->table('logs')->insert([
+            DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Update Request',
                 'module' => 'Project',
@@ -1076,7 +1078,7 @@ public function project_hold_list()
             ]);
         } elseif ($project->status == 3) {
 
-           DB::connection('mysql')->table('old_project_data')->insert([
+            DB::connection('mysql_second')->table('old_project_data')->insert([
                 'project_id' => $id,
 
                 'project_title' => $request->project_title,
@@ -1091,7 +1093,7 @@ public function project_hold_list()
                 'created_at' => Carbon::now('Asia/Kolkata'),
             ]);
 
-           DB::connection('mysql')->table('logs')->insert([
+            DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Update Request',
                 'module' => 'Project',
@@ -1105,7 +1107,7 @@ public function project_hold_list()
 
     public function assign_student()
     {
-        $designation =DB::connection('mysql')->table('designation')
+        $designation = DB::connection('mysql')->table('designation')
             ->where('id', '!=', 1)
             ->get();
 
@@ -1115,7 +1117,7 @@ public function project_hold_list()
     public function submit_student(Request $request)
     {
 
-        $exists =DB::connection('mysql')->table('assign')
+        $exists = DB::connection('mysql')->table('assign')
             ->where('mentor_id', $request->mentor_id)
             ->where('employee_id', $request->user_id)
             ->exists();
@@ -1125,7 +1127,7 @@ public function project_hold_list()
         }
 
 
-       DB::connection('mysql')->table('assign')->insert([
+        DB::connection('mysql')->table('assign')->insert([
             'assign_type' => $request->assign_type,
             'mentor_id'   => $request->mentor_id,
             'employee_id' => $request->user_id,
@@ -1133,7 +1135,7 @@ public function project_hold_list()
         ]);
 
 
-       DB::connection('mysql')->table('logs')->insert([
+        DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Assign Student',
             'module' => 'Assign',
@@ -1149,7 +1151,7 @@ public function project_hold_list()
     public function assign_employee_list()
     {
 
-        $assign =DB::connection('mysql')->table('assign')
+        $assign = DB::connection('mysql')->table('assign')
             ->where('status', 1)
             ->get()
             ->groupBy('mentor_id');
@@ -1163,9 +1165,9 @@ public function project_hold_list()
     {
         try {
 
-           DB::connection('mysql')->beginTransaction();
+            DB::connection('mysql')->beginTransaction();
 
-            $ass =DB::connection('mysql')->table('assign')->where('id', $id)->first();
+            $ass = DB::connection('mysql')->table('assign')->where('id', $id)->first();
 
             if (!$ass) {
                 return redirect()->back()->with('error', 'Record not found');
@@ -1173,13 +1175,13 @@ public function project_hold_list()
 
             $newStatus = $ass->status == 1 ? 0 : 1;
 
-           DB::connection('mysql')->table('assign')
+            DB::connection('mysql')->table('assign')
                 ->where('id', $id)
                 ->update([
                     'status' => $newStatus
                 ]);
 
-           DB::connection('mysql')->table('logs')->insert([
+            DB::connection('mysql')->table('logs')->insert([
                 'user_id' => session('user_id'),
                 'action' => 'Status',
                 'module' => 'Assign',
@@ -1188,25 +1190,25 @@ public function project_hold_list()
                 'updated_at' => Carbon::now('Asia/Kolkata')
             ]);
 
-           DB::connection('mysql')->commit();
+            DB::connection('mysql')->commit();
 
             return redirect()->back()->with('success', 'Status Updated Successfully');
         } catch (\Exception $e) {
 
-           DB::connection('mysql')->rollBack();
+            DB::connection('mysql')->rollBack();
 
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
     public function assign_employee_edit($id)
     {
-        $assign =DB::connection('mysql')->table('assign')->where('id', $id)->first();
+        $assign = DB::connection('mysql')->table('assign')->where('id', $id)->first();
 
-        $mentor =DB::connection('mysql')->table('employees')->where('id', $assign->mentor_id)->first();
+        $mentor = DB::connection('mysql')->table('employees')->where('id', $assign->mentor_id)->first();
 
-        $employee =DB::connection('mysql')->table('employees')->where('id', $assign->employee_id)->first();
+        $employee = DB::connection('mysql')->table('employees')->where('id', $assign->employee_id)->first();
 
-        $designation =DB::connection('mysql')->table('designation')
+        $designation = DB::connection('mysql')->table('designation')
             ->where('id', '!=', 1)
             ->get();
 
@@ -1219,21 +1221,27 @@ public function project_hold_list()
     }
     public function assign_employee_delete($id)
     {
-       DB::connection('mysql')->table('assign')->where('id', $id)->delete();
+        DB::connection('mysql')->table('assign')->where('id', $id)->delete();
 
         return redirect()->back()->with('success', 'Assignment Deleted Successfully');
     }
-    public function superadmin_assign_employee_update(Request $request, $id)
-    {
+public function superadmin_assign_employee_update(Request $request, $id)
+{
+    try {
 
-       DB::connection('mysql')->table('assign')
+        DB::beginTransaction();
+
+        // Update assign table
+        DB::connection('mysql')->table('assign')
             ->where('id', $id)
             ->update([
                 'assign_type' => $request->assign_type,
                 'mentor_id' => $request->mentor_id,
                 'employee_id' => $request->user_id
             ]);
-       DB::connection('mysql')->table('logs')->insert([
+
+        // Insert log
+        DB::connection('mysql')->table('logs')->insert([
             'user_id' => session('user_id'),
             'action' => 'Update',
             'module' => 'Assign',
@@ -1242,31 +1250,39 @@ public function project_hold_list()
             'updated_at' => Carbon::now('Asia/Kolkata')
         ]);
 
+        DB::commit();
 
         return redirect()->route('assign.employee.list')
             ->with('success', 'Assignment Updated Successfully');
-    }
 
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return redirect()->back()
+            ->with('error', 'Something went wrong: ' . $e->getMessage());
+    }
+}
     public function superadmin_assignTypeData(Request $request)
     {
         $type = $request->type;
 
         if ($type == 'employee') {
 
-            $mentors =DB::connection('mysql')->table('employees')
+            $mentors = DB::connection('mysql')->table('employees')
                 ->where('designation', 'teamlead')
                 ->get();
 
-            $users =DB::connection('mysql')->table('employees')
+            $users = DB::connection('mysql')->table('employees')
                 ->where('designation', 'employee')
                 ->get();
         } else {
 
-            $mentors =DB::connection('mysql')->table('employees')
+            $mentors = DB::connection('mysql')->table('employees')
                 ->where('designation', 'employee')
                 ->get();
 
-            $users =DB::connection('mysql')->table('employees')
+            $users = DB::connection('mysql')->table('employees')
                 ->where('designation', 'intern')
                 ->get();
         }
@@ -1279,166 +1295,323 @@ public function project_hold_list()
 
     public function assign_project()
     {
-        $designation =DB::connection('mysql')->table('designation')
+        $designation = DB::connection('mysql')->table('designation')
 
             ->get();
         return view('superAdmin.assign_projeect', compact('designation'));
     }
 
-    public function project_designationData(Request $request)
-    {
+ public function project_designationData(Request $request)
+{
+    try {
 
-    $employees =DB::connection('mysql')->table('employees')
-        ->where('designation', $request->designation)
-        ->get();
+        // Get employees by designation
+        $employees = DB::connection('mysql')
+            ->table('employees')
+            ->where('designation', $request->designation)
+            ->get();
 
+        // Get assigned project ids
+        $assignedProjects = DB::connection('mysql_second')
+            ->table('assign_project')
+            ->pluck('project_id');
 
-    // Get assigned project ids
-    $assignedProjects =DB::connection('mysql_second')->table('assign_project')
-        ->pluck('project_id');
+        // Get available projects
+        $projects = DB::connection('mysql_second')
+            ->table('project')
+            ->whereIn('status', [0, 3])
+            ->whereNotIn('id', $assignedProjects)
+            ->get();
 
+        return response()->json([
+            'employees' => $employees,
+            'projects' => $projects
+        ]);
 
-    // Get available projects
-    $projects =DB::connection('mysql_second')->table('project')
-        ->whereIn('status', [0,3])
-        ->whereNotIn('id', $assignedProjects)
-        ->get();
+    } catch (\Exception $e) {
 
-
-    return response()->json([
-        'employees' => $employees,
-        'projects' => $projects
-    ]);
+        return response()->json([
+            'error' => 'Something went wrong',
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
 
-public function assign_project_employee_store(Request $request){
-   DB::connection('mysql_second')->table('assign_project')->insert([
-    'designation' => $request->designation,
-   'employee_id' => $request->employee_id,
-   'project_id'       => $request->project_id,
-    'work'       => $request->work,
-    'created_at'  => Carbon::now('Asia/Kolkata'),
-]);
+ public function assign_project_employee_store(Request $request)
+{
+    try {
 
- DB::connection('mysql')->table('logs')->insert([
-                'user_id' => session('user_id'),
-                'action' => 'Assign',
-                'module' => 'Assign',
-                'description' => 'Assign project Status  Project-ID ' .$request->project_id,
-                'created_at' => Carbon::now('Asia/Kolkata'),
-                'updated_at' => Carbon::now('Asia/Kolkata')
-            ]);
+        DB::beginTransaction();
 
-                DB::connection('mysql_second')->table('project')
+        // Insert into assign_project
+        DB::connection('mysql_second')->table('assign_project')->insert([
+            'designation' => $request->designation,
+            'employee_id' => $request->employee_id,
+            'project_id'  => $request->project_id,
+            'work'        => $request->work,
+            'created_at'  => Carbon::now('Asia/Kolkata'),
+        ]);
+
+        // Insert log
+        DB::connection('mysql')->table('logs')->insert([
+            'user_id' => session('user_id'),
+            'action' => 'Assign',
+            'module' => 'Assign',
+            'description' => 'Assign project Status Project-ID ' . $request->project_id,
+            'created_at' => Carbon::now('Asia/Kolkata'),
+            'updated_at' => Carbon::now('Asia/Kolkata')
+        ]);
+
+        // Update project status
+        DB::connection('mysql_second')->table('project')
             ->where('id', $request->project_id)
             ->update([
                 'status' => 1,
             ]);
+
+        DB::commit();
+
         return redirect()->back()->with('success', 'Assignment Project to employee Successfully');
-
-
-
-}
-public function assign_project_list(){
-
-    $ass =DB::connection('mysql_second')->table('assign_project')
-        ->get();
-
-    return view('superAdmin.assign_project_list',compact('ass'));
-}
-
-
-public function assign_project_status($id)
-{
-    try {
-
-        $project = DB::connection('mysql_second')
-            ->table('assign_project')
-            ->where('id', $id)
-            ->first();
-
-        if (!$project) {
-            return redirect()->back()->with('error', 'Project not found');
-        }
-
-        // Toggle assign_project status
-        $newStatus = $project->status == 1 ? 0 : 1;
-
-        DB::connection('mysql_second')
-            ->table('assign_project')
-            ->where('id', $id)
-            ->update(['status' => $newStatus]);
-
-        // Set project status based on assign_project status
-        $projectStatus = $newStatus == 1 ? 1 : 3;
-
-        DB::connection('mysql_second')
-            ->table('project')
-            ->where('id', $project->project_id)
-            ->update([
-                'status' => $projectStatus,
-            ]);
-
-        return redirect()->back()->with('success', 'Status updated successfully');
 
     } catch (\Exception $e) {
 
-        return redirect()->back()->with('error', $e->getMessage());
+        DB::rollBack();
 
+        return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+    }
+}
+    public function assign_project_list()
+    {
+        $ass = DB::connection('mysql_second')
+            ->table('assign_project')
+            ->where('status', 1)
+            ->get();
+
+        return view('superadmin.assign_project_list', compact('ass'));
+    }
+
+    public function assign_project_status($id)
+    {
+        try {
+
+            $project = DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('id', $id)
+                ->first();
+
+            if (!$project) {
+                return redirect()->back()->with('error', 'Project not found');
+            }
+
+            // Toggle assign_project status
+            $newStatus = $project->status == 1 ? 0 : 1;
+
+            DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('id', $id)
+                ->update(['status' => $newStatus]);
+
+            // Set project status based on assign_project status
+            $projectStatus = $newStatus == 1 ? 1 : 3;
+
+            DB::connection('mysql_second')
+                ->table('project')
+                ->where('id', $project->project_id)
+                ->update([
+                    'status' => $projectStatus,
+                ]);
+
+            return redirect()->back()->with('success', 'Status updated successfully');
+        } catch (\Exception $e) {
+
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function superadmin_reassignSame($projectId)
+{
+    try {
+
+        DB::beginTransaction();
+
+        // Update project table
+        DB::connection('mysql_second')
+            ->table('project')
+            ->where('id', $projectId)
+            ->update([
+                'status' => 1
+            ]);
+
+        // Update assign_project table
+        DB::connection('mysql_second')
+            ->table('assign_project')
+            ->where('project_id', $projectId)
+            ->update([
+                'status' => 1
+            ]);
+
+        DB::commit();
+
+        return back()->with('success', 'Project reassigned to same person');
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return back()->with('error', 'Something went wrong: ' . $e->getMessage());
     }
 }
 
-public function superadmin_reassignSame($projectId)
-{
-// dd("ok");
-   DB::connection('mysql_second')
+
+    public function superadmin_reassignNew($projectId, $employeeId)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            // Update assign_project table
+            DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('project_id', $projectId)
+                ->update([
+                    'employee_id' => $employeeId,
+                    'status' => 1
+                ]);
+
+            // Update project table
+            DB::connection('mysql_second')
+                ->table('project')
+                ->where('id', $projectId)
+                ->update([
+                    'status' => 1
+                ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Project reassigned successfully');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
+    public function superadmin_getEmployees($designation)
+    {
+        $employees = DB::connection('mysql')
+            ->table('employees')
+            ->where('designation', $designation)
+            ->get();
+
+        return response()->json($employees);
+    }
+    public function archive($id)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            // Get assign_project record
+            $assign = DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('id', $id)
+                ->first();
+
+            if (!$assign) {
+                return redirect()->back()->with('error', 'Assignment not found');
+            }
+
+            // Update assign_project status
+            DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('id', $id)
+                ->update([
+                    'status' => 4
+                ]);
+
+            // Update project status
+            DB::connection('mysql_second')
+                ->table('project')
+                ->where('id', $assign->project_id)
+                ->update([
+                    'status' => 4
+                ]);
+
+            // Insert log
+            DB::connection('mysql')
+                ->table('logs')
+                ->insert([
+                    'user_id' => session('user_id'),
+                    'action' => 'Archive',
+                    'module' => 'Archive',
+                    'description' => 'Archive Project-ID ' . $assign->project_id,
+                    'created_at' => Carbon::now('Asia/Kolkata'),
+                    'updated_at' => Carbon::now('Asia/Kolkata')
+                ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Project Archived Successfully');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+    public function archive_project_list()
+    {
+        $projects = DB::connection('mysql_second')
             ->table('project')
-        ->where('id',$projectId)
-        ->update([
-            'status'=>1
-        ]);
-           DB::connection('mysql_second')
-        ->table('assign_project')
-            ->where('project_id',$projectId)
-        ->update([
-            'status'=>1
-        ]);
+            ->where('status', 4)   // only archived projects
+            ->get();
 
-    return back()->with('success','Project reassigned to same person');
-}
+        return view('superadmin.archive_project_list', compact('projects'));
+    }
 
+    public function project_archive_delete($id)
+    {
+        try {
 
-public function superadmin_reassignNew($projectId,$employeeId)
-{
-   DB::connection('mysql_second')
-            ->table('assign_project')
-        ->where('project_id',$projectId)
-        ->update([
-            'employee_id'=>$employeeId,
-            'status'=>1
-        ]);
+            DB::beginTransaction();
 
-           DB::connection('mysql_second')
-        ->table('project')
-            ->where('id',$projectId)
-        ->update([
-            'status'=>1
-        ]);
+            // Update assign_project
+            DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('project_id', $id)
+                ->update([
+                    'status' => 5
+                ]);
 
-    return back()->with('success','Project reassigned successfully');
-}
+            // Update project table
+            DB::connection('mysql_second')
+                ->table('project')
+                ->where('id', $id)
+                ->update([
+                    'status' => 5
+                ]);
 
-public function superadmin_getEmployees($designation)
-{
-    $employees = DB::connection('mysql')
-        ->table('employees')
-        ->where('designation', $designation)
-        ->get();
+            // Insert log
+            DB::connection('mysql')
+                ->table('logs')
+                ->insert([
+                    'user_id' => session('user_id'),
+                    'action' => 'Delete',
+                    'module' => 'Archive',
+                    'description' => 'Archive Project-ID ' . $id,
+                    'created_at' => Carbon::now('Asia/Kolkata'),
+                    'updated_at' => Carbon::now('Asia/Kolkata')
+                ]);
 
-    return response()->json($employees);
-}
+            DB::commit();
 
+            return redirect()->back()->with('success', 'Project deleted successfully');
+        } catch (\Exception $e) {
 
+            DB::rollBack();
 
-
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
 }

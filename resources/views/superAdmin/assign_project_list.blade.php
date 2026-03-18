@@ -45,7 +45,7 @@
 
         <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                <h6 class="mb-0 fw-bold text-dark">Assign List</h6>
+                <h6 class="mb-0 fw-bold text-dark">Assign Project List</h6>
                 <div class="d-flex gap-2">
                     <a href="{{ route('hr.assign.student') }}"> <button class="btn btn-primary btn-sm px-3"><i
                                 class="bi bi-plus-lg me-1"></i> Add New</button>
@@ -103,7 +103,13 @@
                                         @endif
                                     </a>
                                 </td>
-                                <td></td>
+                                <td>
+                                    <a href="javascript:void(0)" onclick="archiveProject({{ $ass->id }})"
+                                        title="Archive Project">
+
+                                        <i class="bi bi-archive-fill text-warning"></i>
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -148,6 +154,28 @@
             });
 
         });
+    </script>
+
+    <script>
+        function archiveProject(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to archive this project",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Archive it!"
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    window.location.href = "/superadmin/project/archive/" + id;
+
+                }
+
+            });
+        }
     </script>
 
 </body>

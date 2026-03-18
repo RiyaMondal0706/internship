@@ -25,11 +25,11 @@
 <body>
 
 
-    @include('layouts.superadmin.sidebar')
+    @include('layouts.pm.sidebar')
 
     <div id="main-content">
 
-        @include('layouts.superadmin.header')
+        @include('layouts.pm.header')
 
 
         <div class="container-fluid p-4">
@@ -40,7 +40,7 @@
 
                     <h6 class="mb-0 fw-bold text-dark">Project Management List</h6>
 
-                    <a href="{{ route('project.create') }}">
+                    <a href="{{ route('pm.project.create') }}">
                         <button class="btn btn-primary btn-sm px-3">
                             <i class="bi bi-plus-lg me-1"></i> Add New
                         </button>
@@ -145,7 +145,7 @@
                                         {{-- Status = 0 (Pending) --}}
                                         @if ($item->status == 0)
                                             <!-- Edit -->
-                                            <a href="{{ route('project.edit', $item->id) }}"
+                                            <a href="{{ route('pm.project.edit', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
                                                 <i class="bi bi-pencil-fill text-primary" title="Edit "></i>
                                             </a>
@@ -171,7 +171,7 @@
                                             {{-- Status = 1 (Ongoing) --}}
                                         @elseif ($item->status == 1)
                                             <!-- Edit -->
-                                            <a href="{{ route('project.edit', $item->id) }}"
+                                            <a href="{{ route('pm.project.edit', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
                                                 <i class="bi bi-pencil-fill text-primary"title="Edit"></i>
                                             </a>
@@ -198,7 +198,7 @@
                                             {{-- Status = 3 (Hold) --}}
                                         @elseif ($item->status == 3)
                                             <!-- Edit -->
-                                            <a href="{{ route('project.edit', $item->id) }}"
+                                            <a href="{{ route('pm.project.edit', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
                                                 <i class="bi bi-pencil-fill text-primary" title="Edit"></i>
                                             </a>
@@ -344,7 +344,7 @@
             );
 
             $.ajax({
-                url: "{{ url('/superadmin/project/details') }}/" + project_id,
+                url: "{{ url('/Project-Manager/project/details') }}/" + project_id,
                 method: "GET",
 
                 success: function(response) {
