@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SuperAdminController;
 
 use App\Http\Controllers\porjectmanagerController;
+use App\Http\Controllers\TeamLeaderController;
 
 Route::get('/', function () {
         return view('welcome');
@@ -192,9 +193,23 @@ Route::middleware(['role.session:projectmanager'])->group(function () {
                 ->name('pm.assign.project.status');
         Route::get('/Project-Manager/project/archive/{id}', [porjectmanagerController::class, 'pm_archive'])->name('pm.project.archive');
 
+});
 
 
+Route::middleware(['role.session:teamlead'])->group(function () {
 
+    Route::get('/teamlead/dashboard', [TeamLeaderController::class, 'tm_dashboard'])
+        ->name('tm.dashboard');
+        Route::get('/TeamLeader/list', [TeamLeaderController::class, 'tm_hr_list_show'])->name('tm.hr_list');
 
+        Route::get('/TeamLeader/hr-profile/{id}', [TeamLeaderController::class, 'tm_hr_view_Profile'])->name('tm.hr_view.profile');
+        Route::get('/TeamLeader/project-manager/list', [TeamLeaderController::class, 'tm_project_manager_list'])->name('tm.project_manager.list');
+        Route::get('/TeamLeader/Team-leader/list', [TeamLeaderController::class, 'tm_tm_list'])->name('tm.tm.list');
+        Route::get('/TeamLeader/mentor/list', [TeamLeaderController::class, 'tm_mentor_list'])->name('tm.mentor.list');
+  Route::get('/TeamLeader/employee-assign', [TeamLeaderController::class, 'tm_employeeAssign'])
+        ->name('tm.employee.assign');
+
+  Route::get('/TeamLeader/assign-Project_list', [TeamLeaderController::class, 'tm_assign_project_list'])
+        ->name('tm.project.list');
 
 });

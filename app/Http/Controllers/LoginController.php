@@ -37,6 +37,7 @@ class LoginController extends Controller
             'hr' => redirect('/hr/dashboard'),
             'mentor' => redirect('/mentor/dashboard'),
             'employee' => redirect('/employee/dashboard'),
+             'teamlead' => redirect('/teamlead/dashboard'),
             default => redirect('/welcome'),
         };
     }
