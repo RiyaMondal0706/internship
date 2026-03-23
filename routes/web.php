@@ -165,8 +165,32 @@ Route::middleware(['role.session:projectmanager'])->group(function () {
         Route::get('/Project-Manager/project/details/{id}', [porjectmanagerController::class, 'pm_project_details']);
         Route::get('/Project-Manager/project/edit/{id}', [porjectmanagerController::class, 'pm_project_edit'])->name('pm.project.edit');
         Route::put('/Project-Manager/project/update/{id}', [porjectmanagerController::class, 'pm_project_update'])->name('pm.project.update');
+        Route::post('/Project-Manager/project/delete/{id}', [porjectmanagerController::class, 'pm_project_archive_delete'])
+                ->name('pm.archive.project.delete');
+        Route::get('/Project-Manager/project/hold/{id}', [porjectmanagerController::class, 'pm_project_hold'])->name('pm.project.hold');
+        Route::get('/Project-Manager/project/view/{id}', [porjectmanagerController::class, 'pm_peoject_view'])->name('pm.project.view');
+        Route::get('/Project-Manager/project/reassign/{id}', [porjectmanagerController::class, 'pm_project_reassign'])->name('[pm.project.reassign');
+        Route::get('/Project-Manager/project/reassign/{project}/same', [porjectmanagerController::class, 'pm_reassignSame']);
+        Route::get(
+                '/Project-Manager/project/reassign/{projectId}/new/{employeeId}',
+                [porjectmanagerController::class, 'pm_reassignNew']
+        );
 
+        Route::get(
+                '/Project-Manager/get-employees/{designation}',
+                [porjectmanagerController::class, 'pm_getEmployees']
+        );
+        Route::get('/Project-Manager/assign/project', [porjectmanagerController::class, 'pm_assign_project'])->name('pm.assign.project');
+        Route::post('/Project-Manager/assign-Project-employee/student', [porjectmanagerController::class, 'pm_assign_project_employee_store'])->name('pm.assign.project.employee.store');
 
+        Route::get(
+                '/Project-Manager/project/designation-data',
+                [porjectmanagerController::class, 'pm_project_designationData']
+        )->name('pm.project.designation.data');
+        Route::get('/Project-Manager/assign/project/list', [porjectmanagerController::class, 'pm_assign_project_list'])->name('pm.assign.project.list');
+  Route::get('/assign-project-status/{id}', [porjectmanagerController::class, 'pm_assign_project_status'])
+                ->name('pm.assign.project.status');
+        Route::get('/Project-Manager/project/archive/{id}', [porjectmanagerController::class, 'pm_archive'])->name('pm.project.archive');
 
 
 

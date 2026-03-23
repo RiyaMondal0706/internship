@@ -135,16 +135,18 @@
                                     </td>
 
                                     <td class="text-end pe-4">
-                                        <a href="{{ route('project.view', $item->id) }}"
+                                        <a href="{{ route('pm.project.view', $item->id) }}"
                                             class="btn btn-sm btn-light border">
                                             <i class="bi bi-eye text-success" title="View"></i>
                                         </a>
 
                                         <!-- Reassign -->
-                                        <a href="{{ route('project.reassign', $item->id) }}"
-                                            class="btn btn-sm btn-light border">
-                                            <i class="bi bi-arrow-repeat text-info" title="Reassign"></i>
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-light border reassignBtn"
+                                            data-id="{{ $item->id }}" data-name="{{ $employeeName }}">
+
+                                            <i class="bi bi-arrow-repeat text-info"></i>
                                         </a>
+
 
                                     </td>
 
@@ -264,6 +266,126 @@
 
         });
     </script>
+
+
+
+    <!-- REASSIGN SCRIPT -->
+
+    <script>
+        $(document).on('click', '.reassignBtn', function() {
+
+            let projectId = $(this).data('id');
+            let personName = $(this).data('name');
+
+            Swal.fire({
+
+                title: "Reassign Project",
+
+                html: `
+<p>Current Person : <b>${personName}</b></p>
+<p>Do you want same person?</p>
+`,
+
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    window.location.href = "/Project-Manager/project/reassign/" + projectId + "/same";
+
+                } else {
+
+                    Swal.fire({
+
+                        title: "Select Employee",
+
+                        html: `
+
+<select id="designation" class="swal2-input">
+
+<option value="">Select Designation</option>
+<option value="teamlead">Team Leader</option>
+<option value="employee">Mentor</option>
+<option value="intern">Intern</option>
+
+</select>
+
+<select id="employee" class="swal2-input">
+
+<option value="">Select Employee</option>
+
+</select>
+
+`,
+
+                        confirmButtonText: "Assign"
+
+                    }).then(() => {
+
+                        let emp = $("#employee").val();
+
+                        if (emp) {
+
+                            window.location.href = "/Project-Manager/project/reassign/" +
+                                projectId +
+                                "/new/" + emp;
+
+                        }
+
+                    });
+
+                }
+
+            });
+
+        });
+    </script>
+
+
+    <!-- LOAD EMPLOYEE -->
+
+    <script>
+        $(document).on('change', '#designation', function() {
+
+            let designation = $(this).val();
+
+            if (designation != '') {
+
+                $.ajax({
+
+                    url: "/Project-Manager/get-employees/" + designation,
+                    type: "GET",
+
+                    success: function(data) {
+
+                        $("#employee").html('<option value="">Select Employee</option>');
+
+                        $.each(data, function(key, value) {
+
+                            $("#employee").append(
+                                '<option value="' + value.id + '">' + value.name +
+                                '</option>'
+                            );
+
+                        });
+
+                    }
+
+                });
+
+            }
+
+        });
+    </script>
+
+
+
+
+
+
 
 
 </body>

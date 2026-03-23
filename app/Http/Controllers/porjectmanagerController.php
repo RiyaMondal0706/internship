@@ -288,6 +288,342 @@ public function pm_project_ongoing()
     }
 
 
+    public function pm_project_archive_delete($id)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            // Update assign_project
+            DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('project_id', $id)
+                ->update([
+                    'status' => 5
+                ]);
+
+            // Update project table
+            DB::connection('mysql_second')
+                ->table('project')
+                ->where('id', $id)
+                ->update([
+                    'status' => 5
+                ]);
+
+            // Insert log
+            DB::connection('mysql')
+                ->table('logs')
+                ->insert([
+                    'user_id' => session('user_id'),
+                    'action' => 'Delete',
+                    'module' => 'Archive',
+                    'description' => 'Archive Project-ID ' . $id,
+                    'created_at' => Carbon::now('Asia/Kolkata'),
+                    'updated_at' => Carbon::now('Asia/Kolkata')
+                ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Project deleted successfully');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+    public function pm_project_hold($id)
+    {
+        //   dd(session('user_id'));
+        DB::connection('mysql_second')->table('project')
+            ->where('id', $id)
+            ->update([
+                'status' => 3,
+            ]);
+        DB::connection('mysql')->table('logs')->insert([
+            'user_id' => session('user_id'),
+            'action' => 'Hold',
+            'module' => 'Project',
+            'description' => 'Pending project hold ',
+            'created_at' =>  Carbon::now('Asia/Kolkata'),
+            'updated_at' =>  Carbon::now('Asia/Kolkata')
+        ]);
+
+        return redirect()->route('pm.project.list')->with('success', ' Project Hold  successfully.');
+    }
+public function pm_peoject_view(){
+    dd("ok");
+}
+
+    public function pm_reassignSame($projectId)
+{
+    try {
+
+        DB::beginTransaction();
+
+        // Update project table
+        DB::connection('mysql_second')
+            ->table('project')
+            ->where('id', $projectId)
+            ->update([
+                'status' => 1
+            ]);
+
+        // Update assign_project table
+        DB::connection('mysql_second')
+            ->table('assign_project')
+            ->where('project_id', $projectId)
+            ->update([
+                'status' => 1
+            ]);
+
+        DB::commit();
+
+        return back()->with('success', 'Project reassigned to same person');
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return back()->with('error', 'Something went wrong: ' . $e->getMessage());
+    }
+}
+
+    public function pm_reassignNew($projectId, $employeeId)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            // Update assign_project table
+            DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('project_id', $projectId)
+                ->update([
+                    'employee_id' => $employeeId,
+                    'status' => 1
+                ]);
+
+            // Update project table
+            DB::connection('mysql_second')
+                ->table('project')
+                ->where('id', $projectId)
+                ->update([
+                    'status' => 1
+                ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Project reassigned successfully');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
+ public function pm_getEmployees($designation)
+    {
+        $employees = DB::connection('mysql')
+            ->table('employees')
+            ->where('designation', $designation)
+            ->get();
+
+        return response()->json($employees);
+    }
+    
+    public function pm_assign_project()
+    {
+        $designation = DB::connection('mysql')->table('designation')
+
+            ->get();
+        return view('pm.assign_projeect', compact('designation'));
+    }
+
+ public function pm_assign_project_employee_store(Request $request)
+{
+    try {
+
+        DB::beginTransaction();
+
+        // Insert into assign_project
+        DB::connection('mysql_second')->table('assign_project')->insert([
+            'designation' => $request->designation,
+            'employee_id' => $request->employee_id,
+            'project_id'  => $request->project_id,
+            'work'        => $request->work,
+            'created_at'  => Carbon::now('Asia/Kolkata'),
+        ]);
+
+        // Insert log
+        DB::connection('mysql')->table('logs')->insert([
+            'user_id' => session('user_id'),
+            'action' => 'Assign',
+            'module' => 'Assign',
+            'description' => 'Assign project Status Project-ID ' . $request->project_id,
+            'created_at' => Carbon::now('Asia/Kolkata'),
+            'updated_at' => Carbon::now('Asia/Kolkata')
+        ]);
+
+        // Update project status
+        DB::connection('mysql_second')->table('project')
+            ->where('id', $request->project_id)
+            ->update([
+                'status' => 1,
+            ]);
+
+        DB::commit();
+
+        return redirect()->back()->with('success', 'Assignment Project to employee Successfully');
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+    }
+}
+
+ public function pm_project_designationData(Request $request)
+{
+
+// dd("ok");
+    try {
+
+        // Get employees by designation
+        $employees = DB::connection('mysql')
+            ->table('employees')
+            ->where('designation', $request->designation)
+            ->get();
+
+        // Get assigned project ids
+        $assignedProjects = DB::connection('mysql_second')
+            ->table('assign_project')
+            ->pluck('project_id');
+
+        // Get available projects
+        $projects = DB::connection('mysql_second')
+            ->table('project')
+            ->whereIn('status', [0, 3])
+            ->whereNotIn('id', $assignedProjects)
+            ->get();
+
+        return response()->json([
+            'employees' => $employees,
+            'projects' => $projects
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'error' => 'Something went wrong',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+    public function pm_assign_project_list()
+    {
+        $ass = DB::connection('mysql_second')
+            ->table('assign_project')
+            // ->where('status', 1)
+            ->get();
+
+        return view('pm.assign_project_list', compact('ass'));
+    }
+    public function pm_assign_project_status($id)
+    {
+        try {
+
+            $project = DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('id', $id)
+                ->first();
+
+            if (!$project) {
+                return redirect()->back()->with('error', 'Project not found');
+            }
+
+            // Toggle assign_project status
+            $newStatus = $project->status == 1 ? 0 : 1;
+
+            DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('id', $id)
+                ->update(['status' => $newStatus]);
+
+            // Set project status based on assign_project status
+            $projectStatus = $newStatus == 1 ? 1 : 3;
+
+            DB::connection('mysql_second')
+                ->table('project')
+                ->where('id', $project->project_id)
+                ->update([
+                    'status' => $projectStatus,
+                ]);
+
+            return redirect()->back()->with('success', 'Status updated successfully');
+        } catch (\Exception $e) {
+
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+    public function pm_archive($id)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            // Get assign_project record
+            $assign = DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('id', $id)
+                ->first();
+
+            if (!$assign) {
+                return redirect()->back()->with('error', 'Assignment not found');
+            }
+
+            // Update assign_project status
+            DB::connection('mysql_second')
+                ->table('assign_project')
+                ->where('id', $id)
+                ->update([
+                    'status' => 4
+                ]);
+
+            // Update project status
+            DB::connection('mysql_second')
+                ->table('project')
+                ->where('id', $assign->project_id)
+                ->update([
+                    'status' => 4
+                ]);
+
+            // Insert log
+            DB::connection('mysql')
+                ->table('logs')
+                ->insert([
+                    'user_id' => session('user_id'),
+                    'action' => 'Archive',
+                    'module' => 'Archive',
+                    'description' => 'Archive Project-ID ' . $assign->project_id,
+                    'created_at' => Carbon::now('Asia/Kolkata'),
+                    'updated_at' => Carbon::now('Asia/Kolkata')
+                ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Project Archived Successfully');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
+
 
 
 

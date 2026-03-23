@@ -151,8 +151,8 @@
                                             </a>
 
                                             <!-- Delete -->
-                                            <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                                class="delete-form" style="display:inline;">
+                                            <form action="{{ route('pm.archive.project.delete', $item->id) }}"
+                                                method="POST" class="delete-form" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
 
@@ -162,7 +162,7 @@
                                             </form>
 
                                             <!-- Pending -->
-                                            <a href="{{ route('project.hold', $item->id) }}"
+                                            <a href="{{ route('pm.project.hold', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
                                                 <i class="bi bi-pause-circle text-danger" title="Hold"></i>
                                             </a>
@@ -175,7 +175,7 @@
                                                 class="btn btn-sm btn-light border">
                                                 <i class="bi bi-pencil-fill text-primary"title="Edit"></i>
                                             </a>
-                                            <a href="{{ route('project.hold', $item->id) }}"
+                                            <a href="{{ route('pm.project.hold', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
                                                 <i class="bi bi-pause-circle text-danger" title="Hold"></i>
                                             </a>
@@ -183,15 +183,15 @@
                                             {{-- Status = 2 (Completed) --}}
                                         @elseif ($item->status == 2)
                                             <!-- View -->
-                                            <a href="{{ route('project.view', $item->id) }}"
+                                            <a href="{{ route('pm.project.view', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
                                                 <i class="bi bi-eye text-success" title="View"></i>
                                             </a>
 
-                                            <!-- Reassign -->
-                                            <a href="{{ route('project.reassign', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-arrow-repeat text-info" title="Reassign"></i>
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-light border reassignBtn"
+                                                data-id="{{ $item->id }}" data-name="{{ $employeeName }}">
+
+                                                <i class="bi bi-arrow-repeat text-info"></i>
                                             </a>
 
 
@@ -205,36 +205,36 @@
 
 
                                             @php
+                                                $employeeName = 'Not Assigned'; // default value
 
                                                 $ass = DB::connection('mysql_second')
                                                     ->table('assign_project')
                                                     ->where('project_id', $item->id)
                                                     ->first();
 
-                                                $emp = DB::connection('mysql')
-                                                    ->table('employees')
-                                                    ->where('id', $ass->employee_id)
-                                                    ->first();
+                                                if ($ass && !is_null($ass->employee_id)) {
+                                                    $emp = DB::connection('mysql')
+                                                        ->table('employees')
+                                                        ->where('id', $ass->employee_id)
+                                                        ->first();
 
-                                                if ($emp) {
-                                                    $employeeName = $emp->name;
+                                                    if ($emp) {
+                                                        $employeeName = $emp->name;
+                                                    }
                                                 }
-
                                             @endphp
 
 
-                                            <a href="#" class="btn btn-sm btn-light border reassignBtn"
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-light border reassignBtn"
                                                 data-id="{{ $item->id }}" data-name="{{ $employeeName }}">
 
                                                 <i class="bi bi-arrow-repeat text-info"></i>
-
                                             </a>
 
 
-
                                             <!-- Delete -->
-                                            <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                                class="delete-form" style="display:inline;">
+                                            <form action="{{ route('pm.archive.project.delete', $item->id) }}"
+                                                method="POST" class="delete-form" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
 
@@ -387,7 +387,7 @@
 
                 if (result.isConfirmed) {
 
-                    window.location.href = "/superadmin/project/reassign/" + projectId + "/same";
+                    window.location.href = "/Project-Manager/project/reassign/" + projectId + "/same";
 
                 } else {
 
@@ -401,7 +401,7 @@
 
 <option value="">Select Designation</option>
 <option value="teamlead">Team Leader</option>
-<option value="mentor">Mentor</option>
+<option value="employee">Mentor</option>
 <option value="intern">Intern</option>
 
 </select>
@@ -422,7 +422,8 @@
 
                         if (emp) {
 
-                            window.location.href = "/superadmin/project/reassign/" + projectId +
+                            window.location.href = "/Project-Manager/project/reassign/" +
+                                projectId +
                                 "/new/" + emp;
 
                         }
@@ -448,7 +449,7 @@
 
                 $.ajax({
 
-                    url: "/superadmin/get-employees/" + designation,
+                    url: "/Project-Manager/get-employees/" + designation,
                     type: "GET",
 
                     success: function(data) {

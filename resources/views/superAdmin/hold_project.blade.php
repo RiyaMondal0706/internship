@@ -143,21 +143,23 @@
                                         </a>
 
                                         @php
+                                            $employeeName = 'Not Assigned'; // default value
 
                                             $ass = DB::connection('mysql_second')
                                                 ->table('assign_project')
                                                 ->where('project_id', $item->id)
                                                 ->first();
 
-                                            $emp = DB::connection('mysql')
-                                                ->table('employees')
-                                                ->where('id', $ass->employee_id)
-                                                ->first();
+                                            if ($ass && !is_null($ass->employee_id)) {
+                                                $emp = DB::connection('mysql')
+                                                    ->table('employees')
+                                                    ->where('id', $ass->employee_id)
+                                                    ->first();
 
-                                            if ($emp) {
-                                                $employeeName = $emp->name;
+                                                if ($emp) {
+                                                    $employeeName = $emp->name;
+                                                }
                                             }
-
                                         @endphp
 
 
@@ -169,7 +171,7 @@
                                         </a>
 
 
-                                        <form action="{{ route('project.delete', $item->id) }}" method="POST"
+                                        <form action="{{ route('archive.project.delete', $item->id) }}" method="POST"
                                             style="display:inline;">
 
                                             @csrf

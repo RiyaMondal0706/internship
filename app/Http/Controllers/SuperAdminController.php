@@ -972,20 +972,7 @@ class SuperAdminController extends Controller
     }
 
 
-    public function project_delete($id)
-    {
-        DB::connection('mysql_second')->table('project')->where('id', $id)->delete();
 
-        DB::connection('mysql')->table('logs')->insert([
-            'user_id' => session('user_id'),
-            'action' => 'Delete',
-            'module' => 'Project',
-            'description' => ' Project delete ',
-            'created_at' =>  Carbon::now('Asia/Kolkata'),
-            'updated_at' =>  Carbon::now('Asia/Kolkata')
-        ]);
-        return redirect()->route('project.list')->with('success', ' Project deleted  successfully.');
-    }
 
     public function project_hold($id)
     {

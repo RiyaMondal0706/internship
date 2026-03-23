@@ -142,8 +142,8 @@
                                         </a>
 
                                         <!-- Delete -->
-                                        <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                            class="delete-form" style="display:inline;">
+                                        <form action="{{ route('pm.archive.project.delete', $item->id) }}"
+                                            method="POST" class="delete-form" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
 
@@ -153,7 +153,7 @@
                                         </form>
 
                                         <!-- Pending -->
-                                        <a href="{{ route('project.hold', $item->id) }}"
+                                        <a href="{{ route('pm.project.hold', $item->id) }}"
                                             class="btn btn-sm btn-light border">
                                             <i class="bi bi-pause-circle text-danger" title="Hold"></i>
                                         </a>

@@ -142,7 +142,7 @@
                                         </a>
 
                                         <!-- Delete -->
-                                        <form action="{{ route('project.delete', $item->id) }}" method="POST"
+                                        <form action="{{ route('archive.project.delete', $item->id) }}" method="POST"
                                             class="delete-form" style="display:inline;">
                                             @csrf
                                             @method('DELETE')

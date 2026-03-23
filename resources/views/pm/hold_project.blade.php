@@ -143,34 +143,36 @@
                                         </a>
 
                                         @php
+                                            $employeeName = 'Not Assigned'; // default value
 
                                             $ass = DB::connection('mysql_second')
                                                 ->table('assign_project')
                                                 ->where('project_id', $item->id)
                                                 ->first();
 
-                                            $emp = DB::connection('mysql')
-                                                ->table('employees')
-                                                ->where('id', $ass->employee_id)
-                                                ->first();
+                                            if ($ass && !is_null($ass->employee_id)) {
+                                                $emp = DB::connection('mysql')
+                                                    ->table('employees')
+                                                    ->where('id', $ass->employee_id)
+                                                    ->first();
 
-                                            if ($emp) {
-                                                $employeeName = $emp->name;
+                                                if ($emp) {
+                                                    $employeeName = $emp->name;
+                                                }
                                             }
-
                                         @endphp
 
 
-                                        <a href="#" class="btn btn-sm btn-light border reassignBtn"
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-light border reassignBtn"
                                             data-id="{{ $item->id }}" data-name="{{ $employeeName }}">
 
                                             <i class="bi bi-arrow-repeat text-info"></i>
-
                                         </a>
 
 
-                                        <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                            style="display:inline;">
+
+                                        <form action="{{ route('pm.archive.project.delete', $item->id) }}"
+                                            method="POST" style="display:inline;">
 
                                             @csrf
                                             @method('DELETE')
@@ -240,6 +242,7 @@
     </script>
 
 
+
     <!-- REASSIGN SCRIPT -->
 
     <script>
@@ -265,7 +268,7 @@
 
                 if (result.isConfirmed) {
 
-                    window.location.href = "/superadmin/project/reassign/" + projectId + "/same";
+                    window.location.href = "/Project-Manager/project/reassign/" + projectId + "/same";
 
                 } else {
 
@@ -279,7 +282,7 @@
 
 <option value="">Select Designation</option>
 <option value="teamlead">Team Leader</option>
-<option value="mentor">Mentor</option>
+<option value="employee">Mentor</option>
 <option value="intern">Intern</option>
 
 </select>
@@ -300,7 +303,8 @@
 
                         if (emp) {
 
-                            window.location.href = "/superadmin/project/reassign/" + projectId +
+                            window.location.href = "/Project-Manager/project/reassign/" +
+                                projectId +
                                 "/new/" + emp;
 
                         }
@@ -326,7 +330,7 @@
 
                 $.ajax({
 
-                    url: "/superadmin/get-employees/" + designation,
+                    url: "/Project-Manager/get-employees/" + designation,
                     type: "GET",
 
                     success: function(data) {

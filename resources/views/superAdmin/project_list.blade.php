@@ -151,8 +151,8 @@
                                             </a>
 
                                             <!-- Delete -->
-                                            <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                                class="delete-form" style="display:inline;">
+                                            <form action="{{ route('pm.archive.project.delete', $item->id) }}"
+                                                method="POST" class="delete-form" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
 
@@ -203,25 +203,25 @@
                                                 <i class="bi bi-pencil-fill text-primary" title="Edit"></i>
                                             </a>
 
-
                                             @php
+                                                $employeeName = 'Not Assigned'; // default value
 
                                                 $ass = DB::connection('mysql_second')
                                                     ->table('assign_project')
                                                     ->where('project_id', $item->id)
                                                     ->first();
 
-                                                $emp = DB::connection('mysql')
-                                                    ->table('employees')
-                                                    ->where('id', $ass->employee_id)
-                                                    ->first();
+                                                if ($ass && !is_null($ass->employee_id)) {
+                                                    $emp = DB::connection('mysql')
+                                                        ->table('employees')
+                                                        ->where('id', $ass->employee_id)
+                                                        ->first();
 
-                                                if ($emp) {
-                                                    $employeeName = $emp->name;
+                                                    if ($emp) {
+                                                        $employeeName = $emp->name;
+                                                    }
                                                 }
-
                                             @endphp
-
 
                                             <a href="#" class="btn btn-sm btn-light border reassignBtn"
                                                 data-id="{{ $item->id }}" data-name="{{ $employeeName }}">
@@ -233,8 +233,8 @@
 
 
                                             <!-- Delete -->
-                                            <form action="{{ route('project.delete', $item->id) }}" method="POST"
-                                                class="delete-form" style="display:inline;">
+                                            <form action="{{ route('pm.archive.project.delete', $item->id) }}"
+                                                method="POST" class="delete-form" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
 
