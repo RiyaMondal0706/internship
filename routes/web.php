@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HrController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
@@ -211,5 +212,21 @@ Route::middleware(['role.session:teamlead'])->group(function () {
 
   Route::get('/TeamLeader/assign-Project_list', [TeamLeaderController::class, 'tm_assign_project_list'])
         ->name('tm.project.list');
+        Route::get('/TeamLeader/project/details/{id}', [TeamLeaderController::class, 'tm_details']);
+Route::get('/teamleader/project/complete/{id}', [TeamLeaderController::class, 'tm_complete_project'])
+    ->name('tm.project.complete');
+        Route::get('/Teamleader/assign-project', [TeamLeaderController::class, 'tm_assignForm'])
+    ->name('tm.project.assign');
+
+            Route::post('/TeamLeader/assign-Project-employee/student', [TeamLeaderController::class, 'tm_assign_project_employee_store'])->name('tm.assign.project.employee.store');
+            Route::get('/TeamLeader/assign-project-list', [TeamLeaderController::class, 'tm_assignProjectList'])
+    ->name('tm.assign.project.list');
+
+});
+
+Route::middleware(['role.session:employee'])->group(function () {
+        Route::get('/Employee/dashboard', [EmployeeController::class, 'emp_dashboard'])->name('emp.dashboard');
+        Route::get('/Employee/list', [EmployeeController::class, 'emp_hr_list_show'])->name('emp.hr_list');
+        Route::get('/Employee/hr-profile/{id}', [EmployeeController::class, 'emp_hr_view_Profile'])->name('emp.hr_view.profile');
 
 });

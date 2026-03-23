@@ -137,12 +137,12 @@
     <nav id="sidebar">
         <div class="brand-area">
             <h5 class="text-white fw-bold mb-0">
-                <i class="bi bi-person-workspace me-2 text-primary"></i> TeamLeader
+                <i class="bi bi-person-workspace me-2 text-primary"></i> Employee
             </h5>
         </div>
 
         <div class="nav flex-column mt-3">
-            <a href="{{ route('tm.dashboard') }}" class="nav-link active">
+            <a href="{{ route('emp.dashboard') }}" class="nav-link active">
                 <i class="bi bi-speedometer2 me-3"></i>Dashboard
             </a>
             <div class="nav-item">
@@ -162,8 +162,8 @@
                         </a>
 
                         <ul class="collapse list-unstyled" id="employeeListMenu">
-                            <li><a href="{{ route('tm.hr_list') }}" class="nav-link">HR</a></li>
-                            <li><a href="{{ route('tm.project_manager.list') }}" class="nav-link">Project Manager</a>
+                            <li><a href="{{ route('emp.hr_list') }}" class="nav-link">HR</a></li>
+                            <li><a href="{{ route('emp.project_manager.list') }}" class="nav-link">Project Manager</a>
                             </li>
                             <li><a href="{{ route('tm.tm.list') }}" class="nav-link">Team Leader</a></li>
                             <li><a href="{{ route('tm.mentor.list') }}" class="nav-link">Employee</a></li>
