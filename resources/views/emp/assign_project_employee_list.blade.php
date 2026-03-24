@@ -137,6 +137,18 @@
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                         @elseif ($item->status == 3)
+                                            <!-- Copy Link -->
+                                            <button class="btn btn-sm btn-outline-primary copy-link-btn"
+                                                data-link="{{ $item->project_link }}">
+                                                <i class="bi bi-link-45deg"></i>
+                                            </button>
+
+                                            <!-- Schedule -->
+                                            <button class="btn btn-sm btn-warning note-btn"
+                                                data-id="{{ $item->project_id }}">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+
                                             <span class="badge bg-success">Submission Done</span>
 
                                             <button class="btn btn-sm btn-primary review-btn" data-id="">

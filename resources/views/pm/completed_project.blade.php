@@ -101,6 +101,24 @@
                                     <td>
 
                                         @php
+                                            $employeeName = 'Not Assigned';
+
+                                            $ass = DB::connection('mysql_second')
+                                                ->table('assign_project')
+                                                ->where('project_id', $item->id)
+                                                ->first();
+
+                                            if ($ass && !empty($ass->employee_id)) {
+                                                $emp = DB::connection('mysql')
+                                                    ->table('employees')
+                                                    ->where('id', $ass->employee_id)
+                                                    ->first();
+
+                                                if ($emp) {
+                                                    $employeeName = $emp->name;
+                                                }
+                                            }
+
                                             $endDate = \Carbon\Carbon::parse($item->end_date);
                                             $today = \Carbon\Carbon::today();
                                             $daysLeft = $today->diffInDays($endDate, false);

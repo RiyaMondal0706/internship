@@ -10,7 +10,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         #main-content {
             margin-left: var(--sidebar-width);
@@ -131,22 +131,33 @@
 
                                     <td class="text-end pe-4">
 
+                                        @if ($item->status == 1)
+                                            <!-- 🔗 Link Button -->
+                                            <button class="btn btn-sm btn-outline-primary open-link-modal"
+                                                data-id="{{ $item->id }}">
+                                                <i class="bi bi-link-45deg"></i>
+                                            </button>
 
-                                        <!-- 🔗 Link Button -->
-                                        <button class="btn btn-sm btn-outline-primary open-link-modal"
-                                            data-id="{{ $item->id }}">
-                                            <i class="bi bi-link-45deg"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-warning note-btn" data-id="{{ $item->id }}">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
-                                        <!-- 📤 Submission Button (No Link) -->
-                                        <button class="btn btn-sm btn-success submit-btn"
-                                            data-id="{{ $item->id }}">
-                                            <i class="bi bi-upload"></i> Submit
-                                        </button>
+                                            <!-- 📝 Note Button -->
+                                            <button class="btn btn-sm btn-warning note-btn"
+                                                data-id="{{ $item->id }}">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
 
-
+                                            <!-- 📤 Submit Button -->
+                                            <button class="btn btn-sm btn-success submit-btn"
+                                                data-id="{{ $item->id }}">
+                                                <i class="bi bi-upload"></i> Submit
+                                            </button>
+                                        @elseif ($item->status == 2)
+                                            <!-- ✅ Completed -->
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Completed
+                                            </span>
+                                        @else
+                                            <!-- Optional (for other statuses) -->
+                                            <span class="badge bg-secondary">Not Available</span>
+                                        @endif
 
                                     </td>
                                 </tr>
@@ -438,6 +449,57 @@
 
                 }
             });
+        });
+    </script>
+    <script>
+        $(document).on("click", ".submit-btn", function() {
+
+            let projectId = $(this).data("id");
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to submit this project?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Submit',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: "{{ route('intern.project.submit') }}",
+                        method: "POST",
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            project_id: projectId
+                        },
+
+                        success: function(res) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Submitted!',
+                                text: 'Project completed successfully',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            // reload page or update UI
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        },
+
+                        error: function() {
+                            Swal.fire("Error", "Something went wrong", "error");
+                        }
+                    });
+
+                }
+
+            });
+
         });
     </script>
 </body>

@@ -695,17 +695,19 @@ class HrController extends Controller
 
     public function hr_project_list()
     {
-        $project =DB::connection('mysql')->table('project')
-            ->get();
+       $project = DB::connection('mysql_second')
+        ->table('project')
+        ->where('status', '!=', 5)
+        ->get();
 
         return view('hr.project_list', compact('project'));
     }
     public function details($id)
     {
-        $project =DB::connection('mysql')->table('project')->where('id', $id)->first();
+        $project =DB::connection('mysql_second')->table('project')->where('id', $id)->first();
 
         // get all old update requests
-        $oldData =DB::connection('mysql')->table('old_project_data')
+        $oldData =DB::connection('mysql_second')->table('old_project_data')
             ->where('project_id', $id)
 
             ->get();
@@ -714,7 +716,7 @@ class HrController extends Controller
     }
     public function hr_project_ongoing()
     {
-        $project =DB::connection('mysql')->table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('status', 1)
             ->get();
 
@@ -723,14 +725,14 @@ class HrController extends Controller
 
     public function hr_project_pending()
     {
-        $project =DB::connection('mysql')->table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('status', 0)
             ->get();
         return view('hr.pending_project', compact('project'));
     }
     public function hr_project_hold_list()
     {
-        $project =DB::connection('mysql')->table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('status', 3)
             ->get();
 
@@ -738,7 +740,7 @@ class HrController extends Controller
     }
     public function hr_project_completed()
     {
-        $project =DB::connection('mysql')->table('project')
+        $project =DB::connection('mysql_second')->table('project')
             ->where('status', 2)
             ->get();
 
@@ -747,7 +749,7 @@ class HrController extends Controller
 
     public function hr_assign_student()
     {
-        $designation =DB::connection('mysql')->table('designation')
+        $designation =DB::connection('mysql_second')->table('designation')
             ->where('id', '!=', 1)
             ->get();
 

@@ -129,18 +129,36 @@ class InternController extends Controller
             ->get();
     }
     public function storeNote(Request $request)
-{
-   DB::connection('mysql_second')->table('project_notes')->updateOrInsert(
-        [
-            'project_id' => $request->project_id,
-            'date' => $request->date
-        ],
-        [
-            'note' => $request->note,
-            'updated_at' => now()
-        ]
-    );
+    {
+        DB::connection('mysql_second')->table('project_notes')->updateOrInsert(
+            [
+                'project_id' => $request->project_id,
+                'date' => $request->date
+            ],
+            [
+                'note' => $request->note,
+                'updated_at' => now()
+            ]
+        );
 
-    return response()->json(['status' => true]);
-}
+        return response()->json(['status' => true]);
+    }
+    public function submitProject(Request $request)
+    {
+        // dd($request);
+        DB::connection('mysql_second')->table('assign_project')
+            ->where('project_id', $request->project_id)
+            ->update([
+                'status' => 3,
+           
+            ]);
+
+                DB::connection('mysql_second')->table('project')
+            ->where('id', $request->project_id)
+            ->update([
+                'status' => 2,
+           
+            ]);
+        return response()->json(['status' => true]);
+    }
 }

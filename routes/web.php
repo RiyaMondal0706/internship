@@ -270,4 +270,6 @@ Route::post('/project/submit-link', [InternController::class, 'submit_link'])
 
 Route::get('/Employee/project/notes/{id}', [InternController::class, 'getNotes']);
 Route::post('/Employee/project/notes/store', [InternController::class, 'storeNote']);
+Route::post('/intern/project/submit', [InternController::class, 'submitProject'])
+    ->name('intern.project.submit');
 });
