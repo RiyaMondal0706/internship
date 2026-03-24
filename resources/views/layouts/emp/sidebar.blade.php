@@ -165,8 +165,10 @@
                             <li><a href="{{ route('emp.hr_list') }}" class="nav-link">HR</a></li>
                             <li><a href="{{ route('emp.project_manager.list') }}" class="nav-link">Project Manager</a>
                             </li>
-                            <li><a href="{{ route('tm.tm.list') }}" class="nav-link">Team Leader</a></li>
-                            <li><a href="{{ route('tm.mentor.list') }}" class="nav-link">Employee</a></li>
+                            <li><a href="{{ route('emp.tm.list') }}" class="nav-link">Team Leader</a></li>
+                            <li><a href="{{ route('emp.mentor.list') }}" class="nav-link">Employee</a></li>
+                            <li><a href="{{ route('emp.intern.list') }}" class="nav-link">Intern</a></li>
+
                         </ul>
                     </li>
 
@@ -186,7 +188,7 @@
 
                         <!-- Employee -->
                         <li class="nav-item">
-                            <a href="{{ route('tm.employee.assign') }}" class="nav-link">
+                            <a href="{{ route('emp.employee.assign') }}" class="nav-link">
                                 <i class="bi bi-person-plus me-2"></i> Employee
                             </a>
                         </li>
@@ -203,13 +205,13 @@
                                 <ul class="nav flex-column ms-4">
 
                                     <li class="nav-item">
-                                        <a href="{{ route('tm.project.list') }}" class="nav-link">
+                                        <a href="{{ route('emp.project.list') }}" class="nav-link">
                                             <i class="bi bi-list me-2"></i> Project List
                                         </a>
                                     </li>
 
                                     <li class="nav-item">
-                                        <a href="{{ route('tm.project.assign') }}" class="nav-link">
+                                        <a href="{{ route('emp.project.assign') }}" class="nav-link">
                                             <i class="bi bi-plus-circle me-2"></i> Assign Project
                                         </a>
                                     </li>
