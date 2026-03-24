@@ -189,42 +189,15 @@
 
                         <!-- Employee -->
                         <li class="nav-item">
-                            <a href="{{ route('tm.employee.assign') }}" class="nav-link">
-                                <i class="bi bi-person-plus me-2"></i> Employee
+                            <a href="{{ route('intern.employee.assign') }}" class="nav-link">
+                                <i class="bi bi-person-plus me-2"></i> Mentor
                             </a>
                         </li>
 
-                        <!-- Project Submenu -->
                         <li class="nav-item">
-
-                            <a class="nav-link" data-bs-toggle="collapse" href="#projectSubMenu">
-                                <i class="bi bi-folder me-2"></i> Project
-                                <i class="bi bi-chevron-down float-end"></i>
+                            <a href="{{ route('intern.project.list') }}" class="nav-link">
+                                <i class="bi bi-list me-2"></i> Project List
                             </a>
-
-                            <div class="collapse" id="projectSubMenu">
-                                <ul class="nav flex-column ms-4">
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('tm.project.list') }}" class="nav-link">
-                                            <i class="bi bi-list me-2"></i> Project List
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('tm.project.assign') }}" class="nav-link">
-                                            <i class="bi bi-plus-circle me-2"></i> Assign Project
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ route('tm.assign.project.list') }}" class="nav-link">
-                                            <i class="bi bi-list-check me-2"></i> Assign Project List
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </div>
-
                         </li>
 
                     </ul>

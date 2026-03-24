@@ -246,7 +246,8 @@ Route::middleware(['role.session:employee'])->group(function () {
         Route::get('/Employee/Project/create', [EmployeeController::class, 'emp_project_create'])->name('emp.project.create');
         Route::post('/Employee/project/store', [EmployeeController::class, 'emp_project_store'])
                 ->name('emp.project.store');
-
+Route::get('/intern/project/notes/{id}', [EmployeeController::class, 'emp_getNotes']);
+Route::post('/intern/project/notes/store', [EmployeeController::class, 'emp_storeNote']);
 
 });
 
@@ -260,6 +261,13 @@ Route::get('/intern/profile/{id}', [InternController::class, 'intern_hr_view_Pro
         Route::get('/intern/mentor/list', [InternController::class, 'intern_mentor_list'])->name('intern.mentor.list');
 
         Route::get('/intern/Intern/list', [InternController::class, 'intern_intern_list'])->name('intern.intern.list');
+        Route::get('/intern/employee-assign', [InternController::class, 'intern_employeeAssign'])
+                ->name('intern.employee.assign');
+        Route::get('/intern/assign/project/list', [InternController::class, 'intern_assignprojectlist'])->name('intern.project.list');
+        Route::get('/intern/project/details/{id}', [InternController::class, 'intern_details']);
+Route::post('/project/submit-link', [InternController::class, 'submit_link'])
+    ->name('project.submit.link');
 
-
+Route::get('/Employee/project/notes/{id}', [InternController::class, 'getNotes']);
+Route::post('/Employee/project/notes/store', [InternController::class, 'storeNote']);
 });

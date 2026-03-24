@@ -191,7 +191,9 @@ class EmployeeController extends Controller
                 'project.start_date',
                 'project.end_date',
                 'assign_project.status',
-                'assign_project.reassign_employee_id'
+                'assign_project.reassign_employee_id',
+                 'project.project_link',    
+                 'project.id as project_id'
             )
             ->get();
         $employeeIds = $projects->pluck('reassign_employee_id')->filter()->unique();
@@ -262,7 +264,7 @@ class EmployeeController extends Controller
                 'description' => $request->description,
                 'project_document' => $documentName,
                 'created_at' => Carbon::now(),
-                'status' => 2,
+                'status' => 1,
             ]);
 
             DB::connection('mysql_second')->table('assign_project')->insert([
@@ -292,4 +294,27 @@ class EmployeeController extends Controller
             return redirect()->route('emp.project.create')->with('error', 'Failed to create project: ' . $e->getMessage());
         }
     }
+
+        public function emp_getNotes($id)
+    {
+        return  DB::connection('mysql_second')->table('project_notes')
+            ->where('project_id', $id)
+            ->orderBy('date', 'desc')
+            ->get();
+    }
+    public function emp_storeNote(Request $request)
+{
+   DB::connection('mysql_second')->table('project_notes')->updateOrInsert(
+        [
+            'project_id' => $request->project_id,
+            'date' => $request->date
+        ],
+        [
+            'note' => $request->note,
+            'updated_at' => now()
+        ]
+    );
+
+    return response()->json(['status' => true]);
+}
 }

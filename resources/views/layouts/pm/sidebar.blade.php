@@ -137,7 +137,7 @@
     <nav id="sidebar">
         <div class="brand-area">
             <h5 class="text-white fw-bold mb-0">
-                <i class="bi bi-person-workspace me-2 text-primary"></i> HR
+                <i class="bi bi-person-workspace me-2 text-primary"></i> Project Manager
             </h5>
         </div>
 

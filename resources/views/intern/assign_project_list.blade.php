@@ -25,11 +25,11 @@
 <body>
 
 
-    @include('layouts.emp.sidebar')
+    @include('layouts.superadmin.sidebar')
 
     <div id="main-content">
 
-        @include('layouts.emp.header')
+        @include('layouts.superadmin.header')
 
 
         <div class="container-fluid p-4">
@@ -37,6 +37,14 @@
             <div class="card border-0 shadow-sm" style="border-radius:12px; overflow:hidden;">
 
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+
+                    <h6 class="mb-0 fw-bold text-dark">Project Management List</h6>
+
+                    <a href="{{ route('project.create') }}">
+                        <button class="btn btn-primary btn-sm px-3">
+                            <i class="bi bi-plus-lg me-1"></i> Add New
+                        </button>
+                    </a>
 
                 </div>
 
@@ -46,113 +54,104 @@
                     <table class="table table-hover align-middle mb-0">
 
                         <thead class="table-light">
-                            <tr style="font-size:12px; text-transform:uppercase; letter-spacing:0.6px;">
-                                <th class="ps-4">Project</th>
-                                <th>Timeline</th>
-                                <th>Employee</th>
-                                <th>Submission</th>
+
+                            <tr style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">
+
+                                <th class="ps-4">Project Title</th>
+                                <th>Company Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th class="text-end pe-4">Actions</th>
+
                             </tr>
+
                         </thead>
 
+
                         <tbody>
-                            @forelse ($projects as $item)
-                                <tr style="font-size:13px;">
 
-                                    <!-- Project Title -->
+                            @foreach ($projects as $item)
+                                <tr style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">
+
                                     <td class="ps-4">
-                                        <div class="fw-semibold text-dark">
-                                            {{ $item->project_title }}
+
+                                        <div class="fw-semibold">
+                                            {{ \Illuminate\Support\Str::limit($item->project_title, 10) }}
                                         </div>
+
+                                        <a href="javascript:void(0)"
+                                            class="btn btn-sm btn-outline-primary mt-1 viewProject"
+                                            data-id="{{ $item->id }}">
+
+                                            <i class="bi bi-eye me-1"></i> Project Details
+                                        </a>
 
                                     </td>
 
-                                    <!-- Timeline -->
-                                    <td>
-                                        <div class="small text-muted">
-                                            <i class="bi bi-calendar-event me-1"></i>
-                                            {{ \Carbon\Carbon::parse($item->start_date)->format('d M Y') }}
-                                        </div>
 
-                                        <div class="small text-muted">
-                                            <i class="bi bi-calendar-check me-1"></i>
-                                            {{ \Carbon\Carbon::parse($item->end_date)->format('d M Y') }}
-                                        </div>
+                                    <td>{{ $item->company_name }}</td>
+
+
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($item->start_date)->format('d M Y') }}
+                                    </td>
+
+
+                                    <td>
 
                                         @php
-                                            $end = \Carbon\Carbon::parse($item->end_date);
+                                            $endDate = \Carbon\Carbon::parse($item->end_date);
                                             $today = \Carbon\Carbon::today();
-                                            $days = $today->diffInDays($end, false);
+                                            $daysLeft = $today->diffInDays($endDate, false);
                                         @endphp
 
-                                        <div>
-                                            @if ($days < 0)
-                                                <span class="badge bg-danger-subtle text-danger">Expired</span>
-                                            @elseif($days <= 3)
-                                                <span class="badge bg-danger-subtle text-danger">{{ $days }}
-                                                    Days Left</span>
-                                            @elseif($days <= 7)
-                                                <span class="badge bg-warning-subtle text-warning">{{ $days }}
-                                                    Days Left</span>
-                                            @else
-                                                <span class="badge bg-success-subtle text-success">{{ $days }}
-                                                    Days Left</span>
-                                            @endif
-                                        </div>
-                                    </td>
+                                        <!-- Normal Date -->
+                                        <span>{{ $endDate->format('d M Y') }}</span>
 
-                                    <!-- Employee -->
-                                    <td>
-                                        @php
-                                            $empName =
-                                                $employees[$item->reassign_employee_id] ??
-                                                ($employees[$item->reassign_employee_id] ?? null);
-                                        @endphp
+                                        <br>
 
-                                        @if ($empName)
-                                            <span class="badge bg-info-subtle text-dark px-3 py-2">
-                                                <i class="bi bi-person me-1"></i> {{ $empName }}
+                                        <!-- Days Left with Color -->
+                                        @if ($daysLeft <= 3)
+                                            <span class="text-danger fw-bold">
+                                                {{ $daysLeft }} Days Left
+                                            </span>
+                                        @elseif($daysLeft <= 10)
+                                            <span class="text-warning fw-bold">
+                                                {{ $daysLeft }} Days Left
                                             </span>
                                         @else
-                                            <span class="badge bg-light text-muted border px-3 py-2">
-                                                Not Assigned
+                                            <span class="text-success fw-bold">
+                                                {{ $daysLeft }} Days Left
                                             </span>
                                         @endif
+
                                     </td>
 
-                                    <!-- Submission -->
-                                    <td>
-                                        @if ($item->status == 1)
-                                            <!-- Pending -->
-                                            <span class="badge bg-warning">Pending</span>
-                                        @elseif ($item->status == 2)
-                                            <!-- Copy Link -->
-                                            <button class="btn btn-sm btn-outline-primary copy-link-btn"
-                                                data-link="{{ $item->project_link }}">
-                                                <i class="bi bi-link-45deg"></i>
-                                            </button>
 
-                                            <!-- Schedule -->
-                                            <button class="btn btn-sm btn-warning note-btn"
-                                                data-id="{{ $item->project_id }}">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                        @elseif ($item->status == 3)
-                                            <span class="badge bg-success">Submission Done</span>
 
-                                            <button class="btn btn-sm btn-primary review-btn" data-id="">
-                                                <i class="bi bi-star"></i> Review
-                                            </button>
-                                        @endif
-                                    </td>
+                                    <td class="text-end pe-4">
 
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">
-                                        No Projects Found
+
+                                        <!-- 🔗 Link Button -->
+                                        <button class="btn btn-sm btn-outline-primary open-link-modal"
+                                            data-id="{{ $item->id }}">
+                                            <i class="bi bi-link-45deg"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-warning note-btn" data-id="{{ $item->id }}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <!-- 📤 Submission Button (No Link) -->
+                                        <button class="btn btn-sm btn-success submit-btn"
+                                            data-id="{{ $item->id }}">
+                                            <i class="bi bi-upload"></i> Submit
+                                        </button>
+
+
+
                                     </td>
                                 </tr>
-                            @endforelse
+                            @endforeach
+
                         </tbody>
 
                     </table>
@@ -194,6 +193,38 @@
         </div>
 
     </div>
+    <div class="modal fade" id="linkModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Submit Project Link</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form id="linkForm" method="POST" action="{{ route('project.submit.link') }}">
+                    @csrf
+
+                    <div class="modal-body">
+
+                        <input type="hidden" name="project_id" id="project_id">
+
+                        <label class="form-label">Project Link</label>
+                        <input type="url" name="project_link" class="form-control"
+                            placeholder="Enter project link (https://...)" required>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="noteModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -237,6 +268,9 @@
                                     <textarea id="note_text" name="note" class="form-control" rows="5" placeholder="Write today's work..."></textarea>
                                 </div>
 
+                                <button type="submit" class="btn btn-primary">
+                                    Save Note
+                                </button>
 
                             </form>
 
@@ -249,57 +283,73 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+    <!-- DELETE ALERT -->
+
     <script>
-        $(document).on("click", ".copy-link-btn", function() {
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
 
-            let link = $(this).data("link");
-
-            if (!link) {
-                Swal.fire("Error", "No link available", "error");
-                return;
-            }
-
-            // Copy to clipboard
-            navigator.clipboard.writeText(link).then(function() {
+                let form = this.closest('form');
 
                 Swal.fire({
-                    icon: "success",
-                    title: "Copied!",
-                    text: "Project link copied successfully",
-                    timer: 1500,
-                    showConfirmButton: false
+                    title: "Are you sure?",
+                    text: "You want to delete this project!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, Delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
                 });
 
-            }).catch(function() {
+            });
+        });
+    </script>
 
-                Swal.fire("Error", "Failed to copy", "error");
 
+
+    <!-- AJAX PROJECT DETAILS -->
+
+    <script>
+        $(document).on("click", ".viewProject", function() {
+
+            let project_id = $(this).data("id");
+
+            let modal = new bootstrap.Modal(document.getElementById('projectModal'));
+            modal.show();
+
+            $("#projectDetails").html(
+                '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>'
+            );
+
+            $.ajax({
+                url: "{{ url('/intern/project/details') }}/" + project_id,
+                method: "GET",
+
+                success: function(response) {
+                    $("#projectDetails").html(response);
+                },
+
+                error: function() {
+                    $("#projectDetails").html("<div class='text-danger'>Error loading project</div>");
+                }
             });
 
         });
     </script>
 
-    <script>
-        $(document).on("click", ".schedule-btn", function() {
-
-            let project_id = $(this).data("project");
-            let mentor_id = $(this).data("mentor");
-
-            $("#sch_project_id").val(project_id);
-            $("#sch_mentor_id").val(mentor_id);
-            $("#sch_note").val("");
-
-            let modal = new bootstrap.Modal(document.getElementById('scheduleModal'));
-            modal.show();
-        });
-    </script>
     <script>
         // CSRF setup
         $.ajaxSetup({
@@ -328,7 +378,7 @@
 
             // LOAD OLD NOTES
             $.ajax({
-                url: "/intern/project/notes/" + project_id,
+                url: "/Employee/project/notes/" + project_id,
                 method: "GET",
                 success: function(res) {
 
@@ -375,7 +425,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: "/intern/project/notes/store",
+                url: "/Employee/project/notes/store",
                 method: "POST",
                 data: $(this).serialize(),
                 success: function() {

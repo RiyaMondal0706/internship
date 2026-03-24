@@ -54,28 +54,48 @@
                     <table class="table table-hover align-middle mb-0">
 
                         <thead class="table-light">
-
                             <tr style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">
-
                                 <th class="ps-4">Project Title</th>
                                 <th>Company Name</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Status</th>
                                 <th class="text-end pe-4">Actions</th>
-
                             </tr>
-
                         </thead>
-
 
                         <tbody>
 
                             @foreach ($project as $item)
+                                @php
+                                    // ✅ ALWAYS DEFINE HERE
+                                    $employeeName = 'Not Assigned';
+
+                                    $ass = DB::connection('mysql_second')
+                                        ->table('assign_project')
+                                        ->where('project_id', $item->id)
+                                        ->first();
+
+                                    if ($ass && !empty($ass->employee_id)) {
+                                        $emp = DB::connection('mysql')
+                                            ->table('employees')
+                                            ->where('id', $ass->employee_id)
+                                            ->first();
+
+                                        if ($emp) {
+                                            $employeeName = $emp->name;
+                                        }
+                                    }
+
+                                    $endDate = \Carbon\Carbon::parse($item->end_date);
+                                    $today = \Carbon\Carbon::today();
+                                    $daysLeft = $today->diffInDays($endDate, false);
+                                @endphp
+
                                 <tr style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">
 
+                                    <!-- Project -->
                                     <td class="ps-4">
-
                                         <div class="fw-semibold">
                                             {{ \Illuminate\Support\Str::limit($item->project_title, 10) }}
                                         </div>
@@ -83,51 +103,32 @@
                                         <a href="javascript:void(0)"
                                             class="btn btn-sm btn-outline-primary mt-1 viewProject"
                                             data-id="{{ $item->id }}">
-
                                             <i class="bi bi-eye me-1"></i> Project Details
                                         </a>
-
                                     </td>
 
-
+                                    <!-- Company -->
                                     <td>{{ $item->company_name }}</td>
 
-
+                                    <!-- Start Date -->
                                     <td>
                                         {{ \Carbon\Carbon::parse($item->start_date)->format('d M Y') }}
                                     </td>
 
-
+                                    <!-- End Date -->
                                     <td>
+                                        <span>{{ $endDate->format('d M Y') }}</span><br>
 
-                                        @php
-                                            $endDate = \Carbon\Carbon::parse($item->end_date);
-                                            $today = \Carbon\Carbon::today();
-                                            $daysLeft = $today->diffInDays($endDate, false);
-                                        @endphp
-
-                                        <!-- Normal Date -->
-                                        <span>{{ $endDate->format('d M Y') }}</span>
-
-                                        <br>
-
-                                        <!-- Days Left with Color -->
                                         @if ($daysLeft <= 3)
-                                            <span class="text-danger fw-bold">
-                                                {{ $daysLeft }} Days Left
-                                            </span>
+                                            <span class="text-danger fw-bold">{{ $daysLeft }} Days Left</span>
                                         @elseif($daysLeft <= 10)
-                                            <span class="text-warning fw-bold">
-                                                {{ $daysLeft }} Days Left
-                                            </span>
+                                            <span class="text-warning fw-bold">{{ $daysLeft }} Days Left</span>
                                         @else
-                                            <span class="text-success fw-bold">
-                                                {{ $daysLeft }} Days Left
-                                            </span>
+                                            <span class="text-success fw-bold">{{ $daysLeft }} Days Left</span>
                                         @endif
-
                                     </td>
 
+                                    <!-- Status -->
                                     <td>
                                         @if ($item->status == 0)
                                             <span class="badge bg-warning text-dark">Pending</span>
@@ -140,118 +141,87 @@
                                         @endif
                                     </td>
 
+                                    <!-- Actions -->
                                     <td class="text-end pe-4">
 
-                                        {{-- Status = 0 (Pending) --}}
                                         @if ($item->status == 0)
                                             <!-- Edit -->
                                             <a href="{{ route('pm.project.edit', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pencil-fill text-primary" title="Edit "></i>
+                                                <i class="bi bi-pencil-fill text-primary"></i>
                                             </a>
 
                                             <!-- Delete -->
                                             <form action="{{ route('pm.archive.project.delete', $item->id) }}"
-                                                method="POST" class="delete-form" style="display:inline;">
+                                                method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-
                                                 <button type="button" class="btn btn-sm btn-light border delete-btn">
-                                                    <i class="bi bi-trash text-danger" title="Delete Project"></i>
+                                                    <i class="bi bi-trash text-danger"></i>
                                                 </button>
                                             </form>
 
-                                            <!-- Pending -->
+                                            <!-- Hold -->
                                             <a href="{{ route('pm.project.hold', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pause-circle text-danger" title="Hold"></i>
+                                                <i class="bi bi-pause-circle text-danger"></i>
                                             </a>
-
-
-                                            {{-- Status = 1 (Ongoing) --}}
                                         @elseif ($item->status == 1)
                                             <!-- Edit -->
                                             <a href="{{ route('pm.project.edit', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pencil-fill text-primary"title="Edit"></i>
-                                            </a>
-                                            <a href="{{ route('pm.project.hold', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pause-circle text-danger" title="Hold"></i>
+                                                <i class="bi bi-pencil-fill text-primary"></i>
                                             </a>
 
-                                            {{-- Status = 2 (Completed) --}}
+                                            <!-- Hold -->
+                                            <a href="{{ route('pm.project.hold', $item->id) }}"
+                                                class="btn btn-sm btn-light border">
+                                                <i class="bi bi-pause-circle text-danger"></i>
+                                            </a>
                                         @elseif ($item->status == 2)
                                             <!-- View -->
                                             <a href="{{ route('pm.project.view', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
-                                                <i class="bi bi-eye text-success" title="View"></i>
+                                                <i class="bi bi-eye text-success"></i>
                                             </a>
 
+                                            <!-- Reassign -->
                                             <a href="javascript:void(0)" class="btn btn-sm btn-light border reassignBtn"
                                                 data-id="{{ $item->id }}" data-name="{{ $employeeName }}">
-
                                                 <i class="bi bi-arrow-repeat text-info"></i>
                                             </a>
-
-
-                                            {{-- Status = 3 (Hold) --}}
                                         @elseif ($item->status == 3)
                                             <!-- Edit -->
                                             <a href="{{ route('pm.project.edit', $item->id) }}"
                                                 class="btn btn-sm btn-light border">
-                                                <i class="bi bi-pencil-fill text-primary" title="Edit"></i>
+                                                <i class="bi bi-pencil-fill text-primary"></i>
                                             </a>
 
-
-                                            @php
-                                                $employeeName = 'Not Assigned'; // default value
-
-                                                $ass = DB::connection('mysql_second')
-                                                    ->table('assign_project')
-                                                    ->where('project_id', $item->id)
-                                                    ->first();
-
-                                                if ($ass && !is_null($ass->employee_id)) {
-                                                    $emp = DB::connection('mysql')
-                                                        ->table('employees')
-                                                        ->where('id', $ass->employee_id)
-                                                        ->first();
-
-                                                    if ($emp) {
-                                                        $employeeName = $emp->name;
-                                                    }
-                                                }
-                                            @endphp
-
-
+                                            <!-- Reassign -->
                                             <a href="javascript:void(0)" class="btn btn-sm btn-light border reassignBtn"
                                                 data-id="{{ $item->id }}" data-name="{{ $employeeName }}">
-
                                                 <i class="bi bi-arrow-repeat text-info"></i>
                                             </a>
 
-
                                             <!-- Delete -->
                                             <form action="{{ route('pm.archive.project.delete', $item->id) }}"
-                                                method="POST" class="delete-form" style="display:inline;">
+                                                method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-
                                                 <button type="button" class="btn btn-sm btn-light border delete-btn">
-                                                    <i class="bi bi-trash text-danger" title="Delete Project"></i>
+                                                    <i class="bi bi-trash text-danger"></i>
                                                 </button>
                                             </form>
                                         @endif
 
                                     </td>
+
                                 </tr>
                             @endforeach
 
                         </tbody>
 
                     </table>
-
                 </div>
 
             </div>
