@@ -183,10 +183,10 @@
                                             {{-- Status = 2 (Completed) --}}
                                         @elseif ($item->status == 2)
                                             <!-- View -->
-                                            <a href="{{ route('project.view', $item->id) }}"
-                                                class="btn btn-sm btn-light border">
-                                                <i class="bi bi-eye text-success" title="View"></i>
-                                            </a>
+                                            <button class="btn btn-sm btn-outline-primary copy-link-btn"
+                                                data-link="{{ $item->project_link }}">
+                                                <i class="bi bi-link-45deg"></i>
+                                            </button>
 
                                             <!-- Reassign -->
                                             <a href="{{ route('project.reassign', $item->id) }}"
@@ -469,6 +469,37 @@
                 });
 
             }
+
+        });
+    </script>
+
+
+    <script>
+        $(document).on("click", ".copy-link-btn", function() {
+
+            let link = $(this).data("link");
+
+            if (!link) {
+                Swal.fire("Error", "No link available", "error");
+                return;
+            }
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(link).then(function() {
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Copied!",
+                    text: "Project link copied successfully",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+            }).catch(function() {
+
+                Swal.fire("Error", "Failed to copy", "error");
+
+            });
 
         });
     </script>
