@@ -180,30 +180,31 @@ class TeamLeaderController extends Controller
         }
     }
 
-    public function tm_assignProjectList(){
-         $id = (Session::get('user_id'));
+    public function tm_assignProjectList()
+    {
+        $id = (Session::get('user_id'));
 
         $tm_id =  DB::connection('mysql')->table('users')->where('id', $id)->first();
         $tm_main_id = preg_replace('/\D/', '', $tm_id->employee_id);
-$projects = DB::connection('mysql_second')
-    ->table('assign_project')
-    ->join('project', 'project.id', '=', 'assign_project.project_id')
-    ->where('assign_project.employee_id', $tm_main_id)
-    ->select(
-        'project.project_title',
-        'project.start_date',
-        'project.end_date',
-        'assign_project.status',
-        'assign_project.reassign_employee_id'
-    )
-    ->get();
-    $employeeIds = $projects->pluck('reassign_employee_id')->filter()->unique();
+        $projects = DB::connection('mysql_second')
+            ->table('assign_project')
+            ->join('project', 'project.id', '=', 'assign_project.project_id')
+            ->where('assign_project.employee_id', $tm_main_id)
+            ->select(
+                'project.project_title',
+                'project.start_date',
+                'project.end_date',
+                'assign_project.status',
+                'assign_project.reassign_employee_id'
+            )
+            ->get();
+        $employeeIds = $projects->pluck('reassign_employee_id')->filter()->unique();
 
-$employees = DB::connection('mysql')
-    ->table('employees')
-    ->whereIn('id', $employeeIds)
-    ->pluck('name', 'id'); // key-value
-    // dd($projects);
-  return view("tm.assign_project_employee_list", compact('projects', 'employees'));
+        $employees = DB::connection('mysql')
+            ->table('employees')
+            ->whereIn('id', $employeeIds)
+            ->pluck('name', 'id'); // key-value
+        // dd($projects);
+        return view("tm.assign_project_employee_list", compact('projects', 'employees'));
     }
 }

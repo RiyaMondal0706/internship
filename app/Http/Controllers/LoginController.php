@@ -35,7 +35,7 @@ class LoginController extends Controller
             'superadmin' => redirect('/superadmin/dashboard'),
             'projectmanager' => redirect('/projectmanager/dashboard'),
             'hr' => redirect('/hr/dashboard'),
-            'mentor' => redirect('/mentor/dashboard'),
+            'intern' => redirect('/intern/dashboard'),
             'employee' => redirect('/Employee/dashboard'),
              'teamlead' => redirect('/teamlead/dashboard'),
             default => redirect('/welcome'),

@@ -94,7 +94,7 @@
                 </div>
 
                 <div class="card-body p-4">
-                    <form action="{{ route('tm.assign.project.employee.store') }}" method="POST">
+                    <form action="{{ route('emp.assign.project.employee.store') }}" method="POST">
                         @csrf
 
                         <div class="row g-3">

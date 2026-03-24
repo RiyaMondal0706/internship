@@ -137,12 +137,12 @@
     <nav id="sidebar">
         <div class="brand-area">
             <h5 class="text-white fw-bold mb-0">
-                <i class="bi bi-person-workspace me-2 text-primary"></i> Employee
+                <i class="bi bi-person-workspace me-2 text-primary"></i> Intern
             </h5>
         </div>
 
         <div class="nav flex-column mt-3">
-            <a href="{{ route('emp.dashboard') }}" class="nav-link active">
+            <a href="{{ route('tm.dashboard') }}" class="nav-link active">
                 <i class="bi bi-speedometer2 me-3"></i>Dashboard
             </a>
             <div class="nav-item">
@@ -162,12 +162,13 @@
                         </a>
 
                         <ul class="collapse list-unstyled" id="employeeListMenu">
-                            <li><a href="{{ route('emp.hr_list') }}" class="nav-link">HR</a></li>
-                            <li><a href="{{ route('emp.project_manager.list') }}" class="nav-link">Project Manager</a>
+                            <li><a href="{{ route('intern.hr_list') }}" class="nav-link">HR</a></li>
+                            <li><a href="{{ route('intern.project_manager.list') }}" class="nav-link">Project
+                                    Manager</a>
                             </li>
-                            <li><a href="{{ route('emp.tm.list') }}" class="nav-link">Team Leader</a></li>
-                            <li><a href="{{ route('emp.mentor.list') }}" class="nav-link">Employee</a></li>
-                            <li><a href="{{ route('emp.intern.list') }}" class="nav-link">Intern</a></li>
+                            <li><a href="{{ route('intern.tm.list') }}" class="nav-link">Team Leader</a></li>
+                            <li><a href="{{ route('intern.mentor.list') }}" class="nav-link">Employee</a></li>
+                            <li><a href="{{ route('intern.intern.list') }}" class="nav-link">Intern</a></li>
 
                         </ul>
                     </li>
@@ -188,7 +189,7 @@
 
                         <!-- Employee -->
                         <li class="nav-item">
-                            <a href="{{ route('emp.employee.assign') }}" class="nav-link">
+                            <a href="{{ route('tm.employee.assign') }}" class="nav-link">
                                 <i class="bi bi-person-plus me-2"></i> Employee
                             </a>
                         </li>
@@ -205,24 +206,19 @@
                                 <ul class="nav flex-column ms-4">
 
                                     <li class="nav-item">
-                                        <a href="{{ route('emp.project.list') }}" class="nav-link">
+                                        <a href="{{ route('tm.project.list') }}" class="nav-link">
                                             <i class="bi bi-list me-2"></i> Project List
                                         </a>
                                     </li>
 
                                     <li class="nav-item">
-                                        <a href="{{ route('emp.project.assign') }}" class="nav-link">
+                                        <a href="{{ route('tm.project.assign') }}" class="nav-link">
                                             <i class="bi bi-plus-circle me-2"></i> Assign Project
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ route('emp.assign.project.list') }}" class="nav-link">
+                                        <a href="{{ route('tm.assign.project.list') }}" class="nav-link">
                                             <i class="bi bi-list-check me-2"></i> Assign Project List
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('emp.project.create') }}" class="nav-link">
-                                            <i class="bi bi-plus-circle me-2"></i> Create
                                         </a>
                                     </li>
 

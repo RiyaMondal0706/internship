@@ -267,7 +267,7 @@
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "/teamleader/project/complete/" + projectId;
+                        window.location.href = "/Employee/project/complete/" + projectId;
                     }
                 });
 

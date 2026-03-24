@@ -8,6 +8,7 @@ use App\Http\Controllers\SuperAdminController;
 
 use App\Http\Controllers\porjectmanagerController;
 use App\Http\Controllers\TeamLeaderController;
+use App\Http\Controllers\InternController;
 
 Route::get('/', function () {
         return view('welcome');
@@ -190,38 +191,36 @@ Route::middleware(['role.session:projectmanager'])->group(function () {
                 [porjectmanagerController::class, 'pm_project_designationData']
         )->name('pm.project.designation.data');
         Route::get('/Project-Manager/assign/project/list', [porjectmanagerController::class, 'pm_assign_project_list'])->name('pm.assign.project.list');
-  Route::get('/assign-project-status/{id}', [porjectmanagerController::class, 'pm_assign_project_status'])
+        Route::get('/assign-project-status/{id}', [porjectmanagerController::class, 'pm_assign_project_status'])
                 ->name('pm.assign.project.status');
         Route::get('/Project-Manager/project/archive/{id}', [porjectmanagerController::class, 'pm_archive'])->name('pm.project.archive');
-
 });
 
 
 Route::middleware(['role.session:teamlead'])->group(function () {
 
-    Route::get('/teamlead/dashboard', [TeamLeaderController::class, 'tm_dashboard'])
-        ->name('tm.dashboard');
+        Route::get('/teamlead/dashboard', [TeamLeaderController::class, 'tm_dashboard'])
+                ->name('tm.dashboard');
         Route::get('/TeamLeader/list', [TeamLeaderController::class, 'tm_hr_list_show'])->name('tm.hr_list');
 
         Route::get('/TeamLeader/hr-profile/{id}', [TeamLeaderController::class, 'tm_hr_view_Profile'])->name('tm.hr_view.profile');
         Route::get('/TeamLeader/project-manager/list', [TeamLeaderController::class, 'tm_project_manager_list'])->name('tm.project_manager.list');
         Route::get('/TeamLeader/Team-leader/list', [TeamLeaderController::class, 'tm_tm_list'])->name('tm.tm.list');
         Route::get('/TeamLeader/mentor/list', [TeamLeaderController::class, 'tm_mentor_list'])->name('tm.mentor.list');
-  Route::get('/TeamLeader/employee-assign', [TeamLeaderController::class, 'tm_employeeAssign'])
-        ->name('tm.employee.assign');
+        Route::get('/TeamLeader/employee-assign', [TeamLeaderController::class, 'tm_employeeAssign'])
+                ->name('tm.employee.assign');
 
-  Route::get('/TeamLeader/assign-Project_list', [TeamLeaderController::class, 'tm_assign_project_list'])
-        ->name('tm.project.list');
+        Route::get('/TeamLeader/assign-Project_list', [TeamLeaderController::class, 'tm_assign_project_list'])
+                ->name('tm.project.list');
         Route::get('/TeamLeader/project/details/{id}', [TeamLeaderController::class, 'tm_details']);
-Route::get('/teamleader/project/complete/{id}', [TeamLeaderController::class, 'tm_complete_project'])
-    ->name('tm.project.complete');
+        Route::get('/teamleader/project/complete/{id}', [TeamLeaderController::class, 'tm_complete_project'])
+                ->name('tm.project.complete');
         Route::get('/Teamleader/assign-project', [TeamLeaderController::class, 'tm_assignForm'])
-    ->name('tm.project.assign');
+                ->name('tm.project.assign');
 
-            Route::post('/TeamLeader/assign-Project-employee/student', [TeamLeaderController::class, 'tm_assign_project_employee_store'])->name('tm.assign.project.employee.store');
-            Route::get('/TeamLeader/assign-project-list', [TeamLeaderController::class, 'tm_assignProjectList'])
-    ->name('tm.assign.project.list');
-
+        Route::post('/TeamLeader/assign-Project-employee/student', [TeamLeaderController::class, 'tm_assign_project_employee_store'])->name('tm.assign.project.employee.store');
+        Route::get('/TeamLeader/assign-project-list', [TeamLeaderController::class, 'tm_assignProjectList'])
+                ->name('tm.assign.project.list');
 });
 
 Route::middleware(['role.session:employee'])->group(function () {
@@ -232,18 +231,35 @@ Route::middleware(['role.session:employee'])->group(function () {
         Route::get('/Employee/Team-leader/list', [EmployeeController::class, 'emp_tm_list'])->name('emp.tm.list');
         Route::get('/Employee/mentor/list', [EmployeeController::class, 'emp_mentor_list'])->name('emp.mentor.list');
         Route::get('/Employee/Intern/list', [EmployeeController::class, 'emp_intern_list'])->name('emp.intern.list');
- Route::get('/Employee/employee-assign', [EmployeeController::class, 'emp_employeeAssign'])
-        ->name('emp.employee.assign');
-          Route::get('/Employee/assign-Project_list', [EmployeeController::class, 'emp_assign_project_list'])
-        ->name('emp.project.list');
+        Route::get('/Employee/employee-assign', [EmployeeController::class, 'emp_employeeAssign'])
+                ->name('emp.employee.assign');
+        Route::get('/Employee/assign-Project_list', [EmployeeController::class, 'emp_assign_project_list'])
+                ->name('emp.project.list');
         Route::get('/Employee/project/details/{id}', [EmployeeController::class, 'emp_details']);
-       Route::get('/Employee/assign-project', [EmployeeController::class, 'emp_assignForm'])
-    ->name('emp.project.assign');
+        Route::get('/Employee/assign-project', [EmployeeController::class, 'emp_assignForm'])
+                ->name('emp.project.assign');
         Route::post('/Employee/assign-Project-employee/student', [EmployeeController::class, 'emp_assign_project_employee_store'])->name('emp.assign.project.employee.store');
+        Route::get('/Employee/assign/project/list', [EmployeeController::class, 'emp_assignprojectlist'])->name('emp.assign.project.list');
+
+        Route::get('/Employee/project/complete/{id}', [EmployeeController::class, 'emp_complete_project'])
+                ->name('emp.project.complete');
+        Route::get('/Employee/Project/create', [EmployeeController::class, 'emp_project_create'])->name('emp.project.create');
+        Route::post('/Employee/project/store', [EmployeeController::class, 'emp_project_store'])
+                ->name('emp.project.store');
 
 
+});
 
 
+Route::middleware(['role.session:intern'])->group(function () {
+        Route::get('/intern/dashboard', [InternController::class, 'intern_dashboard'])->name('intern.dashboard');
+        Route::get('/intern/hr/list', [InternController::class, 'intern_hr_list_show'])->name('intern.hr_list');
+Route::get('/intern/profile/{id}', [InternController::class, 'intern_hr_view_Profile'])->name('intern.hr_view.profile');
+        Route::get('/intern/project-manager/list', [InternController::class, 'intern_project_manager_list'])->name('intern.project_manager.list');
+        Route::get('/intern/Team-leader/list', [InternController::class, 'intern_tm_list'])->name('intern.tm.list');
+        Route::get('/intern/mentor/list', [InternController::class, 'intern_mentor_list'])->name('intern.mentor.list');
+
+        Route::get('/intern/Intern/list', [InternController::class, 'intern_intern_list'])->name('intern.intern.list');
 
 
 });
